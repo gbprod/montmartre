@@ -1,0 +1,17 @@
+{
+    "name": "gbprod/montmartre",
+    "type": "project",
+    "license": "WTFPL",
+    "authors": [
+        {
+            "name": "GBProd",
+            "email": "contact@gb-prod.fr"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "GBProd\\Montmartre\\": "src/"
+        }
+    },
+    "require": {}
+}
