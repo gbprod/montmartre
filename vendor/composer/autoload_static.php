@@ -20,11 +20,16 @@ class ComposerStaticInit9f16b8fd5e3a78bfe788ecebe5d555ae
         ),
     );
 
+    public static $classMap = array (
+        'GBProd\\Montmartre\\Domain\\Game' => __DIR__ . '/../..' . '/src/Domain/Game.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit9f16b8fd5e3a78bfe788ecebe5d555ae::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit9f16b8fd5e3a78bfe788ecebe5d555ae::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit9f16b8fd5e3a78bfe788ecebe5d555ae::$classMap;
 
         }, null, ClassLoader::class);
     }

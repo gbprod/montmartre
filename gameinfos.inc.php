@@ -65,7 +65,7 @@ $gameinfos = [
     // Diplomacy of the game, from 0 (no interaction in this game) to 5 (totally based on interaction and discussion between players)
     'diplomacy' => 3,
     // Colors attributed to players
-    'player_colors' => array('ff0000', '008000', '0000ff', 'ffa500'),
+    'player_colors' => array('ff0000', '008000', '0000ff', 'ffa500', '000000'),
     // Favorite colors support : if set to "true", support attribution of favorite colors based on player's preferences (see reattributeColorsBasedOnPreferences PHP method)
     'favorite_colors_support' => true,
     // When doing a rematch, the player order is swapped using a "rotation" so the starting player is not the same
