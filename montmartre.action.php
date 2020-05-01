@@ -1,4 +1,5 @@
 <?php
+
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
@@ -57,5 +58,3 @@ class action_montmartre extends APP_GameAction
     }
     */
 }
-
-

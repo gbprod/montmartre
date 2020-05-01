@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
  * Montmartre implementation : © <gbprod> <contact@gb-prod.fr>
@@ -8,14 +9,22 @@
  * -----
  */
 
-require_once(APP_GAMEMODULE_PATH.'module/table/table.game.php');
-include('vendor/autoload.php');
+include(__DIR__ . '/vendor/autoload.php');
+
+use GBProd\Montmartre\Application\StartNewGameHandler;
+
+require_once(APP_GAMEMODULE_PATH . 'module/table/table.game.php');
 
 class Montmartre extends Table
 {
+    private $container;
+
     public function __construct()
     {
         parent::__construct();
+
+        $this->container = require(__DIR__ . '/config/container.php');
+        $this->container->set('table', $this);
 
         self::initGameStateLabels([]);
     }
@@ -25,17 +34,12 @@ class Montmartre extends Table
         return 'montmartre';
     }
 
-    /*
-        setupNewGame:
-
-        This method is called only once, when a new game is launched.
-        In this method, you must setup the game according to the game rules, so that
-        the game is ready to be played.
-    */
     protected function setupNewGame($players, $options = [])
     {
         $this->setupPlayers($players);
 
+        $handler = $this->container->get(StartNewGameHandler::class);
+        $handler();
 
         $this->activeNextPlayer();
     }
@@ -83,17 +87,17 @@ class Montmartre extends Table
     }
 
 
-//////////////////////////////////////////////////////////////////////////////
-//////////// Utility functions
-////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////// Utility functions
+    ////////////
 
     /*
         In this space, you can put any utility methods useful for your game logic
     */
 
-//////////////////////////////////////////////////////////////////////////////
-//////////// Player actions
-////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////// Player actions
+    ////////////
 
     /*
         Each time a player is doing some game action, one of the methods below is called.
@@ -126,9 +130,9 @@ class Montmartre extends Table
 
     */
 
-//////////////////////////////////////////////////////////////////////////////
-//////////// Game state arguments
-////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////// Game state arguments
+    ////////////
 
     /*
         Here, you can create methods defined as "game state arguments" (see "args" property in states.inc.php).
@@ -153,9 +157,9 @@ class Montmartre extends Table
     }
     */
 
-//////////////////////////////////////////////////////////////////////////////
-//////////// Game state actions
-////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////// Game state actions
+    ////////////
 
     /*
         Here, you can create methods defined as "game state actions" (see "action" property in states.inc.php).
@@ -175,9 +179,9 @@ class Montmartre extends Table
     }
     */
 
-//////////////////////////////////////////////////////////////////////////////
-//////////// Zombie
-////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////// Zombie
+    ////////////
 
     /*
         zombieTurn:
@@ -213,12 +217,12 @@ class Montmartre extends Table
             return;
         }
 
-        throw new feException("Zombie mode not supported at this game state: ".$statename);
+        throw new feException("Zombie mode not supported at this game state: " . $statename);
     }
 
-///////////////////////////////////////////////////////////////////////////////////:
-////////// DB upgrade
-//////////
+    ///////////////////////////////////////////////////////////////////////////////////:
+    ////////// DB upgrade
+    //////////
 
     /*
         upgradeTableDb:
@@ -238,42 +242,41 @@ class Montmartre extends Table
         // $from_version is equal to 1404301345
 
         // Example:
-//        if( $from_version <= 1404301345 )
-//        {
-//            // ! important ! Use DBPREFIX_<table_name> for all tables
-//
-//            $sql = "ALTER TABLE DBPREFIX_xxxxxxx ....";
-//            self::applyDbUpgradeToAllDB( $sql );
-//        }
-//        if( $from_version <= 1405061421 )
-//        {
-//            // ! important ! Use DBPREFIX_<table_name> for all tables
-//
-//            $sql = "CREATE TABLE DBPREFIX_xxxxxxx ....";
-//            self::applyDbUpgradeToAllDB( $sql );
-//        }
-//        // Please add your future database scheme changes here
-//
-//
+        //        if( $from_version <= 1404301345 )
+        //        {
+        //            // ! important ! Use DBPREFIX_<table_name> for all tables
+        //
+        //            $sql = "ALTER TABLE DBPREFIX_xxxxxxx ....";
+        //            self::applyDbUpgradeToAllDB( $sql );
+        //        }
+        //        if( $from_version <= 1405061421 )
+        //        {
+        //            // ! important ! Use DBPREFIX_<table_name> for all tables
+        //
+        //            $sql = "CREATE TABLE DBPREFIX_xxxxxxx ....";
+        //            self::applyDbUpgradeToAllDB( $sql );
+        //        }
+        //        // Please add your future database scheme changes here
+        //
+        //
+
     }
 
     protected function setupPlayers($players)
     {
         $gameinfos = self::getGameinfos();
-
         $default_colors = $gameinfos['player_colors'];
 
-        $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ';
-
+        $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ";
         $values = [];
         foreach ($players as $player_id => $player) {
             $color = array_shift($default_colors);
-            $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes($player['player_name'])."','".addslashes($player['player_avatar'])."')";
+            $values[] = "('" . $player_id . "','$color','" . $player['player_canal'] . "','" . addslashes($player['player_name']) . "','" . addslashes($player['player_avatar']) . "')";
         }
-        $sql .= implode(',', $values);
+        $sql .= implode($values, ',');
 
         self::DbQuery($sql);
-        self::reattributeColorsBasedOnPreferences($players, $gameinfos);
+        self::reattributeColorsBasedOnPreferences($players, $gameinfos['player_colors']);
         self::reloadPlayersBasicInfos();
     }
 }

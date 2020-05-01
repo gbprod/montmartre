@@ -13,5 +13,8 @@
             "GBProd\\Montmartre\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "php-di/php-di": "^6.1",
+        "beberlei/assert": "^3.2"
+    }
 }
