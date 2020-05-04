@@ -6,76 +6,102 @@
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
- *
- * montmartre.js
- *
- * Montmartre user interface script
- *
- * In this file, you are describing the logic of your user interface, in Javascript language.
- *
  */
 
 define([
-        "dojo", "dojo/_base/declare",
-        "ebg/core/gamegui",
-        "ebg/counter"
-    ],
-    function (dojo, declare) {
-        return declare("bgagame.montmartre", ebg.core.gamegui, {
-            constructor: function () {
-                console.log('montmartre constructor');
+  "dojo",
+  "dojo/_base/declare",
+  "ebg/core/gamegui",
+  "ebg/counter",
+  "ebg/stock",
+], function (dojo, declare) {
+  return declare("bgagame.montmartre", ebg.core.gamegui, {
+    constructor: function () {
+      console.log("montmartre constructor");
+      this.collectorCardWidth = 135;
+      this.collectorCardHeight = 250;
+    },
 
-                // Here, you can init the global variables of your user interface
-                // Example:
-                // this.myGlobalValue = 0;
+    /**
+     * setup:
+     *   This method must set up the game user interface according to current game situation specified
+     *   in parameters.
+     *  The method is called each time the game interface is displayed to a player, ie:
+     *  _ when the game starts
+     *  _ when a player refreshes the game page (F5)
+     *  "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
+     */
+    setup: function (gamedatas) {
+      console.log("Starting game setup");
+      console.log(gamedatas);
 
-            },
+      this.setupCollectors(gamedatas);
 
-            /*
-                setup:
+      this.setupNotifications();
 
-                This method must set up the game user interface according to current game situation specified
-                in parameters.
+      console.log("Ending game setup");
+    },
 
-                The method is called each time the game interface is displayed to a player, ie:
-                _ when the game starts
-                _ when a player refreshes the game page (F5)
+    setupCollectors: function (gamedatas) {
+      this.collectors = new ebg.stock();
+      this.collectors.create(
+        this,
+        $("collectors"),
+        this.collectorCardWidth,
+        this.collectorCardHeight
+      );
 
-                "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
-            */
+      this.collectors.image_items_per_row = 5;
 
-            setup: function (gamedatas) {
-                console.log("Starting game setup");
+      for (const color of ["green", "yellow", "blue", "pink"]) {
+        for (const value of [2, 4, 6, 8, 10]) {
+          this.collectors.addItemType(
+            this.collectorCardId(color, value),
+            value,
+            g_gamethemeurl + "img/collectors.png",
+            this.collectorCardId(color, value)
+          );
+        }
+      }
 
-                // Setting up player boards
-                for (var player_id in gamedatas.players) {
-                    var player = gamedatas.players[player_id];
+      this.collectors.addToStock(
+        this.collectorCardId("blue", gamedatas.collectors.blue)
+      );
+      this.collectors.addToStock(
+        this.collectorCardId("green", gamedatas.collectors.green)
+      );
+      this.collectors.addToStock(
+        this.collectorCardId("yellow", gamedatas.collectors.yellow)
+      );
+      this.collectors.addToStock(
+        this.collectorCardId("pink", gamedatas.collectors.pink)
+      );
+    },
 
-                    // TODO: Setting up players boards if needed
-                }
+    collectorCardId: function (color, value) {
+      switch (color) {
+        case "green":
+          return value / 2 - 1;
+        case "yellow":
+          return 5 + value / 2 - 1;
+        case "blue":
+          return 10 + value / 2 - 1;
+        case "pink":
+          return 15 + value / 2 - 1;
+      }
+    },
 
-                // TODO: Set up your game interface here, according to "gamedatas"
+    ///////////////////////////////////////////////////
+    //// Game & client states
 
+    // onEnteringState: this method is called each time we are entering into a new game state.
+    //                  You can use this method to perform some user interface changes at this moment.
+    //
+    onEnteringState: function (stateName, args) {
+      console.log("Entering state: " + stateName);
 
-                // Setup game notifications to handle (see "setupNotifications" method below)
-                this.setupNotifications();
-
-                console.log("Ending game setup");
-            },
-
-
-            ///////////////////////////////////////////////////
-            //// Game & client states
-
-            // onEnteringState: this method is called each time we are entering into a new game state.
-            //                  You can use this method to perform some user interface changes at this moment.
-            //
-            onEnteringState: function (stateName, args) {
-                console.log('Entering state: ' + stateName);
-
-                switch (stateName) {
-
-                    /* Example:
+      switch (stateName) {
+        /* Example:
 
                     case 'myGameState':
 
@@ -85,21 +111,19 @@ define([
                         break;
                    */
 
+        case "dummmy":
+          break;
+      }
+    },
 
-                    case 'dummmy':
-                        break;
-                }
-            },
+    // onLeavingState: this method is called each time we are leaving a game state.
+    //                 You can use this method to perform some user interface changes at this moment.
+    //
+    onLeavingState: function (stateName) {
+      console.log("Leaving state: " + stateName);
 
-            // onLeavingState: this method is called each time we are leaving a game state.
-            //                 You can use this method to perform some user interface changes at this moment.
-            //
-            onLeavingState: function (stateName) {
-                console.log('Leaving state: ' + stateName);
-
-                switch (stateName) {
-
-                    /* Example:
+      switch (stateName) {
+        /* Example:
 
                     case 'myGameState':
 
@@ -109,21 +133,21 @@ define([
                         break;
                    */
 
+        case "dummmy":
+          break;
+      }
+    },
 
-                    case 'dummmy':
-                        break;
-                }
-            },
+    // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
+    //                        action status bar (ie: the HTML links in the status bar).
+    //
+    onUpdateActionButtons: function (stateName, args) {
+      console.log("onUpdateActionButtons: " + stateName);
 
-            // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
-            //                        action status bar (ie: the HTML links in the status bar).
-            //
-            onUpdateActionButtons: function (stateName, args) {
-                console.log('onUpdateActionButtons: ' + stateName);
-
-                if (this.isCurrentPlayerActive()) {
-                    switch (stateName) {
-                        /*
+      if (this.isCurrentPlayerActive()) {
+        switch (
+          stateName
+          /*
                                          Example:
 
                                          case 'myGameState':
@@ -135,25 +159,25 @@ define([
                                             this.addActionButton( 'button_3_id', _('Button 3 label'), 'onMyMethodToCall3' );
                                             break;
                         */
-                    }
-                }
-            },
+        ) {
+        }
+      }
+    },
 
-            ///////////////////////////////////////////////////
-            //// Utility methods
+    ///////////////////////////////////////////////////
+    //// Utility methods
 
-            /*
+    /*
 
                 Here, you can defines some utility methods that you can use everywhere in your javascript
                 script.
 
             */
 
+    ///////////////////////////////////////////////////
+    //// Player's action
 
-            ///////////////////////////////////////////////////
-            //// Player's action
-
-            /*
+    /*
 
                 Here, you are defining methods to handle player's action (ex: results of mouse click on
                 game objects).
@@ -164,7 +188,7 @@ define([
 
             */
 
-            /* Example:
+    /* Example:
 
             onMyMethodToCall1: function( evt )
             {
@@ -198,11 +222,10 @@ define([
 
             */
 
+    ///////////////////////////////////////////////////
+    //// Reaction to cometD notifications
 
-            ///////////////////////////////////////////////////
-            //// Reaction to cometD notifications
-
-            /*
+    /*
                 setupNotifications:
 
                 In this method, you associate each of your game notifications with your local method to handle it.
@@ -211,25 +234,25 @@ define([
                       your montmartre.game.php file.
 
             */
-            setupNotifications: function () {
-                console.log('notifications subscriptions setup');
+    setupNotifications: function () {
+      console.log("notifications subscriptions setup");
 
-                // TODO: here, associate your game notifications with local methods
+      // TODO: here, associate your game notifications with local methods
 
-                // Example 1: standard notification handling
-                // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
+      // Example 1: standard notification handling
+      // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
 
-                // Example 2: standard notification handling + tell the user interface to wait
-                //            during 3 seconds after calling the method in order to let the players
-                //            see what is happening in the game.
-                // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-                // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
-                //
-            },
+      // Example 2: standard notification handling + tell the user interface to wait
+      //            during 3 seconds after calling the method in order to let the players
+      //            see what is happening in the game.
+      // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
+      // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
+      //
+    },
 
-            // TODO: from this point and below, you can write your game notifications handling methods
+    // TODO: from this point and below, you can write your game notifications handling methods
 
-            /*
+    /*
             Example:
 
             notif_cardPlayed: function( notif )
@@ -243,5 +266,5 @@ define([
             },
 
             */
-        });
-    });
+  });
+});

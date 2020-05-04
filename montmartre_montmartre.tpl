@@ -25,20 +25,18 @@
     Please REMOVE this comment before publishing your game on BGA
 -->
 
-
-This is your game interface. You can edit this HTML in your ".tpl" file.
-
+<div id="board">
+  <div id="collectors"></div>
+</div>
 
 <script type="text/javascript">
+  // Javascript HTML templates
 
-// Javascript HTML templates
-
-/*
+  /*
 // Example:
 var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_ID}"></div>';
 
 */
-
 </script>
 
 {OVERALL_GAME_FOOTER}

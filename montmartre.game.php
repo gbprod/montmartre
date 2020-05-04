@@ -11,6 +11,8 @@
 
 include(__DIR__ . '/vendor/autoload.php');
 
+use GBProd\Montmartre\Application\GetPlayerSituationHandler;
+use GBProd\Montmartre\Application\GetPlayerSituationQuery;
 use GBProd\Montmartre\Application\StartNewGameHandler;
 
 require_once(APP_GAMEMODULE_PATH . 'module/table/table.game.php');
@@ -44,29 +46,16 @@ class Montmartre extends Table
         $this->activeNextPlayer();
     }
 
-    /*
-        getAllDatas:
-
-        Gather all informations about current game situation (visible by the current player).
-
-        The method is called each time the game interface is displayed to a player, ie:
-        _ when the game starts
-        _ when a player refreshes the game page (F5)
-    */
+    /**
+     * getAllDatas:
+     *   Gather all informations about current game situation (visible by the current player).
+     *   The method is called each time the game interface is displayed to a player, ie:
+     *   _ when the game starts
+     *   _ when a player refreshes the game page (F5)
+     */
     protected function getAllDatas()
     {
-        $result = array();
-
-        $current_player_id = self::getCurrentPlayerId();    // !! We must only return informations visible by this player !!
-
-        // Get information about players
-        // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
-        $sql = "SELECT player_id id, player_score score FROM player ";
-        $result['players'] = self::getCollectionFromDb($sql);
-
-        // TODO: Gather all information about current game situation (visible by player $current_player_id).
-
-        return $result;
+        return ($this->container->get(GetPlayerSituationHandler::class))(GetPlayerSituationQuery::byId(self::getCurrentPlayerId()));
     }
 
     /*

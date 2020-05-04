@@ -31,6 +31,16 @@ final class Collectors
         );
     }
 
+    public static function paying(int $bluePay, int $yellowPay, int $greenPay, int $pinkPay)
+    {
+        return new self(
+            Collector::paying($bluePay),
+            Collector::paying($yellowPay),
+            Collector::paying($greenPay),
+            Collector::paying($pinkPay)
+        );
+    }
+
     public function blue()
     {
         return $this->blue;

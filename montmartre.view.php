@@ -1,4 +1,5 @@
 <?php
+
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
@@ -24,20 +25,27 @@
  *
  */
 
-require_once(APP_BASE_PATH.'view/common/game.view.php');
+use GBProd\Montmartre\Infrastructure\BoardRepository;
+
+require_once(APP_BASE_PATH . 'view/common/game.view.php');
 
 class view_montmartre_montmartre extends game_view
 {
-    function getGameName()
+    public function getGameName()
     {
         return 'montmartre';
     }
 
-    function build_page($viewArgs)
+    public function build_page($viewArgs)
     {
+        $container = require(__DIR__ . '/config/container.php');
+        $container->set('table', $this->game);
+
+        $board = $container->get(BoardRepository::class)->get();
+
         // Get players & players number
-        $players = $this->game->loadPlayersBasicInfos();
-        $players_nbr = count($players);
+        // $players = $this->game->loadPlayersBasicInfos();
+        // $players_nbr = count($players);
 
         /*********** Place your code below:  ************/
 
@@ -79,5 +87,3 @@ class view_montmartre_montmartre extends game_view
         /*********** Do not change anything below this line  ************/
     }
 }
-
-

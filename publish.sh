@@ -24,6 +24,7 @@ else
 SSHPASS="${SFTP_PASS}" sshpass -e sftp -oBatchMode=no -b - ${SFTP_USER}@${SFTP_HOST} << !
   cd montmartre
   put -r ./config
+  put -r ./img
   put -r ./src
   put -r ./vendor
   put dbmodel.sql
