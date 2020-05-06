@@ -26,6 +26,7 @@
 -->
 
 <div id="board">
+  <div id="gazettes"></div>
   <div id="collectors"></div>
 </div>
 

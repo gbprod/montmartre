@@ -7,7 +7,7 @@ final class GetPlayerSituationQuery
     /** @var int */
     public $playerId;
 
-    public static function byId(int $id)
+    public static function byId(int $id): self
     {
         $self = new self();
         $self->playerId = $id;

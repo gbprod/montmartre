@@ -20,6 +20,8 @@ define([
       console.log("montmartre constructor");
       this.collectorCardWidth = 135;
       this.collectorCardHeight = 250;
+      this.gazetteCardWidth = 200;
+      this.gazetteCardHeight = 109;
     },
 
     /**
@@ -36,6 +38,7 @@ define([
       console.log(gamedatas);
 
       this.setupCollectors(gamedatas);
+      this.setupGazettes(gamedatas);
 
       this.setupNotifications();
 
@@ -52,6 +55,8 @@ define([
       );
 
       this.collectors.image_items_per_row = 5;
+      this.collectors.centerItems = true;
+      this.collectors.setSelectionMode(0);
 
       for (const color of ["green", "yellow", "blue", "pink"]) {
         for (const value of [2, 4, 6, 8, 10]) {
@@ -89,6 +94,37 @@ define([
         case "pink":
           return 15 + value / 2 - 1;
       }
+    },
+
+    setupGazettes: function (gamedatas) {
+      this.gazettes = new ebg.stock();
+      this.gazettes.create(
+        this,
+        $("gazettes"),
+        this.gazetteCardWidth,
+        this.gazetteCardHeight
+      );
+
+      this.gazettes.image_items_per_row = 2;
+      this.gazettes.centerItems = true;
+      this.gazettes.setSelectionMode(0);
+
+      for (let index = 0; index < gamedatas.gazettes.length; index++) {
+        const gazette = gamedatas.gazettes[index];
+        const cardId = this.gazetteCardId(gazette.nbDiff, gazette.value);
+        this.gazettes.addItemType(
+          cardId,
+          gazette.value,
+          g_gamethemeurl + "img/gazettes.png",
+          cardId
+        );
+
+        this.gazettes.addToStock(cardId);
+      }
+    },
+
+    gazetteCardId: function (nbDiff, value) {
+      return (nbDiff - 2) * 2 + (value > 5 ? 1 : 0);
     },
 
     ///////////////////////////////////////////////////
