@@ -11,7 +11,7 @@ final class Gazettes implements \IteratorAggregate
         $this->gazettes = $gazettes;
     }
 
-    public static function initialize(): Gazettes
+    public static function distribute(): self
     {
         return new self(
             Gazette::forPublishing(2, 4),
@@ -22,7 +22,7 @@ final class Gazettes implements \IteratorAggregate
         );
     }
 
-    public static function fromRemaining(Gazette ...$gazettes): Gazettes
+    public static function fromRemaining(Gazette ...$gazettes): self
     {
         return new self(...$gazettes);
     }

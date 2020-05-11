@@ -6,19 +6,21 @@ final class Board
 {
     private $collectors;
     private $gazettes;
+    private $decks;
 
-    private function __construct(Collectors $collectors, Gazettes $gazettes)
+    private function __construct(Collectors $collectors, Gazettes $gazettes, Decks $decks)
     {
         $this->collectors = $collectors;
         $this->gazettes = $gazettes;
+        $this->decks = $decks;
     }
 
-    public static function initialize(): self
+    public static function setup(): self
     {
         return new self(
-            Collectors::initialize(),
-            Gazettes::initialize()
-            // Muses,
+            Collectors::distribute(),
+            Gazettes::distribute(),
+            Decks::distribute()
             // Ambroise,
             // Pieces
         );
@@ -40,7 +42,16 @@ final class Board
                         $gazetteState['value']
                     );
                 }, $state['gazettes'])
-            )
+            ),
+            Decks::fromRemaining(...array_map(function ($number) use ($state): Deck {
+                return Deck::fromRemaining(
+                    ...array_map(function ($museState): Muse {
+                        $color = $museState['muse_color'];
+
+                        return Muse::painted(Color::$color(), (int) $museState['muse_value']);
+                    }, $state['decks'][$number])
+                );
+            }, [1, 2, 3]))
         );
     }
 
@@ -52,5 +63,10 @@ final class Board
     public function gazettes(): Gazettes
     {
         return $this->gazettes;
+    }
+
+    public function decks(): Decks
+    {
+        return $this->decks;
     }
 }

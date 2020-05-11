@@ -35,6 +35,23 @@ final class GetPlayerSituationHandler
                 },
                 iterator_to_array($board->gazettes())
             ),
+            'decks' => [
+                1 => [
+                    'color' => $board->decks()->firstDeck()->next()->color()->value(),
+                    'value' => $board->decks()->firstDeck()->next()->value(),
+                    'count' => $board->decks()->firstDeck()->count(),
+                ],
+                2 => [
+                    'color' => $board->decks()->secondDeck()->next()->color()->value(),
+                    'value' => $board->decks()->secondDeck()->next()->value(),
+                    'count' => $board->decks()->secondDeck()->count(),
+                ],
+                3 => [
+                    'color' => $board->decks()->thirdDeck()->next()->color()->value(),
+                    'value' => $board->decks()->thirdDeck()->next()->value(),
+                    'count' => $board->decks()->secondDeck()->count(),
+                ],
+            ]
         ];
     }
 }

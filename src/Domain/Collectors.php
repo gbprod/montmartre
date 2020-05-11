@@ -21,7 +21,7 @@ final class Collectors
         $this->pink = $pink;
     }
 
-    public static function initialize()
+    public static function distribute(): Collectors
     {
         return new self(
             Collector::paying(2),
@@ -31,7 +31,7 @@ final class Collectors
         );
     }
 
-    public static function paying(int $bluePay, int $yellowPay, int $greenPay, int $pinkPay)
+    public static function paying(int $bluePay, int $yellowPay, int $greenPay, int $pinkPay): Collectors
     {
         return new self(
             Collector::paying($bluePay),
@@ -41,22 +41,22 @@ final class Collectors
         );
     }
 
-    public function blue()
+    public function blue(): Collector
     {
         return $this->blue;
     }
 
-    public function yellow()
+    public function yellow(): Collector
     {
         return $this->yellow;
     }
 
-    public function green()
+    public function green(): Collector
     {
         return $this->green;
     }
 
-    public function pink()
+    public function pink(): Collector
     {
         return $this->pink;
     }

@@ -11,12 +11,12 @@ final class Collector
         $this->value = $value;
     }
 
-    public static function paying(int $value)
+    public static function paying(int $value): self
     {
         return new self($value);
     }
 
-    public function willPay()
+    public function willPay(): int
     {
         return $this->value;
     }

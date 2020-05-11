@@ -114,7 +114,7 @@ define([
         const cardId = this.gazetteCardId(gazette.nbDiff, gazette.value);
         this.gazettes.addItemType(
           cardId,
-          gazette.value,
+          gazette.nbDiff * 10 + gazette.value,
           g_gamethemeurl + "img/gazettes.png",
           cardId
         );

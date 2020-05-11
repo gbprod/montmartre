@@ -16,7 +16,7 @@ final class StartNewGameHandler
 
     public function __invoke(): void
     {
-        $board = Board::initialize();
+        $board = Board::setup();
 
         $this->repository->save($board);
     }

@@ -18,12 +18,12 @@ final class Gazette
         return new self($nbDiff, $value);
     }
 
-    public function nbDiff()
+    public function nbDiff(): int
     {
         return $this->nbDiff;
     }
 
-    public function value()
+    public function value(): int
     {
         return $this->value;
     }
