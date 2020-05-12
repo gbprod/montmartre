@@ -26,18 +26,27 @@
 -->
 
 <div id="board">
-  <div id="gazettes"></div>
-  <div id="collectors"></div>
+  <div id="gazettes">
+    <div id="gazettes2"></div>
+    <div id="gazettes3"></div>
+    <div id="gazettes4"></div>
+  </div>
+  <div id="collectors">
+    <div class="collector" id="collectors-green"></div>
+    <div class="collector" id="collectors-yellow"></div>
+    <div class="collector" id="collectors-blue"></div>
+    <div class="collector" id="collectors-pink"></div>
+  </div>
+  </div>
+  <div class="decks">
+    <div id="deck1"></div>
+    <div id="deck2"></div>
+    <div id="deck3"></div>
+  </div>
 </div>
 
 <script type="text/javascript">
-  // Javascript HTML templates
-
-  /*
-// Example:
-var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_ID}"></div>';
-
-*/
+var collectorTemplate ='<div class="collector" id="collectors-${color}"></div>';
 </script>
 
 {OVERALL_GAME_FOOTER}

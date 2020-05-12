@@ -1,2 +1,14 @@
-.board__collectors {
+.stockitem {
+    border: 1px solid gray;
+    border-radius: 10px;
+}
+
+#collectors {
+    text-align: center;
+}
+
+.collector {
+    width: 160px;
+    height: 250px;
+    display: inline-block;
 }

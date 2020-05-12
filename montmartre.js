@@ -22,6 +22,8 @@ define([
       this.collectorCardHeight = 250;
       this.gazetteCardWidth = 200;
       this.gazetteCardHeight = 109;
+      this.deckCardWidth = 135;
+      this.deckCardHeight = 250;
     },
 
     /**
@@ -39,6 +41,7 @@ define([
 
       this.setupCollectors(gamedatas);
       this.setupGazettes(gamedatas);
+      this.setupDecks(gamedatas);
 
       this.setupNotifications();
 
@@ -46,41 +49,49 @@ define([
     },
 
     setupCollectors: function (gamedatas) {
-      this.collectors = new ebg.stock();
-      this.collectors.create(
-        this,
-        $("collectors"),
-        this.collectorCardWidth,
-        this.collectorCardHeight
-      );
+      this.collectors = {
+        green: new ebg.stock(),
+        yellow: new ebg.stock(),
+        blue: new ebg.stock(),
+        pink: new ebg.stock(),
+      };
 
-      this.collectors.image_items_per_row = 5;
-      this.collectors.centerItems = true;
-      this.collectors.setSelectionMode(0);
+      for (const color of ["green", "yellow", "blue", "pink"]) {
+        dojo.place(
+          this.format_block("collectorTemplate", {
+            color: color,
+          }),
+          "collectors"
+        );
+
+        this.collectors[color].create(
+          this,
+          $("collectors-" + color),
+          this.collectorCardWidth,
+          this.collectorCardHeight
+        );
+
+        this.collectors[color].image_items_per_row = 5;
+        this.collectors[color].centerItems = true;
+        this.collectors[color].setSelectionMode(0);
+        this.collectors[color].setOverlap(0.1, 0);
+      }
 
       for (const color of ["green", "yellow", "blue", "pink"]) {
         for (const value of [2, 4, 6, 8, 10]) {
-          this.collectors.addItemType(
-            this.collectorCardId(color, value),
-            value,
-            g_gamethemeurl + "img/collectors.png",
-            this.collectorCardId(color, value)
-          );
+          if (gamedatas.collectors[color] <= value) {
+            const cardId = this.collectorCardId(color, value);
+            this.collectors[color].addItemType(
+              cardId,
+              value,
+              g_gamethemeurl + "img/collectors.png",
+              cardId
+            );
+
+            this.collectors[color].addToStock(cardId);
+          }
         }
       }
-
-      this.collectors.addToStock(
-        this.collectorCardId("blue", gamedatas.collectors.blue)
-      );
-      this.collectors.addToStock(
-        this.collectorCardId("green", gamedatas.collectors.green)
-      );
-      this.collectors.addToStock(
-        this.collectorCardId("yellow", gamedatas.collectors.yellow)
-      );
-      this.collectors.addToStock(
-        this.collectorCardId("pink", gamedatas.collectors.pink)
-      );
     },
 
     collectorCardId: function (color, value) {
@@ -125,6 +136,16 @@ define([
 
     gazetteCardId: function (nbDiff, value) {
       return (nbDiff - 2) * 2 + (value > 5 ? 1 : 0);
+    },
+
+    setupDecks: function (gamedatas) {
+      // this.firstDeck = new ebg.stock();
+      // this.firstDeck.create(
+      //   this,
+      //   $("deck1"),
+      //   this.deckCardWidth,
+      //   this.deckCardHeight
+      // );
     },
 
     ///////////////////////////////////////////////////
