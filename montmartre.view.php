@@ -38,9 +38,7 @@ class view_montmartre_montmartre extends game_view
 
     public function build_page($viewArgs)
     {
-        $container = require(__DIR__ . '/config/container.php');
-        $container->set('table', $this->game);
-
+        $container = $this->game->getContainer();
         $board = $container->get(BoardRepository::class)->get();
 
         // Get players & players number

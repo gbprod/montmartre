@@ -1,14 +1,40 @@
 .stockitem {
-    border: 1px solid gray;
-    border-radius: 10px;
+  border: 1px solid gray;
+  border-radius: 10px;
 }
 
-#collectors {
-    text-align: center;
+.table {
+  text-align: center;
+}
+
+.collectors {
+  text-align: center;
+  display: inline-block;
+  padding: 0 10px;
 }
 
 .collector {
-    width: 160px;
-    height: 250px;
-    display: inline-block;
+  display: inline-block;
+  width: 132px;
+}
+
+.gazettes {
+  text-align: center;
+  display: inline-block;
+  vertical-align: top;
+  padding: 0 10px;
+}
+
+.gazette {
+  display: inline-block;
+  width: 205px;
+}
+
+.decks {
+  text-align: center;
+}
+
+.deck {
+  display: inline-block;
+  width: 134px;
 }

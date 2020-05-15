@@ -3,6 +3,7 @@
 namespace GBProd\Montmartre\Application;
 
 use GBProd\Montmartre\Domain\Gazette;
+use GBProd\Montmartre\Domain\Player;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 
 final class GetPlayerSituationHandler
@@ -51,7 +52,21 @@ final class GetPlayerSituationHandler
                     'value' => $board->decks()->thirdDeck()->next()->value(),
                     'count' => $board->decks()->secondDeck()->count(),
                 ],
-            ]
+            ],
+            'current_player' => [
+                'name' => $board->players()->current()->name(),
+            ],
+            'others_players' => array_map(
+                function (Player $player) {
+                    return [
+                        'name' => $player->name(),
+                    ];
+                },
+                array_merge(
+                    [$board->players()->active()],
+                    $board->players()->others()
+                )
+            ),
         ];
     }
 }

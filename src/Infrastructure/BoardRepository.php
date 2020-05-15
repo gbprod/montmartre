@@ -37,6 +37,10 @@ SQL;
         WHERE board_id = %s ;
 SQL;
 
+    const SELECT_PLAYERS_QUERY = <<<SQL
+        SELECT player_id, player_name FROM player;
+SQL;
+
     const SELECT_DECKS_QUERY = <<<SQL
         SELECT * FROM deck_cards
         WHERE board_id = %s AND deck_number = %s
@@ -108,6 +112,12 @@ SQL;
 
             $state['decks'][$deckNumber] = mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
+
+        $result = ($this->table)::dbQuery(self::SELECT_PLAYERS_QUERY);
+
+        $state['players'] = $this->table->loadPlayersBasicInfos();
+        $state['current_player'] = $this->table->currentPlayerId();
+        $state['active_player'] = $this->table->activePlayerId();
 
         return Board::fromState($state);
     }

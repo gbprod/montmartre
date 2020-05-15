@@ -14,6 +14,7 @@ include(__DIR__ . '/vendor/autoload.php');
 use GBProd\Montmartre\Application\GetPlayerSituationHandler;
 use GBProd\Montmartre\Application\GetPlayerSituationQuery;
 use GBProd\Montmartre\Application\StartNewGameHandler;
+use Psr\Container\ContainerInterface;
 
 require_once(APP_GAMEMODULE_PATH . 'module/table/table.game.php');
 
@@ -25,10 +26,25 @@ class Montmartre extends Table
     {
         parent::__construct();
 
+        self::initGameStateLabels([]);
+    }
+
+    public function getContainer(): ContainerInterface
+    {
         $this->container = require(__DIR__ . '/config/container.php');
         $this->container->set('table', $this);
 
-        self::initGameStateLabels([]);
+        return $this->container;
+    }
+
+    public function currentPlayerId(): int
+    {
+        return (int) $this->getCurrentPlayerId();
+    }
+
+    public function activePlayerId(): int
+    {
+        return (int) $this->getActivePlayerId();
     }
 
     protected function getGameName()
@@ -40,7 +56,7 @@ class Montmartre extends Table
     {
         $this->setupPlayers($players);
 
-        $handler = $this->container->get(StartNewGameHandler::class);
+        $handler = $this->getContainer()->get(StartNewGameHandler::class);
         $handler();
 
         $this->activeNextPlayer();

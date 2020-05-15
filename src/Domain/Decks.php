@@ -17,12 +17,17 @@ final class Decks
 
     public static function distribute(): self
     {
-        $allMuses = [];
-        foreach (['blue', 'green', 'pink', 'yellow'] as $color) {
-            foreach ([0, 1, 2, 3, 4, 5, 6, 7, 8, 0, 1, 2, 3, 4, 5, 6, 7, 8] as $value) {
-                $allMuses[] = Muse::painted(Color::$color(), $value);
-            }
-        }
+        $allMuses = array_map(
+            static function (string $color) {
+                return array_map(
+                    static function ($value) use ($color) {
+                        return Muse::painted(Color::$color(), $value);
+                    },
+                    [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 7, 8]
+                );
+            },
+            ['blue', 'green', 'pink', 'yellow']
+        );
 
         shuffle($allMuses);
 

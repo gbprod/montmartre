@@ -8,11 +8,16 @@ final class Board
     private $gazettes;
     private $decks;
 
-    private function __construct(Collectors $collectors, Gazettes $gazettes, Decks $decks)
-    {
+    private function __construct(
+        Collectors $collectors,
+        Gazettes $gazettes,
+        Decks $decks,
+        Players $players
+    ) {
         $this->collectors = $collectors;
         $this->gazettes = $gazettes;
         $this->decks = $decks;
+        $this->players = $players;
     }
 
     public static function setup(): self
@@ -20,7 +25,8 @@ final class Board
         return new self(
             Collectors::distribute(),
             Gazettes::distribute(),
-            Decks::distribute()
+            Decks::distribute(),
+            Players::empty()
             // Ambroise,
             // Pieces
         );
@@ -43,15 +49,34 @@ final class Board
                     );
                 }, $state['gazettes'])
             ),
-            Decks::fromRemaining(...array_map(function ($number) use ($state): Deck {
-                return Deck::fromRemaining(
-                    ...array_map(function ($museState): Muse {
-                        $color = $museState['muse_color'];
+            Decks::fromRemaining(
+                ...array_map(function ($number) use ($state): Deck {
+                    return Deck::fromRemaining(
+                        ...array_map(function ($museState): Muse {
+                            $color = $museState['muse_color'];
 
-                        return Muse::painted(Color::$color(), (int) $museState['muse_value']);
-                    }, $state['decks'][$number])
-                );
-            }, [1, 2, 3]))
+                            return Muse::painted(Color::$color(), (int) $museState['muse_value']);
+                        }, $state['decks'][$number])
+                    );
+                }, [1, 2, 3])
+            ),
+            Players::from(
+                ...array_reduce(
+                    $state['players'],
+                    function ($carry, $item) use ($state) {
+                        if ($item['player_id'] == $state['current_player']) {
+                            $carry[0] = Player::named($item['player_id'], $item['player_name']);
+                        } elseif ($item['player_id'] == $state['active_player']) {
+                            $carry[1] = Player::named($item['player_id'], $item['player_name']);
+                        } else {
+                            $carry[2][] = Player::named($item['player_id'], $item['player_name']);
+                        }
+
+                        return $carry;
+                    },
+                    [null, null, []]
+                )
+            )
         );
     }
 
@@ -68,5 +93,10 @@ final class Board
     public function decks(): Decks
     {
         return $this->decks;
+    }
+
+    public function players(): Players
+    {
+        return $this->players;
     }
 }

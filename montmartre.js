@@ -18,12 +18,12 @@ define([
   return declare("bgagame.montmartre", ebg.core.gamegui, {
     constructor: function () {
       console.log("montmartre constructor");
-      this.collectorCardWidth = 135;
-      this.collectorCardHeight = 250;
+      this.collectorCardWidth = 120;
+      this.collectorCardHeight = 221;
       this.gazetteCardWidth = 200;
       this.gazetteCardHeight = 109;
-      this.deckCardWidth = 135;
-      this.deckCardHeight = 250;
+      this.deckCardWidth = 120;
+      this.deckCardHeight = 220;
     },
 
     /**
@@ -57,13 +57,6 @@ define([
       };
 
       for (const color of ["green", "yellow", "blue", "pink"]) {
-        dojo.place(
-          this.format_block("collectorTemplate", {
-            color: color,
-          }),
-          "collectors"
-        );
-
         this.collectors[color].create(
           this,
           $("collectors-" + color),
@@ -72,9 +65,9 @@ define([
         );
 
         this.collectors[color].image_items_per_row = 5;
-        this.collectors[color].centerItems = true;
+        this.collectors[color].item_margin = 0;
         this.collectors[color].setSelectionMode(0);
-        this.collectors[color].setOverlap(0.1, 0);
+        this.collectors[color].setOverlap(1.5, 0);
       }
 
       for (const color of ["green", "yellow", "blue", "pink"]) {
@@ -83,7 +76,7 @@ define([
             const cardId = this.collectorCardId(color, value);
             this.collectors[color].addItemType(
               cardId,
-              value,
+              10 - value,
               g_gamethemeurl + "img/collectors.png",
               cardId
             );
@@ -108,29 +101,35 @@ define([
     },
 
     setupGazettes: function (gamedatas) {
-      this.gazettes = new ebg.stock();
-      this.gazettes.create(
-        this,
-        $("gazettes"),
-        this.gazetteCardWidth,
-        this.gazetteCardHeight
-      );
+      this.gazettes = {};
 
-      this.gazettes.image_items_per_row = 2;
-      this.gazettes.centerItems = true;
-      this.gazettes.setSelectionMode(0);
+      for (let index = 2; index < [2, 3, 4].length + 2; index++) {
+        this.gazettes[index] = new ebg.stock();
+        this.gazettes[index].create(
+          this,
+          $("gazette-" + index),
+          this.gazetteCardWidth,
+          this.gazetteCardHeight
+        );
+
+        this.gazettes[index].image_items_per_row = 2;
+        this.gazettes[index].item_margin = 0;
+
+        this.gazettes[index].setSelectionMode(0);
+        this.gazettes[index].setOverlap(0.1, 30);
+      }
 
       for (let index = 0; index < gamedatas.gazettes.length; index++) {
         const gazette = gamedatas.gazettes[index];
         const cardId = this.gazetteCardId(gazette.nbDiff, gazette.value);
-        this.gazettes.addItemType(
+        this.gazettes[gazette.nbDiff].addItemType(
           cardId,
-          gazette.nbDiff * 10 + gazette.value,
+          -gazette.value,
           g_gamethemeurl + "img/gazettes.png",
           cardId
         );
 
-        this.gazettes.addToStock(cardId);
+        this.gazettes[gazette.nbDiff].addToStock(cardId);
       }
     },
 
@@ -139,13 +138,70 @@ define([
     },
 
     setupDecks: function (gamedatas) {
-      // this.firstDeck = new ebg.stock();
-      // this.firstDeck.create(
-      //   this,
-      //   $("deck1"),
-      //   this.deckCardWidth,
-      //   this.deckCardHeight
-      // );
+      this.decks = {};
+
+      for (let index = 1; index < [1, 2, 3].length + 1; index++) {
+        this.decks[index] = new ebg.stock();
+        this.decks[index].create(
+          this,
+          $("deck-" + index),
+          this.deckCardWidth,
+          this.deckCardHeight
+        );
+
+        this.decks[index].image_items_per_row = 9;
+        this.decks[index].item_margin = 0;
+        this.decks[index].setOverlap(1.5, 0);
+
+        for (const color of ["green", "blue", "pink", "yellow"]) {
+          for (const value of [0, 1, 2, 3, 4, 5, 6, 7, 8]) {
+            var cardId = this.museCardId(color, value);
+
+            this.decks[index].addItemType(
+              cardId,
+              1,
+              g_gamethemeurl + "img/muses.png",
+              cardId
+            );
+          }
+
+          this.decks[index].addItemType(
+            "back",
+            0,
+            g_gamethemeurl + "img/back.png",
+            0
+          );
+        }
+
+        var cardId = this.museCardId(
+          gamedatas.decks[index].color,
+          gamedatas.decks[index].value
+        );
+        console.log(cardId);
+
+        this.decks[index].addToStock(cardId);
+
+        for (
+          let countBacks = 1;
+          countBacks < Math.min(gamedatas.decks[index].count, 6);
+          countBacks++
+        ) {
+          this.decks[index].addToStock("back");
+        }
+      }
+    },
+
+    museCardId: function (color, value) {
+      switch (color) {
+        case "green":
+          return value;
+        case "blue":
+          return 9 + value;
+        case "pink":
+          return 2 * 9 + value;
+        case "yellow":
+          return 3 * 9 + value;
+      }
     },
 
     ///////////////////////////////////////////////////

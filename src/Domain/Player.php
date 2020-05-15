@@ -13,12 +13,9 @@ final class Player
         $this->name = $name;
     }
 
-    public static function fromState(array $state): self
+    public static function named(int $id, string $name): self
     {
-        return new self(
-            $state['id'],
-            $state['name']
-        );
+        return new self($id, $name);
     }
 
     public function id(): int
