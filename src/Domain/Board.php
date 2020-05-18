@@ -30,7 +30,8 @@ final class Board
                     return Player::named(
                         $playerId,
                         $playerState['player_name'],
-                        Hand::containing(...$initialDeck->draw(5))
+                        Hand::containing(...$initialDeck->draw(5)),
+                        Paintings::empty()
                     );
                 },
                 $players,
@@ -81,63 +82,51 @@ final class Board
                     $state['players'],
                     function ($carry, $item) use ($state) {
                         if ($item['player_id'] == $state['current_player']) {
-                            $carry[0] = Player::named(
-                                $item['player_id'],
-                                $item['player_name'],
-                                Hand::containing(
-                                    ...array_map(
-                                        function ($handCard) {
-                                            $color = $handCard['muse_color'];
-                                            return Muse::painted(Color::$color(), (int) $handCard['muse_value']);
-                                        },
-                                        array_filter($state['hands'], function ($handCard) use ($item) {
-                                            return $handCard['player_id'] == $item['player_id'];
-                                        })
-                                    )
-                                )
-                            );
+                            $carry[0] = self::createPlayerFromState($item, $state['hands'], $state['paintings']);
                         }
 
                         if ($item['player_id'] == $state['current_player']) {
-                            $carry[1] = Player::named(
-                                $item['player_id'],
-                                $item['player_name'],
-                                Hand::containing(
-                                    ...array_map(
-                                        function ($handCard) {
-                                            $color = $handCard['muse_color'];
-                                            return Muse::painted(Color::$color(), (int) $handCard['muse_value']);
-                                        },
-                                        array_filter($state['hands'], function ($handCard) use ($item) {
-                                            return $handCard['player_id'] == $item['player_id'];
-                                        })
-                                    )
-                                )
-                            );
+                            $carry[1] = self::createPlayerFromState($item, $state['hands'], $state['paintings']);
                         }
 
                         if ($item['player_id'] != $state['current_player'] && $item['player_id'] != $state['current_player']) {
-                            $carry[2][] = Player::named(
-                                $item['player_id'],
-                                $item['player_name'],
-                                Hand::containing(
-                                    ...array_map(
-                                        function ($handCard) {
-                                            $color = $handCard['muse_color'];
-                                            return Muse::painted(Color::$color(), (int) $handCard['muse_value']);
-                                        },
-                                        array_filter($state['hands'], function ($handCard) use ($item) {
-                                            return $handCard['player_id'] == $item['player_id'];
-                                        })
-                                    )
-                                )
-                            );
+                            $carry[2][] = self::createPlayerFromState($item, $state['hands'], $state['paintings']);
                         }
-
 
                         return $carry;
                     },
                     [null, null, []]
+                )
+            )
+        );
+    }
+
+    private static function createPlayerFromState(array $state, array $hands, array $paintings)
+    {
+        return Player::named(
+            $state['player_id'],
+            $state['player_name'],
+            Hand::containing(
+                ...array_map(
+                    function ($card) {
+                        $color = $card['muse_color'];
+                        return Muse::painted(Color::$color(), (int) $card['muse_value']);
+                    },
+                    array_filter($hands, function ($card) use ($state) {
+                        return $card['player_id'] == $state['player_id'];
+                    })
+                )
+            ),
+            Paintings::fromMuses(
+                ...array_map(
+                    function ($card) {
+                        $color = $card['muse_color'];
+
+                        return Muse::painted(Color::$color(), (int) $card['muse_value']);
+                    },
+                    array_filter($paintings, function ($card) use ($state) {
+                        return $card['player_id'] == $state['player_id'];
+                    })
                 )
             )
         );

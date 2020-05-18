@@ -31,6 +31,10 @@ class Montmartre extends Table
 
     public function getContainer(): ContainerInterface
     {
+        if (null !== $this->container) {
+            return $this->container;
+        }
+
         $this->container = require(__DIR__ . '/config/container.php');
         $this->container->set('table', $this);
 
@@ -76,7 +80,7 @@ class Montmartre extends Table
      */
     protected function getAllDatas()
     {
-        return ($this->container->get(GetPlayerSituationHandler::class))(GetPlayerSituationQuery::byId(self::getCurrentPlayerId()));
+        return ($this->getContainer()->get(GetPlayerSituationHandler::class))(GetPlayerSituationQuery::byId(self::getCurrentPlayerId()));
     }
 
     /*

@@ -41,6 +41,10 @@ SQL;
         SELECT id, player_id, muse_value, muse_color FROM hands;
 SQL;
 
+    const SELECT_PLAYERS_PAINTINGS_QUERY = <<<SQL
+        SELECT id, player_id, muse_value, muse_color FROM paintings;
+SQL;
+
     const INSERT_PLAYERS_HANDS_QUERY = <<<SQL
         INSERT INTO hands (board_id, player_id, muse_value, muse_color)
         VALUES (%s, %s, %s, "%s");
@@ -135,6 +139,7 @@ SQL;
         $state['active_player'] = $this->table->activePlayerId();
 
         $state['hands'] = $this->table->collectionFromDB(self::SELECT_PLAYERS_HANDS_QUERY);
+        $state['paintings'] = $this->table->collectionFromDB(self::SELECT_PLAYERS_PAINTINGS_QUERY);
 
         return Board::fromState($state);
     }

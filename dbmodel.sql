@@ -29,3 +29,11 @@ CREATE TABLE IF NOT EXISTS `hands` (
   `muse_value` int(2) unsigned NOT NULL,
   `muse_color` VARCHAR(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `paintings` (
+  `id` int(2) PRIMARY KEY AUTO_INCREMENT,
+  `board_id` int(2) unsigned NOT NULL,
+  `player_id` int(2) unsigned NOT NULL,
+  `muse_value` int(2) unsigned NOT NULL,
+  `muse_color` VARCHAR(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
