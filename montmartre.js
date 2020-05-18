@@ -142,37 +142,9 @@ define([
       this.decks = {};
 
       for (let index = 1; index < [1, 2, 3].length + 1; index++) {
-        this.decks[index] = new ebg.stock();
-        this.decks[index].create(
-          this,
-          $("deck-" + index),
-          this.deckCardWidth,
-          this.deckCardHeight
-        );
-
-        this.decks[index].image_items_per_row = 9;
+        this.decks[index] = this.createMusesStock("deck-" + index);
         this.decks[index].item_margin = 0;
         this.decks[index].setOverlap(1.5, 0);
-
-        for (const color of ["green", "blue", "pink", "yellow"]) {
-          for (const value of [0, 1, 2, 3, 4, 5, 6, 7, 8]) {
-            var cardId = this.museCardId(color, value);
-
-            this.decks[index].addItemType(
-              cardId,
-              1,
-              g_gamethemeurl + "img/muses.png",
-              cardId
-            );
-          }
-
-          this.decks[index].addItemType(
-            "back",
-            0,
-            g_gamethemeurl + "img/back.png",
-            0
-          );
-        }
 
         var cardId = this.museCardId(
           gamedatas.decks[index].color,
@@ -205,28 +177,7 @@ define([
     },
 
     setupPlayerHand: function (gamedatas) {
-      this.playerHand = new ebg.stock();
-      this.playerHand.create(
-        this,
-        $("player-hand"),
-        this.deckCardWidth,
-        this.deckCardHeight
-      );
-
-      this.playerHand.image_items_per_row = 9;
-
-      for (const color of ["green", "blue", "pink", "yellow"]) {
-        for (const value of [0, 1, 2, 3, 4, 5, 6, 7, 8]) {
-          var cardId = this.museCardId(color, value);
-
-          this.playerHand.addItemType(
-            cardId,
-            1,
-            g_gamethemeurl + "img/muses.png",
-            cardId
-          );
-        }
-      }
+      this.playerHand = this.createMusesStock("player-hand");
 
       for (
         let index = 0;
@@ -242,6 +193,29 @@ define([
       }
     },
 
+    createMusesStock: function (target) {
+      var stock = new ebg.stock();
+      stock.create(this, $(target), this.deckCardWidth, this.deckCardHeight);
+
+      stock.image_items_per_row = 9;
+
+      for (const color of ["green", "blue", "pink", "yellow"]) {
+        for (const value of [0, 1, 2, 3, 4, 5, 6, 7, 8]) {
+          var cardId = this.museCardId(color, value);
+
+          stock.addItemType(
+            cardId,
+            1,
+            g_gamethemeurl + "img/muses.png",
+            cardId
+          );
+        }
+      }
+
+      stock.addItemType("back", 0, g_gamethemeurl + "img/back.png", 0);
+
+      return stock;
+    },
     ///////////////////////////////////////////////////
     //// Game & client states
 

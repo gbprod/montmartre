@@ -30,6 +30,11 @@
     <div class="deck" id="deck-3"></div>
   </div>
   <div class="whiteblock">
+    <h3>{trans_your_paintings}</h3>
+    <div id="player-paintings"></div>
+  </div>
+  </div>
+  <div class="whiteblock">
     <h3>{trans_your_hand}</h3>
     <div id="player-hand"></div>
   </div>
