@@ -37,8 +37,13 @@ SQL;
         WHERE board_id = %s ;
 SQL;
 
-    const SELECT_PLAYERS_QUERY = <<<SQL
-        SELECT player_id, player_name FROM player;
+    const SELECT_PLAYERS_HANDS_QUERY = <<<SQL
+        SELECT id, player_id, muse_value, muse_color FROM hands;
+SQL;
+
+    const INSERT_PLAYERS_HANDS_QUERY = <<<SQL
+        INSERT INTO hands (board_id, player_id, muse_value, muse_color)
+        VALUES (%s, %s, %s, "%s");
 SQL;
 
     const SELECT_DECKS_QUERY = <<<SQL
@@ -78,6 +83,18 @@ SQL;
         $this->storeMuses($newBoardState['id'], 1, $board->decks()->firstDeck()->muses());
         $this->storeMuses($newBoardState['id'], 2, $board->decks()->secondDeck()->muses());
         $this->storeMuses($newBoardState['id'], 3, $board->decks()->thirdDeck()->muses());
+
+        foreach ($board->players()->all() as $player) {
+            foreach ($player->hand()->muses() as $muse) {
+                ($this->table)::dbQuery(sprintf(
+                    self::INSERT_PLAYERS_HANDS_QUERY,
+                    $newBoardState['id'],
+                    $player->id(),
+                    $muse->value(),
+                    $muse->color()->value()
+                ));
+            }
+        }
     }
 
     private function storeMuses(int $boardId, int $deckNumber, array $muses): void
@@ -113,11 +130,11 @@ SQL;
             $state['decks'][$deckNumber] = mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
 
-        $result = ($this->table)::dbQuery(self::SELECT_PLAYERS_QUERY);
-
         $state['players'] = $this->table->loadPlayersBasicInfos();
         $state['current_player'] = $this->table->currentPlayerId();
         $state['active_player'] = $this->table->activePlayerId();
+
+        $state['hands'] = $this->table->collectionFromDB(self::SELECT_PLAYERS_HANDS_QUERY);
 
         return Board::fromState($state);
     }

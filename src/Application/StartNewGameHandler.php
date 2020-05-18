@@ -14,9 +14,9 @@ final class StartNewGameHandler
         $this->repository = $repository;
     }
 
-    public function __invoke(): void
+    public function __invoke(array $players): void
     {
-        $board = Board::setup();
+        $board = Board::setup($players);
 
         $this->repository->save($board);
     }

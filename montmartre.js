@@ -42,6 +42,7 @@ define([
       this.setupCollectors(gamedatas);
       this.setupGazettes(gamedatas);
       this.setupDecks(gamedatas);
+      this.setupPlayerHand(gamedatas);
 
       this.setupNotifications();
 
@@ -177,7 +178,6 @@ define([
           gamedatas.decks[index].color,
           gamedatas.decks[index].value
         );
-        console.log(cardId);
 
         this.decks[index].addToStock(cardId);
 
@@ -201,6 +201,44 @@ define([
           return 2 * 9 + value;
         case "yellow":
           return 3 * 9 + value;
+      }
+    },
+
+    setupPlayerHand: function (gamedatas) {
+      this.playerHand = new ebg.stock();
+      this.playerHand.create(
+        this,
+        $("player-hand"),
+        this.deckCardWidth,
+        this.deckCardHeight
+      );
+
+      this.playerHand.image_items_per_row = 9;
+
+      for (const color of ["green", "blue", "pink", "yellow"]) {
+        for (const value of [0, 1, 2, 3, 4, 5, 6, 7, 8]) {
+          var cardId = this.museCardId(color, value);
+
+          this.playerHand.addItemType(
+            cardId,
+            1,
+            g_gamethemeurl + "img/muses.png",
+            cardId
+          );
+        }
+      }
+
+      for (
+        let index = 0;
+        index < gamedatas.current_player.hand.length;
+        index++
+      ) {
+        var cardId = this.museCardId(
+          gamedatas.current_player.hand[index].color,
+          gamedatas.current_player.hand[index].value
+        );
+
+        this.playerHand.addToStock(cardId);
       }
     },
 

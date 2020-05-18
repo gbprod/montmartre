@@ -29,6 +29,7 @@
     <div class="deck" id="deck-2"></div>
     <div class="deck" id="deck-3"></div>
   </div>
+  <div id="player-hand" class="whiteblock"></div>
 </div>
 
 <script type="text/javascript"></script>

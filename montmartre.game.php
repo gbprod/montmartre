@@ -47,6 +47,11 @@ class Montmartre extends Table
         return (int) $this->getActivePlayerId();
     }
 
+    public function collectionFromDB($sql)
+    {
+        return $this->getCollectionFromDB($sql);
+    }
+
     protected function getGameName()
     {
         return 'montmartre';
@@ -57,7 +62,7 @@ class Montmartre extends Table
         $this->setupPlayers($players);
 
         $handler = $this->getContainer()->get(StartNewGameHandler::class);
-        $handler();
+        $handler($players);
 
         $this->activeNextPlayer();
     }

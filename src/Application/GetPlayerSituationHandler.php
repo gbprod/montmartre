@@ -3,6 +3,7 @@
 namespace GBProd\Montmartre\Application;
 
 use GBProd\Montmartre\Domain\Gazette;
+use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 
@@ -55,6 +56,12 @@ final class GetPlayerSituationHandler
             ],
             'current_player' => [
                 'name' => $board->players()->current()->name(),
+                'hand' => array_map(function (Muse $muse) {
+                    return [
+                        'color' => $muse->color()->value(),
+                        'value' => $muse->value(),
+                    ];
+                }, $board->players()->current()->hand()->muses())
             ],
             'others_players' => array_map(
                 function (Player $player) {

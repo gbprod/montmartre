@@ -14,9 +14,9 @@ final class Players implements \IteratorAggregate
         $this->others = $others;
     }
 
-    public static function empty(): Players
+    public static function place(Player ...$players): Players
     {
-        return new self(null, null, []);
+        return new self(null, null, $players);
     }
 
     public static function from(Player $current, Player $active, array $others): Players
@@ -41,7 +41,7 @@ final class Players implements \IteratorAggregate
 
     public function all(): array
     {
-        return array_values(array_merge(
+        return array_filter(array_merge(
             [$this->current()],
             $this->others()
         ));

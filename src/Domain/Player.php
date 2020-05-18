@@ -6,16 +6,18 @@ final class Player
 {
     private $id;
     private $name;
+    private $hand;
 
-    private function __construct(int $id, string $name)
+    private function __construct(int $id, string $name, Hand $hand)
     {
         $this->id = $id;
         $this->name = $name;
+        $this->hand = $hand;
     }
 
-    public static function named(int $id, string $name): self
+    public static function named(int $id, string $name, Hand $hand): self
     {
-        return new self($id, $name);
+        return new self($id, $name, $hand);
     }
 
     public function id(): int
@@ -26,5 +28,10 @@ final class Player
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function hand(): Hand
+    {
+        return $this->hand;
     }
 }

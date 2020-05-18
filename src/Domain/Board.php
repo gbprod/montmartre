@@ -20,13 +20,29 @@ final class Board
         $this->players = $players;
     }
 
-    public static function setup(): self
+    public static function setup(array $players): self
     {
+        $initialDeck = Deck::full();
+
+        $players = Players::place(
+            ...array_map(
+                function ($playerState, $playerId) use ($initialDeck) {
+                    return Player::named(
+                        $playerId,
+                        $playerState['player_name'],
+                        Hand::containing(...$initialDeck->draw(5))
+                    );
+                },
+                $players,
+                array_keys($players)
+            )
+        );
+
         return new self(
             Collectors::distribute(),
             Gazettes::distribute(),
-            Decks::distribute(),
-            Players::empty()
+            Decks::distribute($initialDeck),
+            $players
             // Ambroise,
             // Pieces
         );
@@ -65,12 +81,59 @@ final class Board
                     $state['players'],
                     function ($carry, $item) use ($state) {
                         if ($item['player_id'] == $state['current_player']) {
-                            $carry[0] = Player::named($item['player_id'], $item['player_name']);
-                        } elseif ($item['player_id'] == $state['active_player']) {
-                            $carry[1] = Player::named($item['player_id'], $item['player_name']);
-                        } else {
-                            $carry[2][] = Player::named($item['player_id'], $item['player_name']);
+                            $carry[0] = Player::named(
+                                $item['player_id'],
+                                $item['player_name'],
+                                Hand::containing(
+                                    ...array_map(
+                                        function ($handCard) {
+                                            $color = $handCard['muse_color'];
+                                            return Muse::painted(Color::$color(), (int) $handCard['muse_value']);
+                                        },
+                                        array_filter($state['hands'], function ($handCard) use ($item) {
+                                            return $handCard['player_id'] == $item['player_id'];
+                                        })
+                                    )
+                                )
+                            );
                         }
+
+                        if ($item['player_id'] == $state['current_player']) {
+                            $carry[1] = Player::named(
+                                $item['player_id'],
+                                $item['player_name'],
+                                Hand::containing(
+                                    ...array_map(
+                                        function ($handCard) {
+                                            $color = $handCard['muse_color'];
+                                            return Muse::painted(Color::$color(), (int) $handCard['muse_value']);
+                                        },
+                                        array_filter($state['hands'], function ($handCard) use ($item) {
+                                            return $handCard['player_id'] == $item['player_id'];
+                                        })
+                                    )
+                                )
+                            );
+                        }
+
+                        if ($item['player_id'] != $state['current_player'] && $item['player_id'] != $state['current_player']) {
+                            $carry[2][] = Player::named(
+                                $item['player_id'],
+                                $item['player_name'],
+                                Hand::containing(
+                                    ...array_map(
+                                        function ($handCard) {
+                                            $color = $handCard['muse_color'];
+                                            return Muse::painted(Color::$color(), (int) $handCard['muse_value']);
+                                        },
+                                        array_filter($state['hands'], function ($handCard) use ($item) {
+                                            return $handCard['player_id'] == $item['player_id'];
+                                        })
+                                    )
+                                )
+                            );
+                        }
+
 
                         return $carry;
                     },
