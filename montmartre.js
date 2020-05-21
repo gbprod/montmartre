@@ -176,8 +176,42 @@ define([
       }
     },
 
+    museFromCardId: function (id) {
+      var value = id % 9;
+      var colorId = (id - value) / 9;
+
+      switch (colorId) {
+        case 0:
+          return {
+            value: value,
+            color: "green",
+          };
+
+        case 1:
+          return {
+            value: value,
+            color: "blue",
+          };
+
+        case 2:
+          return {
+            value: value,
+            color: "pink",
+          };
+
+        case 3:
+          return {
+            value: value,
+            color: "yellow",
+          };
+      }
+
+      return undefined;
+    },
+
     setupPlayerHand: function (gamedatas) {
       this.playerHand = this.createMusesStock("player-hand");
+      this.playerHand.setSelectionAppearance("class");
 
       for (
         let index = 0;
@@ -216,6 +250,7 @@ define([
 
       return stock;
     },
+
     ///////////////////////////////////////////////////
     //// Game & client states
 
@@ -226,15 +261,9 @@ define([
       console.log("Entering state: " + stateName);
 
       switch (stateName) {
-        /* Example:
-
-                    case 'myGameState':
-
-                        // Show some HTML block at this game state
-                        dojo.style( 'my_html_block_id', 'display', 'block' );
-
-                        break;
-                   */
+        case "playerTurn":
+          this.playerHand.setSelectionMode(2);
+          break;
 
         case "dummmy":
           break;
@@ -248,15 +277,9 @@ define([
       console.log("Leaving state: " + stateName);
 
       switch (stateName) {
-        /* Example:
-
-                    case 'myGameState':
-
-                        // Hide the HTML block we are displaying only during this game state
-                        dojo.style( 'my_html_block_id', 'display', 'none' );
-
-                        break;
-                   */
+        case "playerTurn":
+          this.playerHand.setSelectionMode(0);
+          break;
 
         case "dummmy":
           break;
@@ -270,37 +293,63 @@ define([
       console.log("onUpdateActionButtons: " + stateName);
 
       if (this.isCurrentPlayerActive()) {
-        switch (
-          stateName
-          /*
-                                         Example:
-
-                                         case 'myGameState':
-
-                                            // Add 3 action buttons in the action status bar:
-
-                                            this.addActionButton( 'button_1_id', _('Button 1 label'), 'onMyMethodToCall1' );
-                                            this.addActionButton( 'button_2_id', _('Button 2 label'), 'onMyMethodToCall2' );
-                                            this.addActionButton( 'button_3_id', _('Button 3 label'), 'onMyMethodToCall3' );
-                                            break;
-                        */
-        ) {
+        switch (stateName) {
+          case "playerTurn":
+            this.addActionButton(
+              "paint_action_button",
+              _("Paint"),
+              "paintAction"
+            );
+            this.addActionButton("sell_action_button", _("Sell"), "sellAction");
+            break;
         }
       }
     },
 
     ///////////////////////////////////////////////////
-    //// Utility methods
-
-    /*
-
-                Here, you can defines some utility methods that you can use everywhere in your javascript
-                script.
-
-            */
-
-    ///////////////////////////////////////////////////
     //// Player's action
+
+    paintAction: function (event) {
+      dojo.stopEvent(event);
+      console.log("paintAction");
+
+      if (!this.checkAction("paintAction")) {
+        return;
+      }
+
+      var items = this.playerHand.getSelectedItems();
+      if (items.length <= 0) {
+        this.showMessage(
+          _("You should select at least one Muse from your hand"),
+          "info"
+        );
+      }
+
+      var cards = items.map(function (item) {
+        return item.type;
+      });
+
+      console.log(cards);
+      this.ajaxcall(
+        "/montmartre/montmartre/paint.html",
+        {
+          cards: cards.join(","),
+          lock: true,
+        },
+        this,
+        function (result) {},
+        function (is_error) {}
+      );
+    },
+
+    sellAction: function () {
+      console.log("sellAction");
+      dojo.stopEvent(event);
+
+      if (!this.checkAction("sellAction")) {
+        return;
+      }
+    },
 
     /*
 

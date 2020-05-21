@@ -1,5 +1,10 @@
 <?php
 
+use GBProd\Montmartre\Application\PaintAction;
+use GBProd\Montmartre\Application\PaintHandler;
+use GBProd\Montmartre\Domain\Color;
+use GBProd\Montmartre\Domain\Muse;
+
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
@@ -8,18 +13,6 @@
  * This code has been produced on the BGA studio platform for use on https://boardgamearena.com.
  * See http://en.doc.boardgamearena.com/Studio for more information.
  * -----
- *
- * montmartre.action.php
- *
- * Montmartre main action entry point
- *
- *
- * In this file, you are describing all the methods that can be called from your
- * user interface logic (javascript).
- *
- * If you define a method "myAction" here, then you can call it from your javascript code with:
- * this.ajaxcall( "/montmartre/montmartre/myAction.html", ...)
- *
  */
 
 class action_montmartre extends APP_GameAction
@@ -36,25 +29,50 @@ class action_montmartre extends APP_GameAction
         }
     }
 
-    // TODO: defines your action entry points there
-
-    /*
-
-    Example:
-
-    public function myAction()
+    public function paint()
     {
         self::setAjaxMode();
 
-        // Retrieve arguments
-        // Note: these arguments correspond to what has been sent through the javascript "ajaxcall" method
-        $arg1 = self::getArg( "myArgument1", AT_posint, true );
-        $arg2 = self::getArg( "myArgument2", AT_posint, true );
+        $this->game->checkAction('paintAction');
 
-        // Then, call the appropriate method in your game logic, like "playCard" or "myAction"
-        $this->game->myAction( $arg1, $arg2 );
+        $cards = array_map(
+            [$this, 'createMuseCardFromId'],
+            array_filter(
+                array_map(
+                    'intval',
+                    explode(',', self::getArg("cards", AT_numberlist, true))
+                )
+            )
+        );
 
-        self::ajaxResponse( );
+        $this->game->getContainer()->get(PaintHandler::class)(
+            PaintAction::fromMuses(...$cards)
+        );
+
+        self::ajaxResponse();
     }
-    */
+
+    private function createMuseCardFromId(int $id)
+    {
+        $value = $id % 9;
+
+        switch (floor($id / 9)) {
+            case 0:
+                $color = 'green';
+                break;
+            case 1:
+                $color = 'blue';
+                break;
+            case 2:
+                $color = 'pink';
+                break;
+            case 3:
+                $color = 'yellow';
+                break;
+            default:
+                throw new BgaUserException(self::_("Error Processing Request"));
+        }
+
+        return Muse::painted(Color::$color(), $value);
+    }
 }

@@ -24,4 +24,23 @@ final class Hand
     {
         return $this->muses;
     }
+
+    public function withDrawed(Muse $muse): self
+    {
+        $found = false;
+        $newMuses = [];
+        for ($index = 0; $index < count($this->muses); $index++) {
+            if (!$found && $muse->equals($this->muses[$index])) {
+                $found = true;
+            } else {
+                $newMuses[] = $this->muses[$index];
+            }
+        }
+
+        if (!$found) {
+            // throw new MuseNotInHand();
+        }
+
+        return Hand::containing(...$newMuses);
+    }
 }

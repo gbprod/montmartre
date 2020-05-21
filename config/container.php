@@ -1,6 +1,7 @@
 <?php
 
 use GBProd\Montmartre\Application\GetPlayerSituationHandler;
+use GBProd\Montmartre\Application\PaintHandler;
 use GBProd\Montmartre\Application\StartNewGameHandler;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 
@@ -16,6 +17,10 @@ $containerBuilder->addDefinitions([
     ),
 
     GetPlayerSituationHandler::class => DI\create()->constructor(
+        DI\get(BoardRepository::class)
+    ),
+
+    PaintHandler::class => DI\create()->constructor(
         DI\get(BoardRepository::class)
     ),
 ]);

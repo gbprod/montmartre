@@ -3,6 +3,10 @@
   border-radius: 10px;
 }
 
+.stockitem_selected {
+  border: 1px solid red;
+}
+
 .table {
   text-align: center;
 }

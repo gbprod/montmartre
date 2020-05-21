@@ -7,15 +7,15 @@ CREATE TABLE IF NOT EXISTS `board` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `gazettes` (
-  `id` int(2) PRIMARY KEY AUTO_INCREMENT,
-  `board_id` int(2) unsigned NOT NULL,
   `value` int(2) unsigned NOT NULL,
   `nb_diff` int(2) unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `gazettes`
+  ADD PRIMARY KEY (`value`,`nb_diff`);
+
 CREATE TABLE IF NOT EXISTS `deck_cards` (
   `id` int(2) PRIMARY KEY AUTO_INCREMENT,
-  `board_id` int(2) unsigned NOT NULL,
   `deck_number` int(2) unsigned NOT NULL,
   `position` int(2) unsigned NOT NULL,
   `muse_value` int(2) unsigned NOT NULL,
@@ -24,7 +24,6 @@ CREATE TABLE IF NOT EXISTS `deck_cards` (
 
 CREATE TABLE IF NOT EXISTS `hands` (
   `id` int(2) PRIMARY KEY AUTO_INCREMENT,
-  `board_id` int(2) unsigned NOT NULL,
   `player_id` int(2) unsigned NOT NULL,
   `muse_value` int(2) unsigned NOT NULL,
   `muse_color` VARCHAR(10) NOT NULL
@@ -32,7 +31,6 @@ CREATE TABLE IF NOT EXISTS `hands` (
 
 CREATE TABLE IF NOT EXISTS `paintings` (
   `id` int(2) PRIMARY KEY AUTO_INCREMENT,
-  `board_id` int(2) unsigned NOT NULL,
   `player_id` int(2) unsigned NOT NULL,
   `muse_value` int(2) unsigned NOT NULL,
   `muse_color` VARCHAR(10) NOT NULL

@@ -6,35 +6,38 @@ use GBProd\Montmartre\Domain\Board;
 
 final class BoardRepository
 {
+
+    const SELECT_QUERY = <<<SQL
+        SELECT * FROM board WHERE id=1;
+SQL;
+
     const INSERT_QUERY = <<<SQL
-        INSERT INTO board (
+        REPLACE INTO board (
+            id,
             collector_blue,
             collector_yellow,
             collector_green,
             collector_pink
         )
-        VALUES (%s, %s, %s, %s);
+        VALUES (1, %s, %s, %s, %s);
 SQL;
 
     const INSERT_GAZETTES_QUERY = <<<SQL
-        INSERT INTO gazettes (board_id, `value`, nb_diff)
-        VALUES (%s, %s, %s);
-SQL;
-
-    const INSERT_MUSE_QUERY = <<<SQL
-        INSERT INTO deck_cards (board_id, deck_number, position, muse_value, muse_color)
-        VALUES (%s, %s, %s, %s, "%s");
-SQL;
-
-    const SELECT_QUERY = <<<SQL
-        SELECT * FROM board
-        ORDER BY id DESC
-        LIMIT 1;
+        REPLACE INTO gazettes (`value`, nb_diff)
+        VALUES (%s, %s);
 SQL;
 
     const SELECT_GAZETTES_QUERY = <<<SQL
-        SELECT * FROM gazettes
-        WHERE board_id = %s ;
+        SELECT * FROM gazettes;
+SQL;
+
+    const TRUNCATE_MUSE_QUERY = <<<SQL
+        TRUNCATE deck_cards;
+SQL;
+
+    const INSERT_MUSE_QUERY = <<<SQL
+        INSERT INTO deck_cards (deck_number, position, muse_value, muse_color)
+        VALUES (%s, %s, %s, "%s");
 SQL;
 
     const SELECT_PLAYERS_HANDS_QUERY = <<<SQL
@@ -45,14 +48,18 @@ SQL;
         SELECT id, player_id, muse_value, muse_color FROM paintings;
 SQL;
 
+    const TRUNCATE_PLAYERS_HANDS_QUERY = <<<SQL
+        TRUNCATE hands;
+SQL;
+
     const INSERT_PLAYERS_HANDS_QUERY = <<<SQL
-        INSERT INTO hands (board_id, player_id, muse_value, muse_color)
-        VALUES (%s, %s, %s, "%s");
+        INSERT INTO hands (player_id, muse_value, muse_color)
+        VALUES (%s, %s, "%s");
 SQL;
 
     const SELECT_DECKS_QUERY = <<<SQL
         SELECT * FROM deck_cards
-        WHERE board_id = %s AND deck_number = %s
+        WHERE deck_number = %s
         ORDER BY position ASC;
 SQL;
 
@@ -71,28 +78,24 @@ SQL;
             $board->collectors()->pink()->willPay()
         ));
 
-        $result = ($this->table)::dbQuery(self::SELECT_QUERY);
-        $newBoardState = mysqli_fetch_assoc($result);
-
-        /** @var Gazette $gazette */
         foreach ($board->gazettes() as $gazette) {
             ($this->table)::dbQuery(sprintf(
                 self::INSERT_GAZETTES_QUERY,
-                $newBoardState['id'],
                 $gazette->value(),
                 $gazette->nbDiff()
             ));
         }
 
-        $this->storeMuses($newBoardState['id'], 1, $board->decks()->firstDeck()->muses());
-        $this->storeMuses($newBoardState['id'], 2, $board->decks()->secondDeck()->muses());
-        $this->storeMuses($newBoardState['id'], 3, $board->decks()->thirdDeck()->muses());
+        ($this->table)::dbQuery(self::TRUNCATE_MUSE_QUERY);
+        $this->storeMuses(1, $board->decks()->firstDeck()->muses());
+        $this->storeMuses(2, $board->decks()->secondDeck()->muses());
+        $this->storeMuses(3, $board->decks()->thirdDeck()->muses());
 
+        ($this->table)::dbQuery(self::TRUNCATE_PLAYERS_HANDS_QUERY);
         foreach ($board->players()->all() as $player) {
             foreach ($player->hand()->muses() as $muse) {
                 ($this->table)::dbQuery(sprintf(
                     self::INSERT_PLAYERS_HANDS_QUERY,
-                    $newBoardState['id'],
                     $player->id(),
                     $muse->value(),
                     $muse->color()->value()
@@ -101,12 +104,11 @@ SQL;
         }
     }
 
-    private function storeMuses(int $boardId, int $deckNumber, array $muses): void
+    private function storeMuses(int $deckNumber, array $muses): void
     {
         for ($position = 0; $position < count($muses); $position++) {
             ($this->table)::dbQuery(sprintf(
                 self::INSERT_MUSE_QUERY,
-                $boardId,
                 $deckNumber,
                 $position,
                 $muses[$position]->value(),
@@ -120,15 +122,13 @@ SQL;
         $result = ($this->table)::dbQuery(self::SELECT_QUERY);
         $state = mysqli_fetch_assoc($result);
 
-        $result = ($this->table)::dbQuery(
-            sprintf(self::SELECT_GAZETTES_QUERY, $state['id'])
+        $state['gazettes'] = $this->table->collectionFromDB(
+            self::SELECT_GAZETTES_QUERY
         );
-
-        $state['gazettes'] = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
         foreach ([1, 2, 3] as $deckNumber) {
             $result = ($this->table)::dbQuery(
-                sprintf(self::SELECT_DECKS_QUERY, $state['id'], $deckNumber)
+                sprintf(self::SELECT_DECKS_QUERY, $deckNumber)
             );
 
             $state['decks'][$deckNumber] = mysqli_fetch_all($result, MYSQLI_ASSOC);

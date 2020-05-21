@@ -2,8 +2,12 @@
 
 namespace GBProd\Montmartre\Domain;
 
+use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
+
 final class Player
 {
+    use EventRecordingCapabilities;
+
     private $id;
     private $name;
     private $hand;
@@ -48,5 +52,15 @@ final class Player
     public function paintings(): Paintings
     {
         return $this->paintings;
+    }
+
+    public function paint(Muse ...$muses): void
+    {
+        foreach ($muses as $muse) {
+            $this->hand = $this->hand()->withDrawed($muse);
+            $this->paintings = $this->paintings->withAppended($muse);
+        }
+
+        // $this->recordThat(PlayerHasPaint::from($this, ...$muses));
     }
 }

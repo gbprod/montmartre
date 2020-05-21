@@ -27,4 +27,10 @@ final class Muse
     {
         return $this->value;
     }
+
+    public function equals(Muse $muse): bool
+    {
+        return $this->color()->value() === $muse->color()->value()
+            && $this->value() === $muse->value();
+    }
 }

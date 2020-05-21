@@ -1,4 +1,5 @@
 <?php
+
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
@@ -64,11 +65,33 @@ $machinestates = [
 
     2 => [
         'name' => 'playerTurn',
-        'description' => clienttranslate('${actplayer} must play a card or pass'),
-        'descriptionmyturn' => clienttranslate('${you} must play a card or pass'),
+        'description' => clienttranslate('${actplayer} could paint or sell'),
+        'descriptionmyturn' => clienttranslate('${you} could paint or sell'),
         'type' => 'activeplayer',
-        'possibleactions' => ['playCard', 'pass'],
-        'transitions' => ['playCard' => 2, 'pass' => 2]
+
+        'possibleactions' => ['sellAction', 'paintAction'],
+        'transitions' => ['paintAction' => 10, 'sellAction' => 20]
+    ],
+
+    10 => [
+        'name' => 'paintAction',
+        'description' => clienttranslate('${actplayer} could paint or sell'),
+        'descriptionmyturn' => clienttranslate('${you} could paint, select muses to paint.'),
+        'type' => 'activeplayer',
+
+        'possibleactions' => ['validatePaintAction', 'playerTurn'],
+        'transitions' => ['validatePaintAction' => 2, 'playerTurn' => 2]
+    ],
+
+
+    20 => [
+        'name' => 'sellAction',
+        'description' => clienttranslate('${actplayer} could sell a painting'),
+        'descriptionmyturn' => clienttranslate('${you} could sell a painting, select cards to sell'),
+        'type' => 'activeplayer',
+
+        'possibleactions' => ['validatePaintAction', 'playerTurn'],
+        'transitions' => ['validateSellAction' => 2, 'playerTurn' => 2]
     ],
 
     /*
@@ -105,6 +128,3 @@ $machinestates = [
     ]
 
 ];
-
-
-
