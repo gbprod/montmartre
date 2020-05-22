@@ -51,4 +51,11 @@ final class Players implements \IteratorAggregate
     {
         return new \ArrayIterator($this->all());
     }
+
+    public function toArray(): array
+    {
+        return array_map(function (Player $player): array {
+            return $player->toArray();
+        }, $this->all());
+    }
 }

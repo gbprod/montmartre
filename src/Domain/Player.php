@@ -34,6 +34,34 @@ final class Player
         return new self($id, $name, $hand, $paintings);
     }
 
+    public static function fromState(array $state)
+    {
+        return new self(
+            $state['player_id'],
+            $state['player_name'],
+            Hand::containing(
+                ...array_map(
+                    function ($card) {
+                        $color = $card['muse_color'];
+
+                        return Muse::painted(Color::$color(), (int) $card['muse_value']);
+                    },
+                    $state['hand']
+                )
+            ),
+            Paintings::fromMuses(
+                ...array_map(
+                    function ($card) {
+                        $color = $card['muse_color'];
+
+                        return Muse::painted(Color::$color(), (int) $card['muse_value']);
+                    },
+                    $state['paintings']
+                )
+            )
+        );
+    }
+
     public function id(): int
     {
         return $this->id;
@@ -60,7 +88,19 @@ final class Player
             $this->hand = $this->hand()->withDrawed($muse);
             $this->paintings = $this->paintings->withAppended($muse);
         }
+    }
 
-        // $this->recordThat(PlayerHasPaint::from($this, ...$muses));
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'hand' => array_map(function (Muse $muse): array {
+                return $muse->toArray();
+            }, $this->hand->muses()),
+            'paintings' => array_map(function (Muse $muse): array {
+                return $muse->toArray();
+            }, $this->paintings->muses()),
+        ];
     }
 }

@@ -22,21 +22,8 @@ final class GetPlayerSituationHandler
         $board = $this->repository->get();
 
         return [
-            'collectors' => [
-                'blue' => $board->collectors()->blue()->willPay(),
-                'green' => $board->collectors()->green()->willPay(),
-                'yellow' => $board->collectors()->yellow()->willPay(),
-                'pink' => $board->collectors()->pink()->willPay(),
-            ],
-            'gazettes' => array_map(
-                static function (Gazette $gazette) {
-                    return [
-                        'nbDiff' => $gazette->nbDiff(),
-                        'value' => $gazette->value(),
-                    ];
-                },
-                iterator_to_array($board->gazettes())
-            ),
+            'collectors' => $board->collectors()->toArray(),
+            'gazettes' => $board->gazettes()->toArray(),
             'decks' => [
                 1 => [
                     'color' => $board->decks()->firstDeck()->next()->color()->value(),
@@ -57,10 +44,7 @@ final class GetPlayerSituationHandler
             'current_player' => [
                 'name' => $board->players()->current()->name(),
                 'hand' => array_map(function (Muse $muse) {
-                    return [
-                        'color' => $muse->color()->value(),
-                        'value' => $muse->value(),
-                    ];
+                    return $muse->toArray();
                 }, $board->players()->current()->hand()->muses())
             ],
             'others_players' => array_map(

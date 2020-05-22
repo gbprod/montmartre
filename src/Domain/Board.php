@@ -2,8 +2,13 @@
 
 namespace GBProd\Montmartre\Domain;
 
+use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
+use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
+
 final class Board
 {
+    use EventRecordingCapabilities;
+
     private $collectors;
     private $gazettes;
     private $decks;
@@ -39,14 +44,22 @@ final class Board
             )
         );
 
-        return new self(
+        $self = new self(
             Collectors::distribute(),
             Gazettes::distribute(),
             Decks::distribute($initialDeck),
             $players
-            // Ambroise,
-            // Pieces
         );
+
+
+        $self->recordThat(new BoardHasBeenSetUp([
+            'collectors' => $self->collectors->toArray(),
+            'gazettes' => $self->gazettes->toArray(),
+            'decks' => $self->decks->toArray(),
+            'players' => $self->players->toArray(),
+        ]));
+
+        return $self;
     }
 
     public static function fromState(array $state): self
@@ -82,51 +95,23 @@ final class Board
                     $state['players'],
                     function ($carry, $item) use ($state) {
                         if ($item['player_id'] == $state['current_player']) {
-                            $carry[0] = self::createPlayerFromState($item, $state['hands'], $state['paintings']);
+                            $carry[0] = Player::fromState($item);
                         }
 
                         if ($item['player_id'] == $state['current_player']) {
-                            $carry[1] = self::createPlayerFromState($item, $state['hands'], $state['paintings']);
+                            $carry[1] = Player::fromState($item);
                         }
 
-                        if ($item['player_id'] != $state['current_player'] && $item['player_id'] != $state['current_player']) {
-                            $carry[2][] = self::createPlayerFromState($item, $state['hands'], $state['paintings']);
+                        if (
+                            $item['player_id'] != $state['current_player']
+                            && $item['player_id'] != $state['current_player']
+                        ) {
+                            $carry[2][] = Player::fromState($item);
                         }
 
                         return $carry;
                     },
                     [null, null, []]
-                )
-            )
-        );
-    }
-
-    private static function createPlayerFromState(array $state, array $hands, array $paintings)
-    {
-        return Player::named(
-            $state['player_id'],
-            $state['player_name'],
-            Hand::containing(
-                ...array_map(
-                    function ($card) {
-                        $color = $card['muse_color'];
-                        return Muse::painted(Color::$color(), (int) $card['muse_value']);
-                    },
-                    array_filter($hands, function ($card) use ($state) {
-                        return $card['player_id'] == $state['player_id'];
-                    })
-                )
-            ),
-            Paintings::fromMuses(
-                ...array_map(
-                    function ($card) {
-                        $color = $card['muse_color'];
-
-                        return Muse::painted(Color::$color(), (int) $card['muse_value']);
-                    },
-                    array_filter($paintings, function ($card) use ($state) {
-                        return $card['player_id'] == $state['player_id'];
-                    })
                 )
             )
         );

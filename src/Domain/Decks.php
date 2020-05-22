@@ -43,4 +43,16 @@ final class Decks
     {
         return $this->thirdDeck;
     }
+
+    public function toArray(): array
+    {
+        return array_map(
+            function (Deck $deck): array {
+                return array_map(function (Muse $muse): array {
+                    return $muse->toArray();
+                }, $deck->muses());
+            },
+            [$this->firstDeck, $this->secondDeck, $this->thirdDeck]
+        );
+    }
 }

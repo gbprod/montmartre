@@ -7,12 +7,11 @@ CREATE TABLE IF NOT EXISTS `board` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `gazettes` (
+  `id` int(2) PRIMARY KEY AUTO_INCREMENT,
   `value` int(2) unsigned NOT NULL,
   `nb_diff` int(2) unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `gazettes`
-  ADD PRIMARY KEY (`value`,`nb_diff`);
 
 CREATE TABLE IF NOT EXISTS `deck_cards` (
   `id` int(2) PRIMARY KEY AUTO_INCREMENT,

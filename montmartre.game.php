@@ -56,6 +56,11 @@ class Montmartre extends Table
         return $this->getCollectionFromDB($sql);
     }
 
+    public function objectFromDB($sql)
+    {
+        return $this->getObjectFromDB($sql);
+    }
+
     protected function getGameName()
     {
         return 'montmartre';

@@ -60,4 +60,14 @@ final class Collectors
     {
         return $this->pink;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'blue' => $this->blue()->willPay(),
+            'green' => $this->green()->willPay(),
+            'yellow' => $this->yellow()->willPay(),
+            'pink' => $this->pink()->willPay(),
+        ];
+    }
 }

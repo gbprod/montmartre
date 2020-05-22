@@ -23,12 +23,12 @@ SQL;
 SQL;
 
     const INSERT_GAZETTES_QUERY = <<<SQL
-        REPLACE INTO gazettes (`value`, nb_diff)
+        INSERT INTO gazettes (`value`, nb_diff)
         VALUES (%s, %s);
 SQL;
 
     const SELECT_GAZETTES_QUERY = <<<SQL
-        SELECT * FROM gazettes;
+        SELECT id, `value`, nb_diff FROM gazettes;
 SQL;
 
     const TRUNCATE_MUSE_QUERY = <<<SQL
@@ -40,12 +40,16 @@ SQL;
         VALUES (%s, %s, %s, "%s");
 SQL;
 
-    const SELECT_PLAYERS_HANDS_QUERY = <<<SQL
-        SELECT id, player_id, muse_value, muse_color FROM hands;
+    const SELECT_PLAYER_HANDS_QUERY = <<<SQL
+        SELECT id, player_id, muse_value, muse_color
+        FROM hands
+        WHERE player_id = %s;
 SQL;
 
-    const SELECT_PLAYERS_PAINTINGS_QUERY = <<<SQL
-        SELECT id, player_id, muse_value, muse_color FROM paintings;
+    const SELECT_PLAYER_PAINTINGS_QUERY = <<<SQL
+        SELECT id, player_id, muse_value, muse_color
+        FROM paintings
+        WHERE player_id = %s;
 SQL;
 
     const TRUNCATE_PLAYERS_HANDS_QUERY = <<<SQL
@@ -62,6 +66,8 @@ SQL;
         WHERE deck_number = %s
         ORDER BY position ASC;
 SQL;
+
+    private $table;
 
     public function __construct($table)
     {
@@ -119,27 +125,35 @@ SQL;
 
     public function get(): Board
     {
-        $result = ($this->table)::dbQuery(self::SELECT_QUERY);
-        $state = mysqli_fetch_assoc($result);
+        $state = $this->table->objectFromDB(self::SELECT_QUERY);
 
-        $state['gazettes'] = $this->table->collectionFromDB(
-            self::SELECT_GAZETTES_QUERY
-        );
+        $state['gazettes'] = $this->table->collectionFromDB(self::SELECT_GAZETTES_QUERY);
 
         foreach ([1, 2, 3] as $deckNumber) {
-            $result = ($this->table)::dbQuery(
+            $state['decks'][$deckNumber] = $this->table->collectionFromDB(
                 sprintf(self::SELECT_DECKS_QUERY, $deckNumber)
             );
-
-            $state['decks'][$deckNumber] = mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
 
-        $state['players'] = $this->table->loadPlayersBasicInfos();
         $state['current_player'] = $this->table->currentPlayerId();
         $state['active_player'] = $this->table->activePlayerId();
 
-        $state['hands'] = $this->table->collectionFromDB(self::SELECT_PLAYERS_HANDS_QUERY);
-        $state['paintings'] = $this->table->collectionFromDB(self::SELECT_PLAYERS_PAINTINGS_QUERY);
+        $players = $this->table->loadPlayersBasicInfos();
+        $state['players'] = array_map(
+            function ($player, $playerId) {
+                $player['hand'] = $this->table->collectionFromDB(
+                    sprintf(self::SELECT_PLAYER_HANDS_QUERY, $playerId)
+                );
+
+                $player['paintings'] = $this->table->collectionFromDB(
+                    sprintf(self::SELECT_PLAYER_PAINTINGS_QUERY, $playerId)
+                );
+
+                return $player;
+            },
+            $players,
+            array_keys($players)
+        );
 
         return Board::fromState($state);
     }

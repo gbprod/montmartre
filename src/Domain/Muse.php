@@ -33,4 +33,12 @@ final class Muse
         return $this->color()->value() === $muse->color()->value()
             && $this->value() === $muse->value();
     }
+
+    public function toArray(): array
+    {
+        return [
+            'value' => $this->value(),
+            'color' => $this->color()->value(),
+        ];
+    }
 }

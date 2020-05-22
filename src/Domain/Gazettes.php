@@ -31,4 +31,14 @@ final class Gazettes implements \IteratorAggregate
     {
         return new \ArrayIterator($this->gazettes);
     }
+
+    public function toArray(): array
+    {
+        return array_map(function (Gazette $gazette): array {
+            return [
+                'nbDiff' => $gazette->nbDiff(),
+                'value' => $gazette->value(),
+            ];
+        }, $this->gazettes);
+    }
 }
