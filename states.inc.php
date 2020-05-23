@@ -79,8 +79,8 @@ $machinestates = [
         'descriptionmyturn' => clienttranslate('${you} could paint, select muses to paint.'),
         'type' => 'activeplayer',
 
-        'possibleactions' => ['validatePaintAction', 'playerTurn'],
-        'transitions' => ['validatePaintAction' => 2, 'playerTurn' => 2]
+        'possibleactions' => ['validatePaintAction'],
+        'transitions' => ['validatePaintAction' => 30]
     ],
 
 
@@ -90,10 +90,19 @@ $machinestates = [
         'descriptionmyturn' => clienttranslate('${you} could sell a painting, select cards to sell'),
         'type' => 'activeplayer',
 
-        'possibleactions' => ['validatePaintAction', 'playerTurn'],
-        'transitions' => ['validateSellAction' => 2, 'playerTurn' => 2]
+        'possibleactions' => ['validatePaintAction'],
+        'transitions' => ['validateSellAction' => 2]
     ],
 
+    30 => [
+        'name' => 'sellOffAction',
+        'description' => clienttranslate('${actplayer} could sell off paintings'),
+        'descriptionmyturn' => clienttranslate('${you} could sell off paintings, select cards to sell off'),
+        'type' => 'activeplayer',
+
+        'possibleactions' => ['playerTurn'],
+        'transitions' => ['playerTurn' => 2]
+    ],
     /*
         Examples:
 

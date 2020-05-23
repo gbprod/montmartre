@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\Montmartre\Domain;
 
 final class Hand
@@ -38,7 +40,7 @@ final class Hand
         }
 
         if (!$found) {
-            // throw new MuseNotInHand();
+            throw new MuseNotInHand();
         }
 
         return Hand::containing(...$newMuses);

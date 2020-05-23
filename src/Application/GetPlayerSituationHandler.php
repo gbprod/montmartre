@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\Montmartre\Application;
 
-use GBProd\Montmartre\Domain\Gazette;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
 use GBProd\Montmartre\Infrastructure\BoardRepository;

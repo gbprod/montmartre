@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\Montmartre\Domain\Event;
 
 trait EventRecordingCapabilities
 {
-    private $events;
+    private $events = [];
 
     private function recordThat(Event $event): void
     {

@@ -2,8 +2,11 @@
 
 use GBProd\Montmartre\Application\PaintAction;
 use GBProd\Montmartre\Application\PaintHandler;
+use GBProd\Montmartre\Domain\CantPaint2MusesIfSumMoreThan5;
+use GBProd\Montmartre\Domain\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Color;
 use GBProd\Montmartre\Domain\Muse;
+use GBProd\Montmartre\Domain\MuseNotInHand;
 
 /**
  *------
@@ -45,9 +48,18 @@ class action_montmartre extends APP_GameAction
             )
         );
 
-        $this->game->getContainer()->get(PaintHandler::class)(
-            PaintAction::fromMuses(...$cards)
-        );
+        try {
+            $this->game->getContainer()->get(PaintHandler::class)(
+                PaintAction::fromMuses(...$cards)
+            );
+        } catch (MuseNotInHand $e) {
+            throw new BgaUserException(_("This muse is not in your hand"));
+        } catch (CantPaintMoreThan2Muses $e) {
+            throw new BgaUserException(_("You can't paint more than 2 muses in one turn"));
+        } catch (CantPaint2MusesIfSumMoreThan5 $e) {
+            throw new BgaUserException(_("If you paint 2 muses, th sum of their values can't be more than 5"));
+        }
+
 
         self::ajaxResponse();
     }

@@ -1,20 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\Montmartre\Domain\Event;
 
-use GBProd\Montmartre\Domain\Board;
-
-class BoardHasBeenSetUp implements Event
+final class BoardHasBeenSetUp implements Event
 {
-    private $payload;
-
-    public function __construct(array $payload)
-    {
-        $this->payload = $payload;
-    }
-
-    public function payload(): array
-    {
-        return $this->payload;
-    }
 }

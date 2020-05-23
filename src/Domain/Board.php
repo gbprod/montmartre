@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\Montmartre\Domain;
 
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
+use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 
 final class Board
 {
@@ -52,12 +55,7 @@ final class Board
         );
 
 
-        $self->recordThat(new BoardHasBeenSetUp([
-            'collectors' => $self->collectors->toArray(),
-            'gazettes' => $self->gazettes->toArray(),
-            'decks' => $self->decks->toArray(),
-            'players' => $self->players->toArray(),
-        ]));
+        $self->recordThat(new BoardHasBeenSetUp());
 
         return $self;
     }
@@ -74,8 +72,8 @@ final class Board
             Gazettes::fromRemaining(
                 ...array_map(static function ($gazetteState) {
                     return Gazette::forPublishing(
-                        $gazetteState['nb_diff'],
-                        $gazetteState['value']
+                        (int) $gazetteState['nb_diff'],
+                        (int) $gazetteState['value']
                     );
                 }, $state['gazettes'])
             ),
@@ -85,7 +83,10 @@ final class Board
                         ...array_map(function ($museState): Muse {
                             $color = $museState['muse_color'];
 
-                            return Muse::painted(Color::$color(), (int) $museState['muse_value']);
+                            return Muse::painted(
+                                Color::$color(),
+                                (int) $museState['muse_value']
+                            );
                         }, $state['decks'][$number])
                     );
                 }, [1, 2, 3])
@@ -135,5 +136,17 @@ final class Board
     public function players(): Players
     {
         return $this->players;
+    }
+
+    public function paint(Muse ...$muses): void
+    {
+        $this->players()
+            ->current()
+            ->paint(...$muses);
+
+        $this->recordThat(new PlayerHasPaint(
+            $this->players()->current()->id(),
+            ...$muses
+        ));
     }
 }

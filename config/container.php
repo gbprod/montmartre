@@ -4,6 +4,7 @@ use GBProd\Montmartre\Application\GetPlayerSituationHandler;
 use GBProd\Montmartre\Application\PaintHandler;
 use GBProd\Montmartre\Application\StartNewGameHandler;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
+use GBProd\Montmartre\Infrastructure\EventDispatcher;
 
 $containerBuilder = new \DI\ContainerBuilder();
 
@@ -23,6 +24,8 @@ $containerBuilder->addDefinitions([
     PaintHandler::class => DI\create()->constructor(
         DI\get(BoardRepository::class)
     ),
+
+    EventDispatcher::class => DI\create()->constructor([]),
 ]);
 
 return $containerBuilder->build();

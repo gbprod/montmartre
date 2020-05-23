@@ -329,7 +329,6 @@ define([
         return item.type;
       });
 
-      console.log(cards);
       this.ajaxcall(
         "/montmartre/montmartre/paint.html",
         {
@@ -338,7 +337,7 @@ define([
         },
         this,
         function (result) {},
-        function (is_error) {}
+        function (isError) {}
       );
     },
 

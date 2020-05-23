@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Domain;
 
-class EmptyDeck extends \DomainException
+class CantPaint2MusesIfSumMoreThan5 extends \DomainException
 {
 }

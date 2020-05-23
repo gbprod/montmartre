@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\Montmartre\Application;
 
-use GBProd\Montmartre\Domain\Board;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 
 final class PaintHandler
@@ -18,9 +19,7 @@ final class PaintHandler
     {
         $board = $this->repository->get();
 
-        $board->players()
-            ->current()
-            ->paint(...$action->muses);
+        $board->paint(...$action->muses);
 
         $this->repository->save($board);
     }

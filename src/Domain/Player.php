@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GBProd\Montmartre\Domain;
 
 use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
@@ -37,14 +39,17 @@ final class Player
     public static function fromState(array $state)
     {
         return new self(
-            $state['player_id'],
+            (int) $state['player_id'],
             $state['player_name'],
             Hand::containing(
                 ...array_map(
                     function ($card) {
                         $color = $card['muse_color'];
 
-                        return Muse::painted(Color::$color(), (int) $card['muse_value']);
+                        return Muse::painted(
+                            Color::$color(),
+                            (int) $card['muse_value']
+                        );
                     },
                     $state['hand']
                 )
@@ -54,7 +59,10 @@ final class Player
                     function ($card) {
                         $color = $card['muse_color'];
 
-                        return Muse::painted(Color::$color(), (int) $card['muse_value']);
+                        return Muse::painted(
+                            Color::$color(),
+                            (int) $card['muse_value']
+                        );
                     },
                     $state['paintings']
                 )
@@ -84,6 +92,14 @@ final class Player
 
     public function paint(Muse ...$muses): void
     {
+        if (count($muses) > 2) {
+            throw new CantPaintMoreThan2Muses();
+        }
+
+        if (count($muses) === 2 && ($muses[0]->value() + $muses[1]->value()) > 5) {
+            throw new CantPaint2MusesIfSumMoreThan5();
+        }
+
         foreach ($muses as $muse) {
             $this->hand = $this->hand()->withDrawed($muse);
             $this->paintings = $this->paintings->withAppended($muse);
