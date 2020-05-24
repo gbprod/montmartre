@@ -42,3 +42,8 @@
   display: inline-block;
   width: 134px;
 }
+
+.paintings {
+  position: relative;
+  height: 225px;
+}

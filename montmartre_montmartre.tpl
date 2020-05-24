@@ -30,14 +30,19 @@
     <div class="deck" id="deck-3"></div>
   </div>
   <div class="whiteblock">
-    <h3>{trans_your_paintings}</h3>
-    <div id="player-paintings"></div>
-  </div>
-  </div>
-  <div class="whiteblock">
     <h3>{trans_your_hand}</h3>
     <div id="player-hand"></div>
   </div>
+  <div class="whiteblock">
+    <h3>{trans_your_paintings}</h3>
+    <div id="player-paintings" class="paintings"></div>
+  </div>
+  <!-- BEGIN plaintings_block -->
+  <div class="whiteblock">
+    <h3>{trans_player_paintings}</h3>
+    <div id="player-{player_id}-paintings" class="paintings"></div>
+  </div>
+  <!-- END plaintings_block -->
 </div>
 
 <script type="text/javascript"></script>

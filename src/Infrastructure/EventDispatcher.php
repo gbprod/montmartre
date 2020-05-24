@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Infrastructure;
 
-use GBProd\Montmartre\Domain\Event\Event;
+use GBProd\Montmartre\Domain\Event\Events;
 
 final class EventDispatcher
 {
@@ -15,14 +15,16 @@ final class EventDispatcher
         $this->listeners = $listeners;
     }
 
-    public function dispatch(Event $event): void
+    public function dispatch(Events $events): void
     {
-        if (!array_key_exists(get_class($event), $this->listeners)) {
-            return;
-        }
+        foreach ($events as $event) {
+            if (!array_key_exists(get_class($event), $this->listeners)) {
+                continue;
+            }
 
-        foreach ($this->listeners[get_class($event)] as $listener) {
-            $listener($event);
+            foreach ($this->listeners[get_class($event)] as $listener) {
+                $listener($event);
+            }
         }
     }
 }

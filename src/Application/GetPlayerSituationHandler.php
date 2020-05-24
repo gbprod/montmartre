@@ -43,15 +43,23 @@ final class GetPlayerSituationHandler
                 ],
             ],
             'current_player' => [
+                'id' => $board->players()->current()->id(),
                 'name' => $board->players()->current()->name(),
                 'hand' => array_map(function (Muse $muse) {
                     return $muse->toArray();
-                }, $board->players()->current()->hand()->muses())
+                }, $board->players()->current()->hand()->muses()),
+                'paintings' => array_map(function (Muse $muse): array {
+                    return $muse->toArray();
+                }, $board->players()->current()->paintings()->muses()),
             ],
             'others_players' => array_map(
                 function (Player $player) {
                     return [
+                        'id' => $player->id(),
                         'name' => $player->name(),
+                        'paintings' => array_map(function (Muse $muse): array {
+                            return $muse->toArray();
+                        }, $player->paintings()->muses()),
                     ];
                 },
                 array_merge(

@@ -145,7 +145,7 @@ final class Board
             ->paint(...$muses);
 
         $this->recordThat(new PlayerHasPaint(
-            $this->players()->current()->id(),
+            $this->players()->current(),
             ...$muses
         ));
     }

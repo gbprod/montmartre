@@ -38,7 +38,22 @@ class view_montmartre_montmartre extends game_view
 
     public function build_page($viewArgs)
     {
-        $this->tpl['trans_your_hand'] = self::_("Your hand");
-        $this->tpl['trans_your_paintings'] = self::_("Your paintings");
+        $this->tpl['trans_your_hand'] = self::_('Your hand');
+        $this->tpl['trans_your_paintings'] = self::_('Your paintings');
+
+        $this->page->begin_block('montmartre_montmartre', 'plaintings_block');
+
+        $players = $this->game->players();
+        $currentId = $this->game->currentPlayerId();
+        foreach ($players as $id => $player) {
+            if ($id === $currentId) {
+                continue;
+            }
+
+            $this->page->insert_block('plaintings_block', [
+                'trans_player_paintings' => self::_(sprintf('%s paintings', $player['player_name'])),
+                'player_id' => $player['player_id'],
+            ]);
+        }
     }
 }

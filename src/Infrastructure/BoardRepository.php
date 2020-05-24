@@ -81,10 +81,12 @@ SQL;
 SQL;
 
     private $table;
+    private $eventDispatcher;
 
-    public function __construct($table)
+    public function __construct($table, EventDispatcher $eventDispatcher)
     {
         $this->table = $table;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function get(): Board
@@ -135,6 +137,8 @@ SQL;
                 );
             }
             $this->$method($event, $board);
+
+            $this->eventDispatcher->dispatch($events);
         }
     }
 
@@ -191,7 +195,7 @@ SQL;
             $museState = $this->table->objectFromDB(
                 sprintf(
                     self::SELECT_FIRST_MUSE_FROM_PLAYER_HAND_QUERY,
-                    $event->playerId,
+                    $event->player->id(),
                     $muse->value(),
                     $muse->color()->value()
                 )
@@ -208,7 +212,7 @@ SQL;
             ($this->table)::dbQuery(
                 sprintf(
                     self::INSERT_PAINTING_QUERY,
-                    $event->playerId,
+                    $event->player->id(),
                     $muse->value(),
                     $muse->color()->value()
                 )

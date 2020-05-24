@@ -298,4 +298,9 @@ class Montmartre extends Table
         self::reattributeColorsBasedOnPreferences($players, $gameinfos['player_colors']);
         self::reloadPlayersBasicInfos();
     }
+
+    public function players(): array
+    {
+        return $this->collectionFromDB('SELECT player_id, player_name FROM player;');
+    }
 }
