@@ -6,6 +6,8 @@ namespace GBProd\Montmartre\Domain;
 
 final class Color
 {
+    private $color;
+
     private const GREEN = 'green';
     private const BLUE = 'blue';
     private const YELLOW = 'yellow';

@@ -1,0 +1,23 @@
+{
+  "name": "montmartre",
+  "version": "1.0.0",
+  "description": "",
+  "main": "montmartre.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.11.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gbprod/montmartre.git"
+  },
+  "author": "gbprod <contact@gb-prod.fr>",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/gbprod/montmartre/issues"
+  },
+  "homepage": "https://github.com/gbprod/montmartre#readme"
+}

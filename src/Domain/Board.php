@@ -15,6 +15,7 @@ final class Board
     private $collectors;
     private $gazettes;
     private $decks;
+    private $players;
 
     private function __construct(
         Collectors $collectors,

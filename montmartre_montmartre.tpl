@@ -35,12 +35,22 @@
   </div>
   <div class="whiteblock">
     <h3>{trans_your_paintings}</h3>
-    <div id="player-paintings" class="paintings"></div>
+    <div id="player-paintings" class="paintings">
+      <div id="player-paintings-green" class="painting"></div>
+      <div id="player-paintings-blue" class="painting"></div>
+      <div id="player-paintings-pink" class="painting"></div>
+      <div id="player-paintings-yellow" class="painting"></div>
+    </div>
   </div>
   <!-- BEGIN plaintings_block -->
   <div class="whiteblock">
     <h3>{trans_player_paintings}</h3>
-    <div id="player-{player_id}-paintings" class="paintings"></div>
+    <div id="player-{player_id}-paintings" class="paintings">
+      <div id="player-{player_id}-paintings-green" class="painting"></div>
+      <div id="player-{player_id}-paintings-blue" class="painting"></div>
+      <div id="player-{player_id}-paintings-pink" class="painting"></div>
+      <div id="player-{player_id}-paintings-yellow" class="painting"></div>
+    </div>
   </div>
   <!-- END plaintings_block -->
 </div>

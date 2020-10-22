@@ -61,11 +61,13 @@ final class GetPlayerSituationHandler
                             return $muse->toArray();
                         }, $player->paintings()->muses()),
                     ];
-                },
-                array_merge(
-                    [$board->players()->active()],
-                    $board->players()->others()
-                )
+                    },
+                $board->players()->active()->id() !== $board->players()->current()->id() ?
+                    array_merge(
+                        [$board->players()->active()],
+                        $board->players()->others()
+                    )
+                    : $board->players()->others()
             ),
         ];
     }

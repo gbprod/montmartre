@@ -2,9 +2,10 @@
 
 use GBProd\Montmartre\Application\PaintAction;
 use GBProd\Montmartre\Application\PaintHandler;
-use GBProd\Montmartre\Domain\CantPaint2MusesIfSumMoreThan5;
-use GBProd\Montmartre\Domain\CantPaintMoreThan2Muses;
+use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
+use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Color;
+use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\MuseNotInHand;
 
@@ -57,7 +58,9 @@ class action_montmartre extends APP_GameAction
         } catch (CantPaintMoreThan2Muses $e) {
             throw new BgaUserException(_("You can't paint more than 2 muses in one turn"));
         } catch (CantPaint2MusesIfSumMoreThan5 $e) {
-            throw new BgaUserException(_("If you paint 2 muses, th sum of their values can't be more than 5"));
+            throw new BgaUserException(_("If you paint 2 muses, the sum of their values can't be more than 5"));
+        } catch (ShouldPaintAtLeastOneMuse $e) {
+            throw new BgaUserException(_("You should select at least one Muse"));
         }
 
 
@@ -87,4 +90,10 @@ class action_montmartre extends APP_GameAction
 
         return Muse::painted(Color::$color(), $value);
     }
+
+    public function sellOff()
+    {
+        self::setAjaxMode();
+
+   }
 }

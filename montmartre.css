@@ -43,7 +43,6 @@
   width: 134px;
 }
 
-.paintings {
-  position: relative;
-  height: 225px;
+.painting:empty {
+    height: 0px !important;
 }

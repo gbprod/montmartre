@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS `gazettes` (
   `nb_diff` int(2) unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE IF NOT EXISTS `deck_cards` (
   `id` int(2) PRIMARY KEY AUTO_INCREMENT,
   `deck_number` int(2) unsigned NOT NULL,

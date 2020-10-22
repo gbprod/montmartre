@@ -8,6 +8,7 @@ final class Players implements \IteratorAggregate
 {
     private $current;
     private $others;
+    private $active;
 
     private function __construct(?Player $current, ?Player $active, array $others)
     {
