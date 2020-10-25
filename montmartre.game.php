@@ -13,6 +13,7 @@ include(__DIR__ . '/vendor/autoload.php');
 
 use GBProd\Montmartre\Application\GetPlayerSituationHandler;
 use GBProd\Montmartre\Application\GetPlayerSituationQuery;
+use GBProd\Montmartre\Application\NextPlayerHandler;
 use GBProd\Montmartre\Application\StartNewGameHandler;
 use Psr\Container\ContainerInterface;
 
@@ -302,5 +303,10 @@ class Montmartre extends Table
     public function players(): array
     {
         return $this->collectionFromDB('SELECT player_id, player_name FROM player;');
+    }
+
+    public function nextPlayer(): void
+    {
+        $this->getContainer()->get(NextPlayerHandler::class)();
     }
 }

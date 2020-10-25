@@ -4,6 +4,8 @@ use GBProd\Montmartre\Application\PaintAction;
 use GBProd\Montmartre\Application\PaintHandler;
 use GBProd\Montmartre\Application\SellOffAction;
 use GBProd\Montmartre\Application\SellOffHandler;
+use GBProd\Montmartre\Application\NextPlayerAction;
+use GBProd\Montmartre\Application\NextPlayerHandler;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Color;
@@ -108,12 +110,5 @@ class action_montmartre extends APP_GameAction
         // }
 
         self::ajaxResponse();
-    }
-
-    public function nextPlayer(): void
-    {
-        $this->game->getContainer()->get(ChangePlayerHandler::class)(
-            ChangePlayerAction::next()
-        );
     }
 }

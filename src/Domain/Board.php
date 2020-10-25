@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Domain;
 
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
+use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
@@ -20,6 +21,7 @@ final class Board
     private $collectors;
     private $gazettes;
     private $decks;
+    /** @var Players */
     private $players;
 
     private function __construct(
@@ -105,15 +107,16 @@ final class Board
                             $carry[0] = Player::fromState($item);
                         }
 
-                        if ($item['player_id'] == $state['current_player']) {
+                        if ($item['player_id'] == $state['active_player']) {
                             $carry[1] = Player::fromState($item);
                         }
 
-                        if (
-                            $item['player_id'] != $state['current_player']
-                            && $item['player_id'] != $state['current_player']
-                        ) {
-                            $carry[2][] = Player::fromState($item);
+                        if ($item['player_id'] == $state['next_player']) {
+                            $carry[2] = Player::fromState($item);
+                        }
+
+                        if ($item['player_id'] != $state['current_player']) {
+                            $carry[3][] = Player::fromState($item);
                         }
 
                         return $carry;
@@ -182,5 +185,14 @@ final class Board
             $this->players()->current(),
             ...$muses
         ));
+    }
+
+    public function nextPlayer(): void
+    {
+        $this->players = $this->players->toNext();
+
+        $this->recordThat(
+            new PlayerHasChanged($this->players->current())
+        );
     }
 }

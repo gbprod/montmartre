@@ -7,24 +7,26 @@ namespace GBProd\Montmartre\Domain;
 final class Players implements \IteratorAggregate
 {
     private $current;
+    private $next;
     private $others;
     private $active;
 
-    private function __construct(?Player $current, ?Player $active, array $others)
+    private function __construct(?Player $current, ?Player $active, ?Player $next, array $others)
     {
         $this->current = $current;
         $this->active = $active;
+        $this->next = $next;
         $this->others = $others;
     }
 
     public static function place(Player ...$players): Players
     {
-        return new self(null, null, $players);
+        return new self(null, null, null, $players);
     }
 
-    public static function from(Player $current, Player $active, array $others): Players
+    public static function from(Player $current, Player $active, Player $next, array $others): Players
     {
-        return new self($current, $active, $others);
+        return new self($current, $active, $next, $others);
     }
 
     public function current(): ?Player
@@ -48,6 +50,16 @@ final class Players implements \IteratorAggregate
             [$this->current()],
             $this->others()
         ));
+    }
+
+    public function toNext(): self
+    {
+        return new self(
+            $this->next, 
+            $this->active, 
+            null, 
+            $this->others
+        );
     }
 
     public function getIterator(): \Traversable

@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Infrastructure;
 
 use GBProd\Montmartre\Domain\Board;
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
+use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 
@@ -119,6 +120,7 @@ SQL;
 
         $state['current_player'] = $this->table->currentPlayerId();
         $state['active_player'] = $this->table->activePlayerId();
+        $state['next_player'] = $this->table->getPlayerAfter($state['active_player']);
 
         $players = $this->table->loadPlayersBasicInfos();
         $state['players'] = array_map(
@@ -256,5 +258,10 @@ SQL;
                 sprintf(self::DELETE_MUSE_FROM_PAINTINGS_QUERY, $museState['id'])
             );
         }
+    }
+    
+    private function applyPlayerHasChanged(PlayerHasChanged $event, Board $board): void
+    {
+
     }
 }
