@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Infrastructure\Listener;
 
-use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
+use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Muse;
 
-final class NotifyWhenPlayerHasPaint
+final class NotifyWhenPlayerHasSoldOff
 {
     private $table;
 
@@ -16,11 +16,11 @@ final class NotifyWhenPlayerHasPaint
         $this->table = $table;
     }
 
-    public function __invoke(PlayerHasPaint $event): void
+    public function __invoke(PlayerHasSoldOff $event): void
     {
         $this->table->notifyAllPlayers(
-            'PlayerHasPaint',
-            clienttranslate('${player_name} has paint : ${musesAsString}'),
+            'PlayerHasSoldOff',
+            clienttranslate('${player_name} has sold off : ${musesAsString}'),
             [
                 'player_id' => $event->player()->id(),
                 'player_name' => $event->player()->name(),

@@ -2,12 +2,14 @@
 
 use GBProd\Montmartre\Application\PaintAction;
 use GBProd\Montmartre\Application\PaintHandler;
+use GBProd\Montmartre\Application\SellOffAction;
+use GBProd\Montmartre\Application\SellOffHandler;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Color;
 use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
 use GBProd\Montmartre\Domain\Muse;
-use GBProd\Montmartre\Domain\MuseNotInHand;
+use GBProd\Montmartre\Domain\Exception\MuseNotInHand;
 
 /**
  *------
@@ -39,15 +41,7 @@ class action_montmartre extends APP_GameAction
 
         $this->game->checkAction('paintAction');
 
-        $cards = array_map(
-            [$this, 'createMuseCardFromId'],
-            array_filter(
-                array_map(
-                    'intval',
-                    explode(',', self::getArg("cards", AT_numberlist, true))
-                )
-            )
-        );
+        $cards = $this->createMuseCardsFromArg('cards'); 
 
         try {
             $this->game->getContainer()->get(PaintHandler::class)(
@@ -63,8 +57,18 @@ class action_montmartre extends APP_GameAction
             throw new BgaUserException(_("You should select at least one Muse"));
         }
 
-
         self::ajaxResponse();
+    }
+
+    private function createMuseCardsFromArg(string $arg)
+    {
+        return array_map(
+            [$this, 'createMuseCardFromId'],
+            array_map(
+                'intval',
+                explode(',', self::getArg($arg, AT_numberlist, true))
+            )
+        );
     }
 
     private function createMuseCardFromId(int $id)
@@ -95,5 +99,21 @@ class action_montmartre extends APP_GameAction
     {
         self::setAjaxMode();
 
-   }
+        $cards = $this->createMuseCardsFromArg('cards'); 
+
+        // try {
+            $this->game->getContainer()->get(SellOffHandler::class)(
+                SellOffAction::fromMuses(...$cards)
+            );
+        // }
+
+        self::ajaxResponse();
+    }
+
+    public function nextPlayer(): void
+    {
+        $this->game->getContainer()->get(ChangePlayerHandler::class)(
+            ChangePlayerAction::next()
+        );
+    }
 }

@@ -408,9 +408,7 @@ define([
                 return item.type;
             });
 
-            this.ajaxcall(
-                "/montmartre/montmartre/paint.html",
-                {
+            this.ajaxcall("/montmartre/montmartre/paint.html", {
                     cards: cards.join(","),
                     lock: true,
                 },
@@ -438,6 +436,46 @@ define([
             if (!this.checkAction("sellOffAction")) {
                 return;
             }
+
+            var selected = undefined;
+            for (const color of ["green", "yellow", "blue", "pink"]) {
+                let s = this.paintingsStocks["current"][color].getSelectedItems();
+                if (s.length > 0 && selected !== undefined) {
+                    this.showMessage(
+                        _("You should select only same color muses"),
+                        "info"
+                    );
+
+                    return;
+                }
+
+                if (s.length > 0) {
+                    selected = s;
+                }
+            }
+
+            if (selected === undefined) {
+                this.showMessage(
+                    _("You should select at least one Muse to sell off"),
+                    "info"
+                );
+
+                return;
+            }
+ 
+            var cards = selected.map(function (item) {
+                return item.type;
+            });
+
+            this.ajaxcall("/montmartre/montmartre/selloff.html", {
+                    cards: cards.join(","),
+                    lock: true,
+                },
+                this,
+                function (result) {},
+                function (isError) {}
+            );
+ 
         },
 
         ///////////////////////////////////////////////////
@@ -448,6 +486,9 @@ define([
 
             dojo.subscribe("PlayerHasPaint", this, "onPlayerHasPaint");
             this.notifqueue.setSynchronous("PlayerHasPaint", 3000);
+            
+            dojo.subscribe("PlayerHasSoldOff", this, "onPlayerHasSoldOff");
+            this.notifqueue.setSynchronous("PlayerHasSoldOff", 3000);
         },
 
         onPlayerHasPaint: function (event) {
@@ -468,6 +509,20 @@ define([
                     );
                     this.paintingsStocks[event.args.player_id][event.args.muses[index].color].addToStock(id);
                 }
+            }
+        },
+        
+        onPlayerHasSoldOff: function (event) {
+            const playerIndex = this.isCurrentPlayerActive() 
+                ? "current" 
+                : event.args.player_id;
+
+            for (let index = 0; index < event.args.muses.length; ++index) {
+                const id = this.museCardId(
+                    event.args.muses[index].color,
+                    event.args.muses[index].value
+                );
+                this.paintingsStocks[playerIndex][event.args.muses[index].color].removeFromStock(id);
             }
         },
     });

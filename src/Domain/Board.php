@@ -7,6 +7,11 @@ namespace GBProd\Montmartre\Domain;
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
+use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
+use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
+use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
+use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
+use GBProd\Montmartre\Domain\Exception\ShouldSellOffAtLeastOneMuse;
 
 final class Board
 {
@@ -141,11 +146,39 @@ final class Board
 
     public function paint(Muse ...$muses): void
     {
+        if (count($muses) <= 0) {
+            throw new ShouldPaintAtLeastOneMuse();
+        }
+
+        if (count($muses) > 2) {
+            throw new CantPaintMoreThan2Muses();
+        }
+
+        if (count($muses) === 2 && ($muses[0]->value() + $muses[1]->value()) > 5) {
+            throw new CantPaint2MusesIfSumMoreThan5();
+        }
+ 
         $this->players()
             ->current()
             ->paint(...$muses);
 
         $this->recordThat(new PlayerHasPaint(
+            $this->players()->current(),
+            ...$muses
+        ));
+    }
+
+    public function sellOff(Muse ...$muses): void
+    {
+        if (count($muses) <= 0) {
+            throw new ShouldSellOffAtLeastOneMuse();
+        }
+
+        $this->players()
+            ->current()
+            ->sellOff(...$muses);
+
+        $this->recordThat(new PlayerHasSoldOff(
             $this->players()->current(),
             ...$muses
         ));

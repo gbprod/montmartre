@@ -7,7 +7,7 @@ namespace GBProd\Montmartre\Domain\Event;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
 
-final class PlayerHasPaint implements Event
+final class PlayerHasSoldOff implements Event
 {
     private $player;
     private $muses;
@@ -25,7 +25,7 @@ final class PlayerHasPaint implements Event
         return $this->muses;
     }
 
-    public function player()
+    public function player(): Player
     {
         return $this->player;
     }

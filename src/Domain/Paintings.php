@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Domain;
 
+use GBProd\Montmartre\Domain\Exception\MuseNotPainted;
+
 final class Paintings
 {
     private const MAX_PAINTINGS = 6;
@@ -37,5 +39,24 @@ final class Paintings
         $self->muses[] = $muse;
 
         return $self;
+    }
+
+    public function withDrawed(Muse $muse): self
+    {
+        $found = false;
+        $newMuses = [];
+        for ($index = 0; $index < count($this->muses); $index++) {
+            if (!$found && $muse->equals($this->muses[$index])) {
+                $found = true;
+            } else {
+                $newMuses[] = $this->muses[$index];
+            }
+        }
+
+        if (!$found) {
+            throw new MuseNotPainted();
+        }
+
+        return Paintings::fromMuses(...$newMuses);
     }
 }

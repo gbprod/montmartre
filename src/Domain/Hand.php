@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Domain;
 
+use GBProd\Montmartre\Domain\Exception\MuseNotInHand;
+
 final class Hand
 {
     private $muses;

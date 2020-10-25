@@ -45,7 +45,7 @@ $machinestates = [
         'type' => 'activeplayer',
 
         'possibleactions' => ['sellOffAction'],
-        'transitions' => ['playerTurn' => 2]
+        'transitions' => ['nextPlayer' => 5]
     ],
 
     4 => [
@@ -56,6 +56,15 @@ $machinestates = [
 
         'possibleactions' => ['sellOffAction'],
         'transitions' => ['playerTurn' => 2]
+    ],
+
+    5 => [
+        'name' => 'nextPlayer',
+        'description' => '',
+        'type' => 'game',
+        'action' => 'nextPlayer',
+        'updateGameProgression' => true,
+        'transitions' => ['playerTurn' => 2],
     ],
     /*
         Examples:
