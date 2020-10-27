@@ -98,16 +98,16 @@ final class Deck implements \Countable
     }
 
 
-    public function draw(int $quatity): array
+    public function pick(int $quatity): array
     {
         if (empty($this->muses)) {
             throw new EmptyDeck();
         }
 
-        $drawed = array_slice($this->muses, 0, $quatity);
+        $picked = array_slice($this->muses, 0, $quatity);
 
         $this->muses = array_slice($this->muses, $quatity);
 
-        return $drawed;
+        return $picked;
     }
 }

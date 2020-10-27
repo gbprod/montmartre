@@ -17,6 +17,6 @@ final class UpdateGameStateOnPlayerHasSoldOff
 
     public function __invoke(PlayerHasSoldOff $event): void
     {
-        $this->table->gamestate->nextState('nextPlayer');
+        $this->table->gamestate->nextState('pickState');
     }
 }

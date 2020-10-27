@@ -9,6 +9,7 @@ use GBProd\Montmartre\Application\NextPlayerHandler;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Color;
+use GBProd\Montmartre\Domain\Exception\MuseNotPainted;
 use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Exception\MuseNotInHand;
@@ -103,11 +104,20 @@ class action_montmartre extends APP_GameAction
 
         $cards = $this->createMuseCardsFromArg('cards'); 
 
-        // try {
+        try {
             $this->game->getContainer()->get(SellOffHandler::class)(
                 SellOffAction::fromMuses(...$cards)
             );
-        // }
+        } catch (MuseNotPainted $e) {
+            throw new BgaUserException(self::_('You don\'t have painted this muse'));
+        }
+
+        self::ajaxResponse();
+    }
+
+    public function pick()
+    {
+        self::setAjaxMode();
 
         self::ajaxResponse();
     }

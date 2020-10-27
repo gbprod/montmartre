@@ -12,7 +12,9 @@ final class Player
 
     private $id;
     private $name;
+    /** @var Hand */
     private $hand;
+    /** @var Paintings */
     private $paintings;
 
     private function __construct(
@@ -93,7 +95,7 @@ final class Player
     public function paint(Muse ...$muses): void
     {
         foreach ($muses as $muse) {
-            $this->hand = $this->hand()->withDrawed($muse);
+            $this->hand = $this->hand()->withPicked($muse);
             $this->paintings = $this->paintings->withAppended($muse);
         }
     }
@@ -101,7 +103,7 @@ final class Player
     public function sellOff(Muse ...$muses): void
     {
         foreach ($muses as $muse) {
-            $this->paintings = $this->paintings->withDrawed($muse);
+            $this->paintings = $this->paintings->withPicked($muse);
         }
     }
 

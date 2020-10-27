@@ -41,7 +41,7 @@ final class Paintings
         return $self;
     }
 
-    public function withDrawed(Muse $muse): self
+    public function withPicked(Muse $muse): self
     {
         $found = false;
         $newMuses = [];

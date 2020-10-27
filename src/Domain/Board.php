@@ -46,7 +46,7 @@ final class Board
                     return Player::named(
                         $playerId,
                         $playerState['player_name'],
-                        Hand::containing(...$initialDeck->draw(5)),
+                        Hand::containing(...$initialDeck->pick(5)),
                         Paintings::empty()
                     );
                 },

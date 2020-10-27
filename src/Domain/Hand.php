@@ -29,7 +29,7 @@ final class Hand
         return $this->muses;
     }
 
-    public function withDrawed(Muse $muse): self
+    public function withPicked(Muse $muse): self
     {
         $found = false;
         $newMuses = [];

@@ -45,7 +45,7 @@ $machinestates = [
         'type' => 'activeplayer',
 
         'possibleactions' => ['sellOffAction'],
-        'transitions' => ['nextPlayer' => 5]
+        'transitions' => ['pickState' => 6]
     ],
 
     4 => [
@@ -55,7 +55,7 @@ $machinestates = [
         'type' => 'activeplayer',
 
         'possibleactions' => ['sellOffAction'],
-        'transitions' => ['playerTurn' => 2]
+        'transitions' => ['pickState' => 6]
     ],
 
     5 => [
@@ -66,7 +66,18 @@ $machinestates = [
         'updateGameProgression' => true,
         'transitions' => ['playerTurn' => 2],
     ],
-    /*
+ 
+    6 => [
+        'name' => 'pickState',
+        'description' => clienttranslate('${actplayer} must pick'),
+        'descriptionmyturn' => clienttranslate('${you} must pick, select a deck'),
+        'type' => 'activeplayer',
+
+        'possibleactions' => ['pickAction'],
+        'transitions' => ['playerTurn' => 2]
+    ],
+
+   /*
         Examples:
 
         2 => array(

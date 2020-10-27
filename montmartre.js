@@ -478,6 +478,15 @@ define([
  
         },
 
+        pickAction: function () {
+            console.log("pickAction");
+            dojo.stopEvent(event);
+
+            if (!this.checkAction("pickAction")) {
+                return;
+            }
+        },
+
         ///////////////////////////////////////////////////
         //// Reaction to cometD notifications
 
