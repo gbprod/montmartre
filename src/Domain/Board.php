@@ -47,7 +47,8 @@ final class Board
                         $playerId,
                         $playerState['player_name'],
                         Hand::containing(...$initialDeck->pick(5)),
-                        Paintings::empty()
+                        Paintings::empty(),
+                        Wallet::empty()
                     );
                 },
                 $players,
@@ -160,7 +161,7 @@ final class Board
         if (count($muses) === 2 && ($muses[0]->value() + $muses[1]->value()) > 5) {
             throw new CantPaint2MusesIfSumMoreThan5();
         }
- 
+
         $this->players()
             ->current()
             ->paint(...$muses);

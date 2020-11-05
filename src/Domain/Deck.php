@@ -54,15 +54,6 @@ final class Deck implements \Countable
         return count($this->muses());
     }
 
-    public function pick(): Muse
-    {
-        if (empty($this->muses)) {
-            throw new EmptyDeck();
-        }
-
-        return array_shift($this->muses);
-    }
-
     public function sliceToThird(): Deck
     {
         if (empty($this->muses)) {
@@ -98,8 +89,12 @@ final class Deck implements \Countable
     }
 
 
-    public function pick(int $quatity): array
+    public function pick(int $quatity = 1): array
     {
+        if ($quatity < 1) {
+            throw new \InvalidArgumentException('Should pick at least one card');
+        }
+
         if (empty($this->muses)) {
             throw new EmptyDeck();
         }

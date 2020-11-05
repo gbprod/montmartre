@@ -44,15 +44,11 @@ final class GetPlayerSituationHandler
             ],
             'current_player' => [
                 'id' => $board->players()->current()->id(),
-                'name' => $board->players()->current()->name(),
                 'hand' => array_map(function (Muse $muse) {
                     return $muse->toArray();
                 }, $board->players()->current()->hand()->muses()),
-                'paintings' => array_map(function (Muse $muse): array {
-                    return $muse->toArray();
-                }, $board->players()->current()->paintings()->muses()),
             ],
-            'others_players' => array_map(
+            'players' => array_map(
                 function (Player $player) {
                     return [
                         'id' => $player->id(),
@@ -60,14 +56,10 @@ final class GetPlayerSituationHandler
                         'paintings' => array_map(function (Muse $muse): array {
                             return $muse->toArray();
                         }, $player->paintings()->muses()),
+                        'wallet' => $player->wallet()->amount(),
                     ];
-                    },
-                $board->players()->active()->id() !== $board->players()->current()->id() ?
-                    array_merge(
-                        [$board->players()->active()],
-                        $board->players()->others()
-                    )
-                    : $board->players()->others()
+                },
+                $board->players()->all()
             ),
         ];
     }

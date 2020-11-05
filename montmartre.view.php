@@ -40,6 +40,7 @@ class view_montmartre_montmartre extends game_view
     {
         $this->tpl['trans_your_hand'] = self::_('Your hand');
         $this->tpl['trans_your_paintings'] = self::_('Your paintings');
+        $this->tpl['current_player_id'] = $this->game->currentPlayerId();
 
         $this->page->begin_block('montmartre_montmartre', 'plaintings_block');
 

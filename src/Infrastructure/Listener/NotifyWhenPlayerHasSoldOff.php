@@ -24,6 +24,7 @@ final class NotifyWhenPlayerHasSoldOff
             [
                 'player_id' => $event->player()->id(),
                 'player_name' => $event->player()->name(),
+                'player_score' => $event->player()->wallet()->amount(),
                 'musesAsString' => implode(', ', array_map(function (Muse $muse): string {
                     return sprintf(
                         '%s %s',

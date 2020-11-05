@@ -86,7 +86,24 @@ class Montmartre extends Table
      */
     protected function getAllDatas()
     {
-        return ($this->getContainer()->get(GetPlayerSituationHandler::class))(GetPlayerSituationQuery::byId(self::getCurrentPlayerId()));
+        $infraPlayers = self::loadPlayersBasicInfos(); 
+        $data = ($this->getContainer()->get(GetPlayerSituationHandler::class))(GetPlayerSituationQuery::byId(self::getCurrentPlayerId()));
+
+
+        $data['players'] = array_reduce(
+            $data['players'], 
+            function ($carry, $player) {
+                $carry[$player['id']] = array_merge(
+                    $player, 
+                    $carry[$player['id']]
+                );
+
+                return $carry;
+            }, 
+            $infraPlayers
+        );
+
+        return $data;
     }
 
     /*

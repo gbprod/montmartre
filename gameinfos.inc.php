@@ -7,7 +7,6 @@
     See documentation about this file here:
     http://en.doc.boardgamearena.com/Game_meta-information:_gameinfos.inc.php
 */
-
 $gameinfos = [
     // Name of the game in English (will serve as the basis for translation)
     'game_name' => 'Montmartre',

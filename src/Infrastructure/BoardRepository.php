@@ -12,7 +12,6 @@ use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 
 final class BoardRepository
 {
-
     const SELECT_QUERY = <<<SQL
         SELECT * FROM board WHERE id=1;
 SQL;
@@ -26,6 +25,11 @@ SQL;
             collector_pink
         )
         VALUES (1, %s, %s, %s, %s);
+SQL;
+
+    const SELECT_PLAYERS_QUERY = <<<SQL
+        SELECT player_id, player_name, player_no, player_score
+        FROM player;
 SQL;
 
     const INSERT_GAZETTES_QUERY = <<<SQL
@@ -83,7 +87,7 @@ SQL;
 SQL;
 
     const SELECT_FIRST_MUSE_FROM_PLAYER_PAINTINGS_QUERY = <<<SQL
-     SELECT *
+        SELECT *
         FROM paintings
         WHERE player_id = %s
           AND muse_value = %s
@@ -95,7 +99,11 @@ SQL;
         DELETE FROM paintings WHERE id = %s;
 SQL;
 
-
+    const UPDATE_SCORE_QUERY = <<<SQL
+        UPDATE player
+        SET player_score = %s 
+        WHERE player_id = %s;
+SQL;
 
     private $table;
     private $eventDispatcher;
@@ -122,7 +130,8 @@ SQL;
         $state['active_player'] = $this->table->activePlayerId();
         $state['next_player'] = $this->table->getPlayerAfter($state['active_player']);
 
-        $players = $this->table->loadPlayersBasicInfos();
+        $players = $this->table->collectionFromDB(self::SELECT_PLAYERS_QUERY);
+
         $state['players'] = array_map(
             function ($player, $playerId) {
                 $player['hand'] = $this->table->collectionFromDB(
@@ -132,6 +141,8 @@ SQL;
                 $player['paintings'] = $this->table->collectionFromDB(
                     sprintf(self::SELECT_PLAYER_PAINTINGS_QUERY, $playerId)
                 );
+
+                $player['wallet'] = $player['player_score'];
 
                 return $player;
             },
@@ -258,6 +269,14 @@ SQL;
                 sprintf(self::DELETE_MUSE_FROM_PAINTINGS_QUERY, $museState['id'])
             );
         }
+
+        ($this->table)::dbQuery(
+            sprintf(
+                self::UPDATE_SCORE_QUERY, 
+                $event->player()->wallet()->amount(),
+                $event->player()->id()
+            )
+        );
     }
     
     private function applyPlayerHasChanged(PlayerHasChanged $event, Board $board): void

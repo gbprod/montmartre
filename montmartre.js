@@ -39,6 +39,7 @@ define([
         setup: function (gamedatas) {
             console.log("Starting game setup");
 
+            window.gamedatas = gamedatas; // for debug
             this.paintingsStocks = Array();
 
             this.setupCollectors(gamedatas);
@@ -60,7 +61,7 @@ define([
                 pink: new ebg.stock(),
             };
 
-            for (const color of ["green", "yellow", "blue", "pink"]) {
+            for (var color of ["green", "yellow", "blue", "pink"]) {
                 this.collectors[color].create(
                     this,
                     $("collectors-" + color),
@@ -74,10 +75,10 @@ define([
                 this.collectors[color].setOverlap(1.5, 0);
             }
 
-            for (const color of ["green", "yellow", "blue", "pink"]) {
-                for (const value of [2, 4, 6, 8, 10]) {
+            for (var color of ["green", "yellow", "blue", "pink"]) {
+                for (var value of [2, 4, 6, 8, 10]) {
                     if (gamedatas.collectors[color] <= value) {
-                        const cardId = this.collectorCardId(color, value);
+                        var cardId = this.collectorCardId(color, value);
                         this.collectors[color].addItemType(
                             cardId,
                             10 - value,
@@ -107,7 +108,7 @@ define([
         setupGazettes: function (gamedatas) {
             this.gazettes = {};
 
-            for (let index = 2; index < [2, 3, 4].length + 2; index++) {
+            for (var index = 2; index < [2, 3, 4].length + 2; index++) {
                 this.gazettes[index] = new ebg.stock();
                 this.gazettes[index].create(
                     this,
@@ -123,9 +124,9 @@ define([
                 this.gazettes[index].setOverlap(0.1, 30);
             }
 
-            for (let index = 0; index < gamedatas.gazettes.length; index++) {
-                const gazette = gamedatas.gazettes[index];
-                const cardId = this.gazetteCardId(gazette.nbDiff, gazette.value);
+            for (var index = 0; index < gamedatas.gazettes.length; index++) {
+                var gazette = gamedatas.gazettes[index];
+                var cardId = this.gazetteCardId(gazette.nbDiff, gazette.value);
                 this.gazettes[gazette.nbDiff].addItemType(
                     cardId,
                     -gazette.value,
@@ -144,7 +145,7 @@ define([
         setupDecks: function (gamedatas) {
             this.decks = {};
 
-            for (let index = 1; index < [1, 2, 3].length + 1; index++) {
+            for (var index = 1; index < [1, 2, 3].length + 1; index++) {
                 this.decks[index] = this.createMusesStock("deck-" + index);
                 this.decks[index].item_margin = 0;
                 this.decks[index].setOverlap(1.5, 0);
@@ -157,7 +158,7 @@ define([
                 this.decks[index].addToStock(cardId);
 
                 for (
-                    let countBacks = 1;
+                    var countBacks = 1;
                     countBacks < Math.min(gamedatas.decks[index].count, 6);
                     countBacks++
                 ) {
@@ -216,7 +217,7 @@ define([
             this.playerHand = this.createMusesStock("player-hand");
             this.playerHand.setSelectionAppearance("class");
             for (
-                let index = 0;
+                var index = 0;
                 index < gamedatas.current_player.hand.length;
                 index++
             ) {
@@ -234,8 +235,8 @@ define([
 
             stock.image_items_per_row = 9;
 
-            for (const color of ["green", "blue", "pink", "yellow"]) {
-                for (const value of [0, 1, 2, 3, 4, 5, 6, 7, 8]) {
+            for (var color of ["green", "blue", "pink", "yellow"]) {
+                for (var value of [0, 1, 2, 3, 4, 5, 6, 7, 8]) {
                     var cardId = this.museCardId(color, value);
 
                     stock.addItemType(
@@ -253,62 +254,27 @@ define([
         },
 
         setupPlayersPaintings: function (gamedatas) {
-            this.setupCurrentPlayerPaintings(gamedatas.current_player.paintings);
-
-            for (let index = 0; index < gamedatas.others_players.length; ++index) {
-                this.setupOtherPlayerPaintings(gamedatas.others_players[index]);
+            for (var id in gamedatas.players) {
+                this.setupPlayerPaintings(gamedatas.players[id]);
             }
         },
 
-        setupCurrentPlayerPaintings: function (paintings) {
-            this.paintingsStocks["current"] = Array();
-
-            for (const color of ["green", "yellow", "blue", "pink"]) {
-                this.paintingsStocks["current"][color] = this.createMusesStock(
-                    "player-paintings-" + color
-                );
-
-                this.paintingsStocks['current'][color].item_margin = 0;
-                this.paintingsStocks['current'][color].setOverlap(40, 0);
-                this.paintingsStocks['current'][color].setSelectionAppearance("class");
-
-                var that = this;
-                dojo.connect(
-                    this.paintingsStocks['current'][color], 
-                    'onChangeSelection', 
-                    function (controlName) {
-                        for (const c of ["green", "yellow", "blue", "pink"]) {
-                            if ("player-paintings-" + c !== controlName) {
-                                that.paintingsStocks['current'][c].unselectAll();
-                            }
-                        }
-                    }
-                );
-            }
-
-            for (let index = 0; index < paintings.length; index++) {
-                const painting = paintings[index];
-
-                this.paintingsStocks["current"][painting.color].addToStock(
-                    this.museCardId(painting.color, painting.value)
-                );
-            }
-        },
-
-        setupOtherPlayerPaintings: function (player) {
+        setupPlayerPaintings: function (player) {
             this.paintingsStocks[player.id] = Array();
 
-            for (const color of ["green", "yellow", "blue", "pink"]) {
-                this.paintingsStocks[player.id][color] = this.createMusesStock(
+            for (var color of ["green", "yellow", "blue", "pink"]) {
+                this.paintingsStocks[player['id']][color] = this.createMusesStock(
                     "player-" + player.id + "-paintings-" + color
                 );
 
                 this.paintingsStocks[player.id][color].item_margin = 0;
                 this.paintingsStocks[player.id][color].setOverlap(40, 0);
+                this.paintingsStocks[player.id][color].setSelectionMode(0);
+                this.paintingsStocks[player.id][color].setSelectionAppearance("class");
             }
 
-            for (let index = 0; index < player.paintings.length; index++) {
-                const painting = player.paintings[index];
+            for (var index = 0; index < player.paintings.length; index++) {
+                var painting = player.paintings[index];
 
                 this.paintingsStocks[player.id][painting.color].addToStock(
                     this.museCardId(painting.color, painting.value)
@@ -316,7 +282,7 @@ define([
             }
         },
 
- 
+
         ///////////////////////////////////////////////////
         //// Game & client states
 
@@ -326,12 +292,23 @@ define([
         onEnteringState: function (stateName, args) {
             console.log("Entering state: " + stateName);
 
+            if (!this.isCurrentPlayerActive()) {
+                return;
+            }
+
             switch (stateName) {
                 case "playerTurn":
+                    break;
+
+                case "paintAction":
                     this.playerHand.setSelectionMode(2);
                     break;
 
-                case "dummmy":
+
+                case "sellOffState":
+                    for (var color of ["green", "yellow", "blue", "pink"]) {
+                        this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(2);
+                    }
                     break;
             }
         },
@@ -342,12 +319,22 @@ define([
         onLeavingState: function (stateName) {
             console.log("Leaving state: " + stateName);
 
+            if (!this.isCurrentPlayerActive()) {
+                return;
+            }
+
             switch (stateName) {
+                case "playerTurn":
+                    break;
+
                 case "paintAction":
                     this.playerHand.setSelectionMode(0);
                     break;
 
-                case "dummmy":
+                case "sellOffState":
+                    for (var color of ["green", "yellow", "blue", "pink"]) {
+                        this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(0);
+                    }
                     break;
             }
         },
@@ -361,23 +348,12 @@ define([
             if (this.isCurrentPlayerActive()) {
                 switch (stateName) {
                     case "playerTurn":
-                        this.addActionButton(
-                            "paint_action_button",
-                            _("Paint"),
-                            "paintAction"
-                        );
-                        this.addActionButton(
-                            "sell_action_button", 
-                            _("Sell"), 
-                            "sellAction"
-                        );
+                        this.addActionButton("paint_action_button", _("Paint"), "paintAction");
+                        this.addActionButton("sell_action_button", _("Sell"), "sellAction");
                         break;
+
                      case "sellOffState":
-                        this.addActionButton(
-                            "selloff_action_button",
-                            _("Sell off"),
-                            "sellOffAction"
-                        );
+                        this.addActionButton("selloff_action_button", _("Sell off"), "sellOffAction");
                         break;
                 }
             }
@@ -438,8 +414,8 @@ define([
             }
 
             var selected = undefined;
-            for (const color of ["green", "yellow", "blue", "pink"]) {
-                let s = this.paintingsStocks["current"][color].getSelectedItems();
+            for (var color of ["green", "yellow", "blue", "pink"]) {
+                var s = this.paintingsStocks[this.getCurrentPlayerId()][color].getSelectedItems();
                 if (s.length > 0 && selected !== undefined) {
                     this.showMessage(
                         _("You should select only same color muses"),
@@ -462,7 +438,7 @@ define([
 
                 return;
             }
- 
+
             var cards = selected.map(function (item) {
                 return item.type;
             });
@@ -475,7 +451,7 @@ define([
                 function (result) {},
                 function (isError) {}
             );
- 
+
         },
 
         pickAction: function () {
@@ -495,44 +471,34 @@ define([
 
             dojo.subscribe("PlayerHasPaint", this, "onPlayerHasPaint");
             this.notifqueue.setSynchronous("PlayerHasPaint", 3000);
-            
+
             dojo.subscribe("PlayerHasSoldOff", this, "onPlayerHasSoldOff");
             this.notifqueue.setSynchronous("PlayerHasSoldOff", 3000);
         },
 
         onPlayerHasPaint: function (event) {
-            if (this.isCurrentPlayerActive()) {
-                for (let index = 0; index < event.args.muses.length; ++index) {
-                    const id = this.museCardId(
-                        event.args.muses[index].color,
-                        event.args.muses[index].value
-                    );
-                    this.paintingsStocks["current"][event.args.muses[index].color].addToStock(id);
-                    this.playerHand.removeFromStock(id);
-                }
-            } else {
-                for (let index = 0; index < event.args.muses.length; ++index) {
-                    const id = this.museCardId(
-                        event.args.muses[index].color,
-                        event.args.muses[index].value
-                    );
-                    this.paintingsStocks[event.args.player_id][event.args.muses[index].color].addToStock(id);
-                }
-            }
-        },
-        
-        onPlayerHasSoldOff: function (event) {
-            const playerIndex = this.isCurrentPlayerActive() 
-                ? "current" 
-                : event.args.player_id;
-
-            for (let index = 0; index < event.args.muses.length; ++index) {
-                const id = this.museCardId(
+            for (var index = 0; index < event.args.muses.length; ++index) {
+                var id = this.museCardId(
                     event.args.muses[index].color,
                     event.args.muses[index].value
                 );
-                this.paintingsStocks[playerIndex][event.args.muses[index].color].removeFromStock(id);
+                this.paintingsStocks[event.args.player_id][event.args.muses[index].color].addToStock(id);
+                if (event.args.player_id == this.getCurrentPlayerId()) {
+                    this.playerHand.removeFromStock(id);
+                }
             }
+        },
+
+        onPlayerHasSoldOff: function (event) {
+            for (var index = 0; index < event.args.muses.length; ++index) {
+                var id = this.museCardId(
+                    event.args.muses[index].color,
+                    event.args.muses[index].value
+                );
+                this.paintingsStocks[event.args.player_id][event.args.muses[index].color].removeFromStock(id);
+            }
+
+            this.scoreCtrl[event.args.player_id].toValue(event.args.player_score);
         },
     });
 });

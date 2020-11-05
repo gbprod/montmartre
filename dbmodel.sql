@@ -33,3 +33,4 @@ CREATE TABLE IF NOT EXISTS `paintings` (
   `muse_value` int(2) unsigned NOT NULL,
   `muse_color` VARCHAR(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
