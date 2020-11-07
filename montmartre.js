@@ -300,18 +300,25 @@ define([
                 case "playerTurn":
                     break;
 
-                case "paintAction":
+                case "paintState":
                     this.playerHand.setSelectionMode(2);
                     break;
 
 
-                case "sellOffState":
+                case "pickOrSellOffState":
                     for (var color of ["green", "yellow", "blue", "pink"]) {
                         this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(2);
                     }
                     break;
 
-                case "pickAction":
+
+                case "mustSellOffState":
+                    for (var color of ["green", "yellow", "blue", "pink"]) {
+                        this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(2);
+                    }
+                    break;
+
+                case "pickState":
                     for (var deck in this.decks) {
                         deck.setSelectionMode(1);
                     }
@@ -333,11 +340,17 @@ define([
                 case "playerTurn":
                     break;
 
-                case "paintAction":
+                case "paintState":
                     this.playerHand.setSelectionMode(0);
                     break;
 
-                case "sellOffState":
+                case "pickOrSellOffState":
+                    for (var color of ["green", "yellow", "blue", "pink"]) {
+                        this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(0);
+                    }
+                    break;
+
+                case "mustSellOffState":
                     for (var color of ["green", "yellow", "blue", "pink"]) {
                         this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(0);
                     }
@@ -358,9 +371,13 @@ define([
                         this.addActionButton("sell_action_button", _("Sell"), "sellAction");
                         break;
 
-                     case "sellOffState":
+                     case "pickOrSellOffState":
                         this.addActionButton("selloff_action_button", _("Sell off"), "sellOffAction");
-                        this.addActionButton("skip_selloff_action_button", _("No, thanks"), "skipSellOffAction");
+                        this.addActionButton("skip_selloff_action_button", _("No, thanks"), "skipSellOffAction", null, false, 'grey');
+                        break;
+
+                     case "mustSellOffState":
+                        this.addActionButton("selloff_action_button", _("Sell off"), "sellOffAction");
                         break;
                 }
             }
@@ -464,17 +481,13 @@ define([
             console.log("skipSellOffAction");
             dojo.stopEvent(event);
 
-            if (!this.checkAction("skipSellOffAction")) {
+            if (!this.checkAction("pickAction")) {
                 return;
             }
 
-            this.ajaxcall("/montmartre/montmartre/skipselloff.html", {
-                    lock: false,
-                },
-                this,
-                function (result) {},
-                function (isError) {}
-            );
+            this.gamedatas.gamestate.descriptionmyturn = _('You must pick, select a deck');
+            this.updatePageTitle();
+            this.removeActionButtons();
         },
 
 
@@ -486,7 +499,6 @@ define([
             if (!this.checkAction("pickAction")) {
                 return;
             }
-
 
         },
 

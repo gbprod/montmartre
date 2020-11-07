@@ -39,13 +39,13 @@ $machinestates = [
     ],
 
     3 => [
-        'name' => 'sellOffState',
-        'description' => clienttranslate('${actplayer} could sell off paintings'),
+        'name' => 'pickOrSellOffState',
+        'description' => clienttranslate('${actplayer} could sell off paintings or pick'),
         'descriptionmyturn' => clienttranslate('${you} could sell off paintings, select cards to sell off'),
         'type' => 'activeplayer',
 
-        'possibleactions' => ['sellOffAction'],
-        'transitions' => ['pickState' => 6]
+        'possibleactions' => ['sellOffAction', 'pickAction'],
+        'transitions' => ['pickState' => 6, 'playerTurn' => 2]
     ],
 
     4 => [
