@@ -66,7 +66,7 @@ $machinestates = [
         'updateGameProgression' => true,
         'transitions' => ['playerTurn' => 2],
     ],
- 
+
     6 => [
         'name' => 'pickState',
         'description' => clienttranslate('${actplayer} must pick'),

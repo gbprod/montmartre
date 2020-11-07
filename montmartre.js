@@ -310,6 +310,12 @@ define([
                         this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(2);
                     }
                     break;
+
+                case "pickAction":
+                    for (var deck in this.decks) {
+                        deck.setSelectionMode(1);
+                    }
+                    break;
             }
         },
 
@@ -354,6 +360,7 @@ define([
 
                      case "sellOffState":
                         this.addActionButton("selloff_action_button", _("Sell off"), "sellOffAction");
+                        this.addActionButton("skip_selloff_action_button", _("No, thanks"), "skipSellOffAction");
                         break;
                 }
             }
@@ -394,7 +401,7 @@ define([
             );
         },
 
-        sellAction: function () {
+        sellAction: function (event) {
             console.log("sellAction");
             dojo.stopEvent(event);
 
@@ -405,7 +412,7 @@ define([
             // TODO
         },
 
-        sellOffAction: function () {
+        sellOffAction: function (event) {
             console.log("sellOffAction");
             dojo.stopEvent(event);
 
@@ -451,16 +458,36 @@ define([
                 function (result) {},
                 function (isError) {}
             );
-
         },
 
-        pickAction: function () {
+        skipSellOffAction: function (event) {
+            console.log("skipSellOffAction");
+            dojo.stopEvent(event);
+
+            if (!this.checkAction("skipSellOffAction")) {
+                return;
+            }
+
+            this.ajaxcall("/montmartre/montmartre/skipselloff.html", {
+                    lock: false,
+                },
+                this,
+                function (result) {},
+                function (isError) {}
+            );
+        },
+
+
+
+        pickAction: function (event) {
             console.log("pickAction");
             dojo.stopEvent(event);
 
             if (!this.checkAction("pickAction")) {
                 return;
             }
+
+
         },
 
         ///////////////////////////////////////////////////

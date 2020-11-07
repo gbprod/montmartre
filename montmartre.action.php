@@ -44,7 +44,7 @@ class action_montmartre extends APP_GameAction
 
         $this->game->checkAction('paintAction');
 
-        $cards = $this->createMuseCardsFromArg('cards'); 
+        $cards = $this->createMuseCardsFromArg('cards');
 
         try {
             $this->game->getContainer()->get(PaintHandler::class)(
@@ -102,7 +102,9 @@ class action_montmartre extends APP_GameAction
     {
         self::setAjaxMode();
 
-        $cards = $this->createMuseCardsFromArg('cards'); 
+        $this->game->checkAction('sellOffAction');
+
+        $cards = $this->createMuseCardsFromArg('cards');
 
         try {
             $this->game->getContainer()->get(SellOffHandler::class)(
