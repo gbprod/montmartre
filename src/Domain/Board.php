@@ -8,9 +8,11 @@ use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
+use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
+use GBProd\Montmartre\Domain\Exception\HandFull;
 use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
 use GBProd\Montmartre\Domain\Exception\ShouldSellOffAtLeastOneMuse;
 
@@ -186,6 +188,36 @@ final class Board
             $this->players()->current(),
             ...$muses
         ));
+    }
+
+    public function pick(int $deckNumber): void
+    {
+        $player = $this->players()->current();
+        if ($player->hand()->isFull()) {
+            throw new HandFull();
+        }
+
+        $deck = $this->decks()
+            ->byNumber($deckNumber);
+
+
+        if (!$deck->isEmpty() && !$player->hand()->isFull()) {
+            $picked = $deck->pick(
+                Hand::MAX_LENGTH - $player->hand()->count()
+            );
+
+            $player->hand()->withAppended(
+                ...$picked
+            );
+        }
+
+        $this->recordThat(
+            new PlayerHasPicked(
+                $this->players()->current(),
+                $deckNumber,
+                ...$picked
+            )
+        );
     }
 
     public function nextPlayer(): void

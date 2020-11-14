@@ -24,10 +24,19 @@
       <div class="collector" id="collectors-pink"></div>
     </div>
   </div>
-  <div class="decks">
-    <div class="deck" id="deck-1"></div>
-    <div class="deck" id="deck-2"></div>
-    <div class="deck" id="deck-3"></div>
+  <div class="decks" id="decks">
+    <div class="deck-wrapper">
+      <div class="deck" id="deck-1"></div>
+      <a href="#" id="button-deck-1" data-index='1' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
+    </div>
+    <div class="deck-wrapper">
+      <div class="deck" id="deck-2"></div>
+      <a href="#" id="button-deck-2" data-index='2' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
+    </div>
+    <div class="deck-wrapper">
+        <div class="deck" id="deck-3"></div>
+        <a href="#" id="button-deck-3" data-index='3' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
+    </div>
   </div>
   <div class="whiteblock">
     <h3>{trans_your_hand}</h3>

@@ -14,6 +14,7 @@ define([
     "ebg/core/gamegui",
     "ebg/counter",
     "ebg/stock",
+    "ebg/zone",
 ], function (dojo, declare) {
     return declare("bgagame.montmartre", ebg.core.gamegui, {
         constructor: function () {
@@ -144,11 +145,13 @@ define([
 
         setupDecks: function (gamedatas) {
             this.decks = {};
+            var that = this;
 
             for (var index = 1; index < [1, 2, 3].length + 1; index++) {
                 this.decks[index] = this.createMusesStock("deck-" + index);
                 this.decks[index].item_margin = 0;
                 this.decks[index].setOverlap(1.5, 0);
+                this.decks[index].setSelectionMode(0);
 
                 var cardId = this.museCardId(
                     gamedatas.decks[index].color,
@@ -164,6 +167,11 @@ define([
                 ) {
                     this.decks[index].addToStock("back");
                 }
+
+                dojo.query("#button-deck-" + index).onclick( function(event) {
+                    that.onDeckClicked(event);
+                    return false;
+                });
             }
         },
 
@@ -282,6 +290,19 @@ define([
             }
         },
 
+        onDeckClicked: function (event) {
+            dojo.stopEvent(event);
+            var index = event.target.getAttribute('data-index');
+
+            this.ajaxcall("/montmartre/montmartre/pick.html", {
+                    deck: index,
+                    lock: true,
+                },
+                this,
+                function (result) {},
+                function (isError) {}
+            );
+        },
 
         ///////////////////////////////////////////////////
         //// Game & client states
@@ -319,9 +340,7 @@ define([
                     break;
 
                 case "pickState":
-                    for (var deck in this.decks) {
-                        deck.setSelectionMode(1);
-                    }
+                    dojo.query(".pick-button").style("display", "inline-block");
                     break;
             }
         },
@@ -348,12 +367,17 @@ define([
                     for (var color of ["green", "yellow", "blue", "pink"]) {
                         this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(0);
                     }
+                    dojo.query(".pick-button").style("display","none");
                     break;
 
                 case "mustSellOffState":
                     for (var color of ["green", "yellow", "blue", "pink"]) {
                         this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(0);
                     }
+                    break;
+
+                case "pickState":
+                    dojo.query(".pick-button").style("display","none");
                     break;
             }
         },
@@ -373,7 +397,7 @@ define([
 
                      case "pickOrSellOffState":
                         this.addActionButton("selloff_action_button", _("Sell off"), "sellOffAction");
-                        this.addActionButton("skip_selloff_action_button", _("No, thanks"), "skipSellOffAction", null, false, 'grey');
+                        this.addActionButton("skip_selloff_action_button", _("No, thanks"), "skipSellOffAction", null, false, 'gray');
                         break;
 
                      case "mustSellOffState":
@@ -488,9 +512,8 @@ define([
             this.gamedatas.gamestate.descriptionmyturn = _('You must pick, select a deck');
             this.updatePageTitle();
             this.removeActionButtons();
+            dojo.query(".pick-button").style("display", "inline-block");
         },
-
-
 
         pickAction: function (event) {
             console.log("pickAction");

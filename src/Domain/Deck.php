@@ -88,10 +88,9 @@ final class Deck implements \Countable
         return $sliceDeck;
     }
 
-
-    public function pick(int $quatity = 1): array
+    public function pick(int $quantity = 1): array
     {
-        if ($quatity < 1) {
+        if ($quantity < 1) {
             throw new \InvalidArgumentException('Should pick at least one card');
         }
 
@@ -99,10 +98,15 @@ final class Deck implements \Countable
             throw new EmptyDeck();
         }
 
-        $picked = array_slice($this->muses, 0, $quatity);
+        $picked = array_slice($this->muses, 0, $quantity);
 
-        $this->muses = array_slice($this->muses, $quatity);
+        $this->muses = array_slice($this->muses, $quantity);
 
         return $picked;
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->muses);
     }
 }

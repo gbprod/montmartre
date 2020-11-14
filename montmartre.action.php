@@ -2,6 +2,8 @@
 
 use GBProd\Montmartre\Application\PaintAction;
 use GBProd\Montmartre\Application\PaintHandler;
+use GBProd\Montmartre\Application\PickAction;
+use GBProd\Montmartre\Application\PickHandler;
 use GBProd\Montmartre\Application\SellOffAction;
 use GBProd\Montmartre\Application\SellOffHandler;
 use GBProd\Montmartre\Application\NextPlayerAction;
@@ -120,6 +122,14 @@ class action_montmartre extends APP_GameAction
     public function pick()
     {
         self::setAjaxMode();
+
+        $this->game->checkAction('pickAction');
+
+        $deck = self::getArg('deck', AT_posint, true);
+
+        $this->game->getContainer()->get(PickHandler::class)(
+            PickAction::fromDeckId($deck)
+        );
 
         self::ajaxResponse();
     }

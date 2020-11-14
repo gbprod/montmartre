@@ -57,4 +57,18 @@ final class Decks
             [$this->firstDeck, $this->secondDeck, $this->thirdDeck]
         );
     }
+
+    public function byNumber(int $number): Deck
+    {
+        switch ($number) {
+            case 1:
+                return $this->firstDeck();
+            case 2:
+                return $this->secondDeck();
+            case 3:
+                return $this->thirdDeck();
+        }
+
+        throw new \InvalidArgumentException('Invalid deck number');
+    }
 }

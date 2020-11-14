@@ -38,11 +38,19 @@
   text-align: center;
 }
 
-.deck {
+.deck-wrapper {
   display: inline-block;
   width: 134px;
 }
 
+.deck .stockitem {
+  cursor: pointer !important;
+}
+
 .painting:empty {
-    height: 0px !important;
+  height: 0px !important;
+}
+
+.pick-button {
+  display: none;
 }

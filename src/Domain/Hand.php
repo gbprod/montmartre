@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Domain;
 
+use GBProd\Montmartre\Domain\Exception\HandFull;
 use GBProd\Montmartre\Domain\Exception\MuseNotInHand;
 
 final class Hand
 {
+    const MAX_LENGTH = 5;
+
     private $muses;
 
     private function __construct(Muse ...$muses)
     {
-        if (count($muses) > 5) {
-            throw new \InvalidArgumentException("Players hand can't contains more than 5 cards");
+        if (count($muses) > self::MAX_LENGTH) {
+            throw new \InvalidArgumentException(
+                "Players hand can't contains more than 5 cards"
+            );
         }
 
         $this->muses = $muses;
@@ -46,5 +51,33 @@ final class Hand
         }
 
         return Hand::containing(...$newMuses);
+    }
+
+    public function isFull(): bool
+    {
+        return count($this->muses) >= self::MAX_LENGTH;
+    }
+
+    public function withAppended(Muse ...$muses): self
+    {
+        if ($this->isFull()) {
+            throw new HandFull();
+        }
+
+        if ((count($muses) + $this->count()) > self::MAX_LENGTH) {
+            throw new \InvalidArgumentException(
+                "Players hand can't contains more than 5 cards"
+            );
+        }
+
+        return Hand::containing(
+            ...$muses,
+            ...$this->muses
+        );
+    }
+
+    public function count(): int
+    {
+        return count($this->muses);
     }
 }

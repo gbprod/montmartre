@@ -8,6 +8,7 @@ use GBProd\Montmartre\Domain\Board;
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
+use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 
 final class BoardRepository
@@ -41,7 +42,12 @@ SQL;
         SELECT id, `value`, nb_diff FROM gazettes;
 SQL;
 
-    const INSERT_MUSE_QUERY = <<<SQL
+    const DROP_DECK = <<<SQL
+        DELETE FROM deck_cards
+        WHERE deck_number = %s;
+SQL;
+
+    const INSERT_DECK_MUSE_QUERY = <<<SQL
         INSERT INTO deck_cards (deck_number, position, muse_value, muse_color)
         VALUES (%s, %s, %s, "%s");
 SQL;
@@ -101,7 +107,7 @@ SQL;
 
     const UPDATE_SCORE_QUERY = <<<SQL
         UPDATE player
-        SET player_score = %s 
+        SET player_score = %s
         WHERE player_id = %s;
 SQL;
 
@@ -209,7 +215,7 @@ SQL;
     {
         for ($position = 0; $position < count($muses); $position++) {
             ($this->table)::dbQuery(sprintf(
-                self::INSERT_MUSE_QUERY,
+                self::INSERT_DECK_MUSE_QUERY,
                 $deckNumber,
                 $position,
                 $muses[$position]->value(),
@@ -272,15 +278,40 @@ SQL;
 
         ($this->table)::dbQuery(
             sprintf(
-                self::UPDATE_SCORE_QUERY, 
+                self::UPDATE_SCORE_QUERY,
                 $event->player()->wallet()->amount(),
                 $event->player()->id()
             )
         );
     }
-    
+
     private function applyPlayerHasChanged(PlayerHasChanged $event, Board $board): void
     {
+    }
 
+    private function applyPlayerHasPicked(PlayerHasPicked $event, Board $board): void
+    {
+        foreach ($event->muses() as $muse) {
+            ($this->table)::dbQuery(
+                sprintf(
+                    self::INSERT_PLAYERS_HANDS_QUERY,
+                    $event->player()->id(),
+                    $muse->value(),
+                    $muse->color()->value()
+                )
+            );
+        }
+
+        ($this->table)::dbQuery(
+            sprintf(
+                self::DROP_DECK,
+                $event->deckNumber()
+            )
+        );
+
+        $this->storeMuses(
+            $event->deckNumber(),
+            $board->decks()->byNumber($event->deckNumber())->muses()
+        );
     }
 }

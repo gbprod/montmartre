@@ -3,6 +3,7 @@
 use GBProd\Montmartre\Application\GetPlayerSituationHandler;
 use GBProd\Montmartre\Application\NextPlayerHandler;
 use GBProd\Montmartre\Application\PaintHandler;
+use GBProd\Montmartre\Application\PickHandler;
 use GBProd\Montmartre\Application\StartNewGameHandler;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
@@ -36,6 +37,10 @@ $containerBuilder->addDefinitions([
     ),
 
     PaintHandler::class => DI\create()->constructor(
+        DI\get(BoardRepository::class)
+    ),
+
+    PickHandler::class => DI\create()->constructor(
         DI\get(BoardRepository::class)
     ),
 

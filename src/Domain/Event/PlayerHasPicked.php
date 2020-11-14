@@ -7,16 +7,19 @@ namespace GBProd\Montmartre\Domain\Event;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
 
-final class PlayerHasPaint implements Event
+final class PlayerHasPicked implements Event
 {
     private $player;
     private $muses;
+    private $deckNumber;
 
     public function __construct(
         Player $player,
+        int $deckNumber,
         Muse ...$muses
     ) {
         $this->player = $player;
+        $this->deckNumber = $deckNumber;
         $this->muses = $muses;
     }
 
@@ -31,5 +34,10 @@ final class PlayerHasPaint implements Event
     public function player(): Player
     {
         return $this->player;
+    }
+
+    public function deckNumber(): int
+    {
+        return $this->deckNumber;
     }
 }
