@@ -214,6 +214,7 @@ final class Board
         $this->recordThat(
             new PlayerHasPicked(
                 $this->players()->current(),
+                $deck,
                 $deckNumber,
                 ...$picked
             )

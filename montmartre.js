@@ -148,30 +148,14 @@ define([
             var that = this;
 
             for (var index = 1; index < [1, 2, 3].length + 1; index++) {
-                this.decks[index] = this.createMusesStock("deck-" + index);
-                this.decks[index].item_margin = 0;
-                this.decks[index].setOverlap(1.5, 0);
-                this.decks[index].setSelectionMode(0);
+                this.setMuseInDeck(index, gamedatas.decks[index]);
 
-                var cardId = this.museCardId(
-                    gamedatas.decks[index].color,
-                    gamedatas.decks[index].value
+                dojo.query("#button-deck-" + index)
+                    .onclick( function(event) {
+                        that.onDeckClicked(event);
+                        return false;
+                    }
                 );
-
-                this.decks[index].addToStock(cardId);
-
-                for (
-                    var countBacks = 1;
-                    countBacks < Math.min(gamedatas.decks[index].count, 6);
-                    countBacks++
-                ) {
-                    this.decks[index].addToStock("back");
-                }
-
-                dojo.query("#button-deck-" + index).onclick( function(event) {
-                    that.onDeckClicked(event);
-                    return false;
-                });
             }
         },
 
@@ -194,28 +178,16 @@ define([
 
             switch (colorId) {
                 case 0:
-                    return {
-                        value: value,
-                        color: "green",
-                    };
+                    return { value: value, color: "green" };
 
                 case 1:
-                    return {
-                        value: value,
-                        color: "blue",
-                    };
+                    return { value: value, color: "blue" };
 
                 case 2:
-                    return {
-                        value: value,
-                        color: "pink",
-                    };
+                    return { value: value, color: "pink" };
 
                 case 3:
-                    return {
-                        value: value,
-                        color: "yellow",
-                    };
+                    return { value: value, color: "yellow" };
             }
 
             return undefined;
@@ -288,6 +260,12 @@ define([
                     this.museCardId(painting.color, painting.value)
                 );
             }
+        },
+
+        setMuseInDeck: function (deck, muse) {
+            document
+                .querySelector('#muse-deck-' + deck)
+                .classList = 'muse ' + muse.color + '-' + muse.value;
         },
 
         onDeckClicked: function (event) {
@@ -536,6 +514,10 @@ define([
 
             dojo.subscribe("PlayerHasSoldOff", this, "onPlayerHasSoldOff");
             this.notifqueue.setSynchronous("PlayerHasSoldOff", 3000);
+
+            dojo.subscribe("PlayerHasPicked", this, "onPlayerHasPicked");
+            this.notifqueue.setSynchronous("PlayerHasPicked", 3000);
+
         },
 
         onPlayerHasPaint: function (event) {
@@ -562,5 +544,49 @@ define([
 
             this.scoreCtrl[event.args.player_id].toValue(event.args.player_score);
         },
+
+        onPlayerHasPicked: function (event) {
+            var that = this;
+
+            for (var index = 0; index < event.args.muses.length; ++index) {
+                if (this.isCurrentPlayerActive()) {
+                    var id = this.museCardId(
+                        event.args.muses[index].color,
+                        event.args.muses[index].value
+                    );
+                    this.playerHand.addToStock(id, 'deck-' + event.args.deck_number);
+                    this.setMuseInDeck(event.args.deck_number, event.args.next_muse);
+                } else {
+                    setTimeout(function (index, event, that) {
+                        dojo.place(
+                            that.format_block( 'jstpl_muse_card', {
+                                id: 'picked-' + index,
+                                value: event.args.muses[index].value,
+                                color: event.args.muses[index].color,
+                            }),
+                            'deck-' + event.args.deck_number
+                        );
+
+                        that.slideToObjectAndDestroy(
+                            'picked-' + index,
+                            'player_board_' + event.args.player_id
+                        );
+
+                        if (index + 1 === event.args.muses.length) {
+                            that.setMuseInDeck(
+                                event.args.deck_number,
+                                event.args.next_muse
+                            );
+                        } else {
+                            that.setMuseInDeck(
+                                event.args.deck_number,
+                                event.args.muses[index + 1]
+                            );
+                        }
+                    }, index === 0 ? 0 : 1000, index, event, that);
+                }
+            }
+        },
     });
 });
+

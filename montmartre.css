@@ -38,13 +38,12 @@
   text-align: center;
 }
 
-.deck-wrapper {
+.deck {
   display: inline-block;
-  width: 134px;
-}
-
-.deck .stockitem {
-  cursor: pointer !important;
+  position: relative;
+  width: 120px;
+  height: 220px;
+  margin: 0 5px;
 }
 
 .painting:empty {
@@ -53,4 +52,131 @@
 
 .pick-button {
   display: none;
+}
+
+.muse {
+  background-image: url("img/muses.png");
+  top: 0px;
+  left: 0px;
+  width: 120px;
+  height: 220px;
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+.muse.absolute {
+    position: absolute;
+    z-index: 100;
+}
+
+.muse.green-0 {
+  background-position: 0% 0%;
+}
+.muse.green-1 {
+  background-position: -100% 0%;
+}
+.muse.green-2 {
+  background-position: -200% 0%;
+}
+.muse.green-3 {
+  background-position: -300% 0%;
+}
+.muse.green-4 {
+  background-position: -400% 0%;
+}
+.muse.green-5 {
+  background-position: -500% 0%;
+}
+.muse.green-6 {
+  background-position: -600% 0%;
+}
+.muse.green-7 {
+  background-position: -700% 0%;
+}
+.muse.green-8 {
+  background-position: -800% 0%;
+}
+
+.muse.blue-0 {
+  background-position: 0% -100%;
+}
+.muse.blue-1 {
+  background-position: -100% -100%;
+}
+.muse.blue-2 {
+  background-position: -200% -100%;
+}
+.muse.blue-3 {
+  background-position: -300% -100%;
+}
+.muse.blue-4 {
+  background-position: -400% -100%;
+}
+.muse.blue-5 {
+  background-position: -500% -100%;
+}
+.muse.blue-6 {
+  background-position: -600% -100%;
+}
+.muse.blue-7 {
+  background-position: -700% -100%;
+}
+.muse.blue-8 {
+  background-position: -800% -100%;
+}
+
+.muse.pink-0 {
+  background-position: 0% -200%;
+}
+.muse.pink-1 {
+  background-position: -100% -200%;
+}
+.muse.pink-2 {
+  background-position: -200% -200%;
+}
+.muse.pink-3 {
+  background-position: -300% -200%;
+}
+.muse.pink-4 {
+  background-position: -400% -200%;
+}
+.muse.pink-5 {
+  background-position: -500% -200%;
+}
+.muse.pink-6 {
+  background-position: -600% -200%;
+}
+.muse.pink-7 {
+  background-position: -700% -200%;
+}
+.muse.pink-8 {
+  background-position: -800% -200%;
+}
+
+.muse.yellow-0 {
+  background-position: 0% -300%;
+}
+.muse.yellow-1 {
+  background-position: -100% -300%;
+}
+.muse.yellow-2 {
+  background-position: -200% -300%;
+}
+.muse.yellow-3 {
+  background-position: -300% -300%;
+}
+.muse.yellow-4 {
+  background-position: -400% -300%;
+}
+.muse.yellow-5 {
+  background-position: -500% -300%;
+}
+.muse.yellow-6 {
+  background-position: -600% -300%;
+}
+.muse.yellow-7 {
+  background-position: -700% -300%;
+}
+.muse.yellow-8 {
+  background-position: -800% -300%;
 }

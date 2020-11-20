@@ -20,10 +20,12 @@ final class NotifyWhenPlayerHasPicked
     {
         $this->table->notifyAllPlayers(
             'PlayerHasPicked',
-            clienttranslate('${player_name} has picked : ${musesAsString}'),
+            clienttranslate('${player_name} has picked : ${musesAsString} from deck ${deck_number}'),
             [
                 'player_id' => $event->player()->id(),
                 'player_name' => $event->player()->name(),
+                'deck_number' => $event->deckNumber(),
+                'next_muse' => $event->deck()->next()->toArray(),
                 'musesAsString' => implode(', ', array_map(function (Muse $muse): string {
                     return sprintf(
                         '%s %s',

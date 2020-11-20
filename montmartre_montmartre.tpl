@@ -25,17 +25,23 @@
     </div>
   </div>
   <div class="decks" id="decks">
-    <div class="deck-wrapper">
-      <div class="deck" id="deck-1"></div>
+    <div class="deck">
+      <div id="deck-1">
+          <div id="muse-deck-1"></div>
+      </div>
       <a href="#" id="button-deck-1" data-index='1' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
     </div>
-    <div class="deck-wrapper">
-      <div class="deck" id="deck-2"></div>
+    <div class="deck">
+      <div id="deck-2">
+          <div id="muse-deck-2"></div>
+      </div>
       <a href="#" id="button-deck-2" data-index='2' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
     </div>
-    <div class="deck-wrapper">
-        <div class="deck" id="deck-3"></div>
-        <a href="#" id="button-deck-3" data-index='3' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
+    <div class="deck">
+      <div id="deck-3">
+          <div id="muse-deck-3"></div>
+      </div>
+      <a href="#" id="button-deck-3" data-index='3' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
     </div>
   </div>
   <div class="whiteblock">
@@ -64,6 +70,8 @@
   <!-- END plaintings_block -->
 </div>
 
-<script type="text/javascript"></script>
+<script type="text/javascript">
+var jstpl_muse_card='<div class="muse absolute ${color}-${value}" id="${id}"></div>';
+</script>
 
 {OVERALL_GAME_FOOTER}
