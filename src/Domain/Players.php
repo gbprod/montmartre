@@ -51,13 +51,24 @@ final class Players implements \IteratorAggregate
             $this->others()
         ));
     }
+    public function count(): int
+    {
+        return count($this->all());
+    }
 
     public function toNext(): self
     {
+        $nextPosition = ($this->active()->position() + 1) % $this->count();
+
         return new self(
-            $this->next, 
-            $this->active, 
-            null, 
+            $this->next,
+            $this->active,
+            current(array_filter(
+                $this->all(),
+                function (Player $player) use ($nextPosition): bool {
+                    return $player->position() === $nextPosition;
+                })
+            ),
             $this->others
         );
     }

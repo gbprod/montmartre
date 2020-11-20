@@ -16,6 +16,7 @@ use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasPicked;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasSoldOff;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasChanged;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasPaint;
+use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasPicked;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasSoldOff;
 
 $containerBuilder = new \DI\ContainerBuilder();
@@ -61,7 +62,8 @@ $containerBuilder->addDefinitions([
             DI\get(UpdateGameStateOnPlayerHasChanged::class),
         ],
         PlayerHasPicked::class => [
-            DI\get(NotifyWhenPlayerHasPicked::class)
+            DI\get(NotifyWhenPlayerHasPicked::class),
+            DI\get(UpdateGameStateOnPlayerHasPicked::class),
         ],
     ]),
 
@@ -88,6 +90,10 @@ $containerBuilder->addDefinitions([
     ),
 
     UpdateGameStateOnPlayerHasChanged::class => DI\create()->constructor(
+        DI\get('table')
+    ),
+
+    UpdateGameStateOnPlayerHasPicked::class => DI\create()->constructor(
         DI\get('table')
     ),
 ]);

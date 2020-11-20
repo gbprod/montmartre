@@ -48,6 +48,7 @@ final class Board
                     return Player::named(
                         $playerId,
                         $playerState['player_name'],
+                        ((int) $playerState['player_table_order']) - 1,
                         Hand::containing(...$initialDeck->pick(5)),
                         Paintings::empty(),
                         Wallet::empty()

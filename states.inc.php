@@ -45,7 +45,7 @@ $machinestates = [
         'type' => 'activeplayer',
 
         'possibleactions' => ['sellOffAction', 'pickAction'],
-        'transitions' => ['pickState' => 6, 'playerTurn' => 2]
+        'transitions' => ['pickState' => 6, 'nextPlayer' => 5]
     ],
 
     4 => [

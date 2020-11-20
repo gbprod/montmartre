@@ -18,10 +18,13 @@ final class Player
     private $paintings;
     /** @var Wallet */
     private $wallet;
+    /** @var int */
+    private $position;
 
     private function __construct(
         int $id,
         string $name,
+        int $position,
         Hand $hand,
         Paintings $paintings,
         Wallet $wallet
@@ -31,16 +34,25 @@ final class Player
         $this->hand = $hand;
         $this->paintings = $paintings;
         $this->wallet = $wallet;
+        $this->position = $position;
     }
 
     public static function named(
         int $id,
         string $name,
+        int $position,
         Hand $hand,
         Paintings $paintings,
         Wallet $wallet
     ): self {
-        return new self($id, $name, $hand, $paintings, $wallet);
+        return new self(
+            $id,
+            $name,
+            $position,
+            $hand,
+            $paintings,
+            $wallet
+        );
     }
 
     public static function fromState(array $state)
@@ -48,6 +60,7 @@ final class Player
         return new self(
             (int) $state['player_id'],
             $state['player_name'],
+            (int) $state['player_no'] - 1, // begin at 0
             Hand::containing(
                 ...array_map(
                     function ($card) {
@@ -118,6 +131,11 @@ final class Player
     public function wallet(): Wallet
     {
         return $this->wallet;
+    }
+
+    public function position(): int
+    {
+        return $this->position;
     }
 
     public function toArray(): array
