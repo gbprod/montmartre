@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Application;
 
+use GBProd\Montmartre\Domain\Color;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
+use GBProd\Montmartre\Domain\Services\ResolvePlayerMajorities;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 
 final class GetPlayerSituationHandler
@@ -47,6 +49,9 @@ final class GetPlayerSituationHandler
                 'hand' => array_map(function (Muse $muse) {
                     return $muse->toArray();
                 }, $board->players()->current()->hand()->muses()),
+                'majorities' => array_map(static function (Color $color): string {
+                    return $color->value();
+                }, ResolvePlayerMajorities::resolve($board->players())),
             ],
             'players' => array_map(
                 function (Player $player) {

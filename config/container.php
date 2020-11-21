@@ -11,6 +11,7 @@ use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 use GBProd\Montmartre\Infrastructure\EventDispatcher;
+use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasChanged;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasPaint;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasPicked;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasSoldOff;
@@ -60,6 +61,7 @@ $containerBuilder->addDefinitions([
         ],
         PlayerHasChanged::class => [
             DI\get(UpdateGameStateOnPlayerHasChanged::class),
+            DI\get(NotifyWhenPlayerHasChanged::class),
         ],
         PlayerHasPicked::class => [
             DI\get(NotifyWhenPlayerHasPicked::class),
@@ -77,6 +79,10 @@ $containerBuilder->addDefinitions([
     ),
 
     NotifyWhenPlayerHasPicked::class => DI\create()->constructor(
+        DI\get('table')
+    ),
+
+    NotifyWhenPlayerHasChanged::class => DI\create()->constructor(
         DI\get('table')
     ),
 

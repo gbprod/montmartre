@@ -227,7 +227,7 @@ final class Board
         $this->players = $this->players->toNext();
 
         $this->recordThat(
-            new PlayerHasChanged($this->players->current())
+            new PlayerHasChanged($this->players)
         );
     }
 }

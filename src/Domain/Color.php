@@ -8,14 +8,23 @@ final class Color
 {
     private $color;
 
-    private const GREEN = 'green';
-    private const BLUE = 'blue';
-    private const YELLOW = 'yellow';
-    private const PINK = 'pink';
+    public const GREEN = 'green';
+    public const BLUE = 'blue';
+    public const YELLOW = 'yellow';
+    public const PINK = 'pink';
 
     private function __construct(string $color)
     {
         $this->color = $color;
+    }
+
+    public static function fromString(string $color)
+    {
+        if (!in_array($color, [self::GREEN, self::BLUE, self::PINK, self::YELLOW])) {
+            throw new \InvalidArgumentException("Invalid color");
+        }
+
+        return new self($color);
     }
 
     public static function green(): self

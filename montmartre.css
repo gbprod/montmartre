@@ -46,8 +46,18 @@
   margin: 0 5px;
 }
 
+.paintings-wrapper {
+  display: inline-block;
+  text-align: center;
+}
+
+.painting {
+  padding-right: 5px;
+}
+
 .painting:empty {
   height: 0px !important;
+  padding-right: 0;
 }
 
 .pick-button {
@@ -65,8 +75,8 @@
 }
 
 .muse.absolute {
-    position: absolute;
-    z-index: 100;
+  position: absolute;
+  z-index: 100;
 }
 
 .muse.green-0 {

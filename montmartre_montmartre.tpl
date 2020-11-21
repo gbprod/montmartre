@@ -51,20 +51,33 @@
   <div class="whiteblock">
     <h3>{trans_your_paintings}</h3>
     <div id="player-{current_player_id}-paintings" class="paintings">
-      <div id="player-{current_player_id}-paintings-green" class="painting"></div>
-      <div id="player-{current_player_id}-paintings-blue" class="painting"></div>
-      <div id="player-{current_player_id}-paintings-pink" class="painting"></div>
-      <div id="player-{current_player_id}-paintings-yellow" class="painting"></div>
+      <div class="painting-wrapper">
+        <div id="player-{current_player_id}-paintings-green" class="painting"></div>
+      </div>
+      <div class="paintings-wrapper">
+          <div id="player-{current_player_id}-paintings-blue" class="painting"></div>
+      </div>
+      <div class="paintings-wrapper">
+          <div id="player-{current_player_id}-paintings-pink" class="painting"></div>
+      </div>
+      <div class="paintings-wrapper">
+          <div id="player-{current_player_id}-paintings-yellow" class="painting"></div>
+      </div>
     </div>
   </div>
   <!-- BEGIN plaintings_block -->
   <div class="whiteblock">
     <h3>{trans_player_paintings}</h3>
     <div id="player-{player_id}-paintings" class="paintings">
-      <div id="player-{player_id}-paintings-green" class="painting"></div>
-      <div id="player-{player_id}-paintings-blue" class="painting"></div>
-      <div id="player-{player_id}-paintings-pink" class="painting"></div>
-      <div id="player-{player_id}-paintings-yellow" class="painting"></div>
+      <div class="paintings-wrapper">
+          <div id="player-{player_id}-paintings-green" class="painting"></div>
+      </div><div class="paintings-wrapper">
+          <div id="player-{player_id}-paintings-blue" class="painting"></div>
+      </div><div class="paintings-wrapper">
+          <div id="player-{player_id}-paintings-pink" class="painting"></div>
+      </div><div class="paintings-wrapper">
+          <div id="player-{player_id}-paintings-yellow" class="painting"></div>
+      </div>
     </div>
   </div>
   <!-- END plaintings_block -->
@@ -72,6 +85,7 @@
 
 <script type="text/javascript">
 var jstpl_muse_card='<div class="muse absolute ${color}-${value}" id="${id}"></div>';
+var jstpl_sell_button='<a href="#" data-color="${color}" class="action-button bgabutton bgabutton_blue sell-button" onclick="return false;">Sell</a>';
 </script>
 
 {OVERALL_GAME_FOOTER}

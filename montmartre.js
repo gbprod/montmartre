@@ -48,6 +48,9 @@ define([
             this.setupDecks(gamedatas);
             this.setupPlayerHand(gamedatas);
             this.setupPlayersPaintings(gamedatas);
+            if (this.isCurrentPlayerActive()) {
+                this.setupSellButtons(gamedatas.current_player.majorities);
+            }
 
             this.setupNotifications();
 
@@ -248,6 +251,7 @@ define([
                 );
 
                 this.paintingsStocks[player.id][color].item_margin = 0;
+                this.paintingsStocks[player.id][color].autowidth = true;
                 this.paintingsStocks[player.id][color].setOverlap(40, 0);
                 this.paintingsStocks[player.id][color].setSelectionMode(0);
                 this.paintingsStocks[player.id][color].setSelectionAppearance("class");
@@ -268,22 +272,22 @@ define([
                 .classList = 'muse ' + muse.color + '-' + muse.value;
         },
 
-        onDeckClicked: function (event) {
-            dojo.stopEvent(event);
-            var index = event.target.getAttribute('data-index');
-
-            this.ajaxcall("/montmartre/montmartre/pick.html", {
-                    deck: index,
-                    lock: true,
-                },
-                this,
-                function (result) {},
-                function (isError) {}
-            );
+        setupSellButtons: function (majorities) {
+            for (var color of majorities) {
+                dojo.place(
+                    this.format_block( 'jstpl_sell_button', {
+                        color: color,
+                    }),
+                    "player-" + this.player_id + "-paintings-" + color,
+                    "after"
+                );
+            }
         },
 
-        ///////////////////////////////////////////////////
-        //// Game & client states
+
+        /**
+         * Game & client states
+         */
 
         // onEnteringState: this method is called each time we are entering into a new game state.
         //                  You can use this method to perform some user interface changes at this moment.
@@ -370,7 +374,6 @@ define([
                 switch (stateName) {
                     case "playerTurn":
                         this.addActionButton("paint_action_button", _("Paint"), "paintAction");
-                        this.addActionButton("sell_action_button", _("Sell"), "sellAction");
                         break;
 
                      case "pickOrSellOffState":
@@ -385,8 +388,9 @@ define([
             }
         },
 
-        ///////////////////////////////////////////////////
-        //// Player's action
+        /**
+         * Player's action
+         */
 
         paintAction: function (event) {
             dojo.stopEvent(event);
@@ -503,8 +507,27 @@ define([
 
         },
 
-        ///////////////////////////////////////////////////
-        //// Reaction to cometD notifications
+        /**
+         * UI Events
+         */
+
+        onDeckClicked: function (event) {
+            dojo.stopEvent(event);
+            var index = event.target.getAttribute('data-index');
+
+            this.ajaxcall("/montmartre/montmartre/pick.html", {
+                    deck: index,
+                    lock: true,
+                },
+                this,
+                function (result) {},
+                function (isError) {}
+            );
+        },
+
+        /**
+         * Reaction to cometD notifications
+         */
 
         setupNotifications: function () {
             console.log("notifications subscriptions setup");
@@ -518,6 +541,8 @@ define([
             dojo.subscribe("PlayerHasPicked", this, "onPlayerHasPicked");
             this.notifqueue.setSynchronous("PlayerHasPicked", 3000);
 
+            dojo.subscribe("PlayerHasChanged", this, "onPlayerHasChanged");
+            this.notifqueue.setSynchronous("PlayerHasChanged", 3000);
         },
 
         onPlayerHasPaint: function (event) {
@@ -586,6 +611,10 @@ define([
                     }, index === 0 ? 0 : 1000, index, event, that);
                 }
             }
+        },
+
+        onPlayerHasChanged: function (event) {
+            console.log(event);
         },
     });
 });

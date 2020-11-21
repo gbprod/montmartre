@@ -17,8 +17,8 @@ final class UpdateGameStateOnPlayerHasChanged
 
     public function __invoke(PlayerHasChanged $event): void
     {
-        $this->table->giveExtraTime($event->player()->id());
-        $this->table->gamestate->changeActivePlayer($event->player()->id());
+        $this->table->giveExtraTime($event->players()->current()->id());
+        $this->table->gamestate->changeActivePlayer($event->players()->current()->id());
         $this->table->gamestate->nextState('playerTurn');
     }
 }
