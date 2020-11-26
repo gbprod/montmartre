@@ -9,7 +9,9 @@ use GBProd\Montmartre\Domain\Player;
 
 final class PlayerHasPaint implements Event
 {
+    /** @var Player */
     private $player;
+    /** @var Muse[] */
     private $muses;
 
     public function __construct(

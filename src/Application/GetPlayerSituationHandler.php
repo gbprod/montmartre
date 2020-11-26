@@ -29,18 +29,18 @@ final class GetPlayerSituationHandler
             'gazettes' => $board->gazettes()->toArray(),
             'decks' => [
                 1 => [
-                    'color' => $board->decks()->firstDeck()->next()->color()->value(),
-                    'value' => $board->decks()->firstDeck()->next()->value(),
+                    'color' => null !== $board->decks()->firstDeck()->next() ? $board->decks()->firstDeck()->next()->color()->value() : null,
+                    'value' => null !== $board->decks()->firstDeck()->next() ? $board->decks()->firstDeck()->next()->value() : null,
                     'count' => $board->decks()->firstDeck()->count(),
                 ],
                 2 => [
-                    'color' => $board->decks()->secondDeck()->next()->color()->value(),
-                    'value' => $board->decks()->secondDeck()->next()->value(),
+                    'color' => null !== $board->decks()->secondDeck()->next() ? $board->decks()->secondDeck()->next()->color()->value() : null,
+                    'value' => null !== $board->decks()->secondDeck()->next() ? $board->decks()->secondDeck()->next()->value() : null,
                     'count' => $board->decks()->secondDeck()->count(),
                 ],
                 3 => [
-                    'color' => $board->decks()->thirdDeck()->next()->color()->value(),
-                    'value' => $board->decks()->thirdDeck()->next()->value(),
+                    'color' => null !== $board->decks()->thirdDeck()->next() ? $board->decks()->thirdDeck()->next()->color()->value() : null,
+                    'value' => null !== $board->decks()->thirdDeck()->next() ? $board->decks()->thirdDeck()->next()->value() : null,
                     'count' => $board->decks()->secondDeck()->count(),
                 ],
             ],

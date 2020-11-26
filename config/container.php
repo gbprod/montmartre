@@ -4,6 +4,8 @@ use GBProd\Montmartre\Application\GetPlayerSituationHandler;
 use GBProd\Montmartre\Application\NextPlayerHandler;
 use GBProd\Montmartre\Application\PaintHandler;
 use GBProd\Montmartre\Application\PickHandler;
+use GBProd\Montmartre\Application\SellHandler;
+use GBProd\Montmartre\Application\SellOffHandler;
 use GBProd\Montmartre\Application\StartNewGameHandler;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
@@ -42,6 +44,14 @@ $containerBuilder->addDefinitions([
     ),
 
     PickHandler::class => DI\create()->constructor(
+        DI\get(BoardRepository::class)
+    ),
+
+    SellOffHandler::class => DI\create()->constructor(
+        DI\get(BoardRepository::class)
+    ),
+
+    SellHandler::class => DI\create()->constructor(
         DI\get(BoardRepository::class)
     ),
 

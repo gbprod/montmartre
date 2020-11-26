@@ -154,8 +154,8 @@ define([
                 this.setMuseInDeck(index, gamedatas.decks[index]);
 
                 dojo.query("#button-deck-" + index)
-                    .onclick( function(event) {
-                        that.onDeckClicked(event);
+                    .onclick(function (event) {
+                        that.onPick(event);
                         return false;
                     }
                 );
@@ -273,6 +273,8 @@ define([
         },
 
         setupSellButtons: function (majorities) {
+            var that = this;
+
             for (var color of majorities) {
                 dojo.place(
                     this.format_block( 'jstpl_sell_button', {
@@ -281,6 +283,12 @@ define([
                     "player-" + this.player_id + "-paintings-" + color,
                     "after"
                 );
+
+                dojo.query('.sell-button')
+                    .onclick(function (event) {
+                        that.onSell(event);
+                        return false;
+                    });
             }
         },
 
@@ -343,6 +351,7 @@ define([
 
                 case "paintState":
                     this.playerHand.setSelectionMode(0);
+                    dojo.query('.sell-button').destroy();
                     break;
 
                 case "pickOrSellOffState":
@@ -511,12 +520,26 @@ define([
          * UI Events
          */
 
-        onDeckClicked: function (event) {
+        onPick: function (event) {
             dojo.stopEvent(event);
             var index = event.target.getAttribute('data-index');
 
             this.ajaxcall("/montmartre/montmartre/pick.html", {
                     deck: index,
+                    lock: true,
+                },
+                this,
+                function (result) {},
+                function (isError) {}
+            );
+        },
+
+        onSell: function (event) {
+            dojo.stopEvent(event);
+            var color = event.target.getAttribute('data-color');
+
+            this.ajaxcall("/montmartre/montmartre/sell.html", {
+                    color: color,
                     lock: true,
                 },
                 this,
@@ -543,6 +566,9 @@ define([
 
             dojo.subscribe("PlayerHasChanged", this, "onPlayerHasChanged");
             this.notifqueue.setSynchronous("PlayerHasChanged", 3000);
+
+            dojo.subscribe("PlayerHasSold", this, "onPlayerHasSold");
+            this.notifqueue.setSynchronous("PlayerHasSold", 3000);
         },
 
         onPlayerHasPaint: function (event) {
@@ -611,6 +637,10 @@ define([
                     }, index === 0 ? 0 : 1000, index, event, that);
                 }
             }
+        },
+
+        onPlayerHasSold: function (event) {
+            console.log(event);
         },
 
         onPlayerHasChanged: function (event) {

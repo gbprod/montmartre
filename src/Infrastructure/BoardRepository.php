@@ -9,6 +9,7 @@ use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
+use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 
 final class BoardRepository
@@ -26,6 +27,12 @@ SQL;
             collector_pink
         )
         VALUES (1, %s, %s, %s, %s);
+SQL;
+
+    const UPDATE_COLLECTOR_QUERY = <<<SQL
+        UPDATE board
+        SET collector_%s = "%s"
+        WHERE id=1
 SQL;
 
     const SELECT_PLAYERS_QUERY = <<<SQL
@@ -112,6 +119,7 @@ SQL;
 SQL;
 
     private $table;
+    /** @var EventDispatcher */
     private $eventDispatcher;
 
     public function __construct($table, EventDispatcher $eventDispatcher)
@@ -181,10 +189,10 @@ SQL;
     {
         ($this->table)::dbQuery(sprintf(
             self::INSERT_QUERY,
-            $board->collectors()->blue()->willPay(),
-            $board->collectors()->yellow()->willPay(),
-            $board->collectors()->green()->willPay(),
-            $board->collectors()->pink()->willPay()
+            null !== $board->collectors()->blue() ? $board->collectors()->blue()->willPay() : null,
+            null !== $board->collectors()->yellow() ? $board->collectors()->yellow()->willPay() : null,
+            null !== $board->collectors()->green() ? $board->collectors()->green()->willPay() : null,
+            null !== $board->collectors()->pink() ? $board->collectors()->pink()->willPay() : null
         ));
 
         foreach ($board->gazettes() as $gazette) {
@@ -313,5 +321,33 @@ SQL;
             $event->deckNumber(),
             $board->decks()->byNumber($event->deckNumber())->muses()
         );
+    }
+
+    private function applyPlayerHasSold(PlayerHasSold $event, Board $board): void
+    {
+        $museState = $this->table->objectFromDB(
+            sprintf(
+                self::SELECT_FIRST_MUSE_FROM_PLAYER_PAINTINGS_QUERY,
+                $event->player()->id(),
+                $event->muse()->value(),
+                $event->muse()->color()->value()
+            )
+        );
+
+        if (null === $museState) {
+            throw new \RuntimeException("Muse not found in hand, should not happens");
+        }
+
+        // ($this->table)::dbQuery(
+        //     sprintf(self::DELETE_MUSE_FROM_PAINTINGS_QUERY, $museState['id'])
+        // );
+
+        // ($this->table)::dbQuery(
+            // sprintf(
+                // self::UPDATE_SCORE_QUERY,
+                // $event->player()->wallet()->amount(),
+                // $event->player()->id()
+            // )
+        // );
     }
 }

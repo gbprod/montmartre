@@ -10,7 +10,9 @@ final class Player
 {
     use EventRecordingCapabilities;
 
+    /** @var int */
     private $id;
+    /** @var string */
     private $name;
     /** @var Hand */
     private $hand;
@@ -55,7 +57,7 @@ final class Player
         );
     }
 
-    public static function fromState(array $state)
+    public static function fromState(array $state): self
     {
         return new self(
             (int) $state['player_id'],
@@ -126,6 +128,26 @@ final class Player
         }
 
         $this->wallet = $this->wallet->withAdded(count($muses));
+    }
+
+    public function sell(Color $color): Muse
+    {
+        $muse = $this->paintings()
+            ->maxOfColor($color);
+
+        if (null === $muse) {
+            throw new \InvalidArgumentException();
+        }
+
+        $this->paintings = $this->paintings->withPicked($muse);
+
+        return $muse;
+    }
+
+    public function attract(Collector $collector): void
+    {
+        $this->wallet = $this->wallet()
+            ->withAdded($collector->willPay());
     }
 
     public function wallet(): Wallet

@@ -8,6 +8,7 @@ use GBProd\Montmartre\Domain\Muse;
 
 final class PaintAction
 {
+    /** @var Muse[] */
     public $muses;
 
     public static function fromMuses(Muse ...$muses): self

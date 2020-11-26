@@ -6,15 +6,15 @@ namespace GBProd\Montmartre\Application;
 
 use GBProd\Montmartre\Domain\Muse;
 
-final class SellOffAction
+final class SellAction
 {
-    /** @var Muse[] */
-    public $muses;
+    /** @var string */
+    public $color;
 
-    public static function fromMuses(Muse ...$muses): self
+    public static function fromColor(string $color): self
     {
         $self = new self();
-        $self->muses = $muses;
+        $self->color = $color;
 
         return $self;
     }

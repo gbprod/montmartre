@@ -9,19 +9,26 @@ use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
+use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Exception\HandFull;
+use GBProd\Montmartre\Domain\Exception\NoCollectorLeft;
+use GBProd\Montmartre\Domain\Exception\ShouldHaveMajority;
 use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
 use GBProd\Montmartre\Domain\Exception\ShouldSellOffAtLeastOneMuse;
+use GBProd\Montmartre\Domain\Services\ResolvePlayerMajorities;
 
 final class Board
 {
     use EventRecordingCapabilities;
 
+    /** @var Collectors */
     private $collectors;
+    /** @var Gazettes */
     private $gazettes;
+    /** @var Decks */
     private $decks;
     /** @var Players */
     private $players;
@@ -198,19 +205,17 @@ final class Board
             throw new HandFull();
         }
 
-        $deck = $this->decks()
-            ->byNumber($deckNumber);
+        $deck = $this->decks()->byNumber($deckNumber);
 
-
-        if (!$deck->isEmpty() && !$player->hand()->isFull()) {
-            $picked = $deck->pick(
-                Hand::MAX_LENGTH - $player->hand()->count()
-            );
-
-            $player->hand()->withAppended(
-                ...$picked
-            );
+        if ($deck->isEmpty()) {
+            throw new EmptyDeck();
         }
+
+        $picked = $deck->pick(
+            Hand::MAX_LENGTH - $player->hand()->count()
+        );
+
+        $player->hand()->withAppended(...$picked);
 
         $this->recordThat(
             new PlayerHasPicked(
@@ -228,6 +233,39 @@ final class Board
 
         $this->recordThat(
             new PlayerHasChanged($this->players)
+        );
+    }
+
+    public function sell(Color $color): void
+    {
+        $majorities = ResolvePlayerMajorities::resolve(
+            $this->players()
+        );
+
+        if (!in_array($color, $majorities)) {
+            throw new ShouldHaveMajority();
+        }
+
+        $collector = $this->collectors()
+            ->pick($color);
+
+        if (null === $collector) {
+            throw new NoCollectorLeft($color);
+        }
+        $muse = $this->players()->current()
+            ->sell($color);
+
+
+        $this->players()->current()
+            ->attract($collector);
+
+        $this->recordThat(
+            new PlayerHasSold(
+                $this->players->current(),
+                $muse,
+                $collector,
+                $this->collectors()->{$color->value()}()
+            )
         );
     }
 }

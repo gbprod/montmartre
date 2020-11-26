@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Domain\Event;
 
 final class Events implements \IteratorAggregate, \Countable
 {
+    /** @var Event[] */
     private $events;
 
     public function __construct(Event ...$events)

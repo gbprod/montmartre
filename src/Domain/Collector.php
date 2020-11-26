@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Domain;
 
 final class Collector
 {
+    /** @var int */
     private $value;
 
     private function __construct(int $value)

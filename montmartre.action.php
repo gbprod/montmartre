@@ -8,6 +8,8 @@ use GBProd\Montmartre\Application\SellOffAction;
 use GBProd\Montmartre\Application\SellOffHandler;
 use GBProd\Montmartre\Application\NextPlayerAction;
 use GBProd\Montmartre\Application\NextPlayerHandler;
+use GBProd\Montmartre\Application\SellAction;
+use GBProd\Montmartre\Application\SellHandler;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Color;
@@ -129,6 +131,21 @@ class action_montmartre extends APP_GameAction
 
         $this->game->getContainer()->get(PickHandler::class)(
             PickAction::fromDeckId($deck)
+        );
+
+        self::ajaxResponse();
+    }
+
+    public function sell()
+    {
+        self::setAjaxMode();
+
+        $this->game->checkAction('sellAction');
+
+        $color = self::getArg('color', AT_alphanum, true);
+
+        $this->game->getContainer()->get(SellHandler::class)(
+            SellAction::fromColor($color)
         );
 
         self::ajaxResponse();

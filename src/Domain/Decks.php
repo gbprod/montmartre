@@ -6,8 +6,11 @@ namespace GBProd\Montmartre\Domain;
 
 final class Decks
 {
+    /** @var Deck */
     private $firstDeck;
+    /** @var Deck */
     private $secondDeck;
+    /** @var Deck */
     private $thirdDeck;
 
     private function __construct(Deck $firstDeck, Deck $secondDeck, Deck $thirdDeck)

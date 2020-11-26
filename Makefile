@@ -9,3 +9,6 @@ publish:
 
 publish-dev:
 	./publish.sh dev
+
+analyse:
+	phpstan analyse --level max ./

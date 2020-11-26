@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Domain\Event;
 
 trait EventRecordingCapabilities
 {
+    /** @var Event[] */
     private $events = [];
 
     private function recordThat(Event $event): void

@@ -9,7 +9,9 @@ use GBProd\Montmartre\Domain\Player;
 
 final class PlayerHasSoldOff implements Event
 {
+    /** @var Player */
     private $player;
+    /** @var Muse[] */
     private $muses;
 
     public function __construct(
@@ -20,7 +22,7 @@ final class PlayerHasSoldOff implements Event
         $this->muses = $muses;
     }
 
-    public function muses()
+    public function muses(): array
     {
         return $this->muses;
     }

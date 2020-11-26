@@ -8,6 +8,7 @@ use GBProd\Montmartre\Domain\Event\Events;
 
 final class EventDispatcher
 {
+    /** @var array */
     private $listeners;
 
     public function __construct(array $listeners)

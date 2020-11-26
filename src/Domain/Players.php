@@ -6,12 +6,16 @@ namespace GBProd\Montmartre\Domain;
 
 final class Players implements \IteratorAggregate
 {
+    /** @var Player */
     private $current;
+    /** @var Player */
     private $next;
+    /** @var Player[] */
     private $others;
+    /** @var Player */
     private $active;
 
-    private function __construct(?Player $current, ?Player $active, ?Player $next, array $others)
+    private function __construct(Player $current, Player $active, Player $next, array $others)
     {
         $this->current = $current;
         $this->active = $active;
@@ -21,7 +25,24 @@ final class Players implements \IteratorAggregate
 
     public static function place(Player ...$players): Players
     {
-        return new self(null, null, null, $players);
+        $firstPlayer = current(
+            array_filter($players, function (Player $player): bool {
+                return $player->position() === 1;
+            })
+        );
+
+        return new self(
+            $firstPlayer,
+            $firstPlayer,
+            current(
+                array_filter($players, function (Player $player): bool {
+                    return $player->position() === 2;
+                })
+            ),
+            array_filter($players, function (Player $player): bool {
+                return $player->position() !== 1;
+            })
+        );
     }
 
     public static function from(Player $current, Player $active, Player $next, array $others): Players
@@ -29,12 +50,12 @@ final class Players implements \IteratorAggregate
         return new self($current, $active, $next, $others);
     }
 
-    public function current(): ?Player
+    public function current(): Player
     {
         return $this->current;
     }
 
-    public function active(): ?Player
+    public function active(): Player
     {
         return $this->active;
     }
@@ -63,11 +84,13 @@ final class Players implements \IteratorAggregate
         return new self(
             $this->next,
             $this->active,
-            current(array_filter(
-                $this->all(),
-                function (Player $player) use ($nextPosition): bool {
-                    return $player->position() === $nextPosition;
-                })
+            current(
+                array_filter(
+                    $this->all(),
+                    function (Player $player) use ($nextPosition): bool {
+                        return $player->position() === $nextPosition;
+                    }
+                )
             ),
             $this->others
         );

@@ -25,7 +25,7 @@ final class NotifyWhenPlayerHasPicked
                 'player_id' => $event->player()->id(),
                 'player_name' => $event->player()->name(),
                 'deck_number' => $event->deckNumber(),
-                'next_muse' => $event->deck()->next()->toArray(),
+                'next_muse' => null !== $event->deck()->next() ? $event->deck()->next()->toArray() : null,
                 'musesAsString' => implode(', ', array_map(function (Muse $muse): string {
                     return sprintf(
                         '%s %s',

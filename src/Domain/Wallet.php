@@ -6,8 +6,9 @@ namespace GBProd\Montmartre\Domain;
 
 final class Wallet
 {
+    /** @var int */
     private $amount;
-    
+
     private function __construct(int $amount)
     {
         if ($amount < 0) {

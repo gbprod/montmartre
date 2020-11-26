@@ -6,7 +6,9 @@ namespace GBProd\Montmartre\Domain;
 
 final class Gazette
 {
+    /** @var int */
     private $nbDiff;
+    /** @var int */
     private $value;
 
     private function __construct(int $nbDiff, int $value)
@@ -15,7 +17,7 @@ final class Gazette
         $this->value = $value;
     }
 
-    public static function forPublishing(int $nbDiff, int $value)
+    public static function forPublishing(int $nbDiff, int $value): self
     {
         return new self($nbDiff, $value);
     }

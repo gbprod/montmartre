@@ -8,6 +8,7 @@ use GBProd\Montmartre\Infrastructure\BoardRepository;
 
 final class SellOffHandler
 {
+    /** @var BoardRepository */
     private $repository;
 
     public function __construct(BoardRepository $repository)

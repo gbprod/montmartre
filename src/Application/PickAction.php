@@ -8,6 +8,7 @@ use GBProd\Montmartre\Domain\Muse;
 
 final class PickAction
 {
+    /** @var int */
     public $deck;
 
     public static function fromDeckId(int $deck): self

@@ -6,7 +6,9 @@ namespace GBProd\Montmartre\Domain;
 
 final class Muse
 {
+    /** @var Color */
     private $color;
+    /** @var int */
     private $value;
 
     private function __construct(Color $color, int $value)

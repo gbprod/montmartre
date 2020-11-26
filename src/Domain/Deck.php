@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Domain;
 
 final class Deck implements \Countable
 {
+    /** @var Muse[] */
     private $muses;
 
     private function __construct(Muse ...$muses)

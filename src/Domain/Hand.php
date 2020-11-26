@@ -11,6 +11,7 @@ final class Hand
 {
     const MAX_LENGTH = 5;
 
+    /** @var Muse[] */
     private $muses;
 
     private function __construct(Muse ...$muses)
@@ -24,7 +25,7 @@ final class Hand
         $this->muses = $muses;
     }
 
-    public static function containing(Muse ...$muses)
+    public static function containing(Muse ...$muses): self
     {
         return new self(...$muses);
     }

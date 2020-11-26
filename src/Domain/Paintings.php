@@ -10,6 +10,7 @@ final class Paintings
 {
     private const MAX_PAINTINGS = 6;
 
+    /** @var Muse[] */
     private $muses;
 
     private function __construct(Muse ...$muses)
@@ -39,6 +40,25 @@ final class Paintings
         $self->muses[] = $muse;
 
         return $self;
+    }
+
+    public function maxOfColor(Color $color): ?Muse
+    {
+        return array_reduce(
+            $this->muses,
+            function (?Muse $carry, Muse $muse) use ($color): ?Muse {
+                if (!$muse->color()->equals($color)) {
+                    return $carry;
+                }
+
+                if (null === $carry || $muse->value() > $carry->value()) {
+                    return $muse;
+                }
+
+                return $carry;
+            },
+            null
+        );
     }
 
     public function withPicked(Muse $muse): self

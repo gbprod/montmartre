@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Application;
 
-use GBProd\Montmartre\Domain\Board;
+use GBProd\Montmartre\Domain\Color;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 
-final class StartNewGameHandler
+final class SellHandler
 {
     /** @var BoardRepository */
     private $repository;
@@ -17,9 +17,13 @@ final class StartNewGameHandler
         $this->repository = $repository;
     }
 
-    public function __invoke(array $players): void
+    public function __invoke(SellAction $action): void
     {
-        $board = Board::setup($players);
+        $board = $this->repository->get();
+
+        $board->sell(
+            Color::fromString($action->color)
+        );
 
         $this->repository->save($board);
     }

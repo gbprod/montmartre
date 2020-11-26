@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Domain;
 
 final class Color
 {
+    /** @var string */
     private $color;
 
     public const GREEN = 'green';
@@ -18,7 +19,7 @@ final class Color
         $this->color = $color;
     }
 
-    public static function fromString(string $color)
+    public static function fromString(string $color): self
     {
         if (!in_array($color, [self::GREEN, self::BLUE, self::PINK, self::YELLOW])) {
             throw new \InvalidArgumentException("Invalid color");
@@ -55,5 +56,10 @@ final class Color
     public function __toString(): string
     {
         return $this->color;
+    }
+
+    public function equals(Color $color): bool
+    {
+        return $this->color === $color->color;
     }
 }

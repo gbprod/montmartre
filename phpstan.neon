@@ -1,0 +1,13 @@
+parameters:
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    excludes_analyse:
+        - 'vendor'
+        - 'montmartre.view.php'
+        - 'montmartre.game.php'
+        - 'montmartre.action.php'
+    ignoreErrors:
+        - '/Function totranslate not found./'
+        - '/Function clienttranslate not found./'
+        - '/\$table has no typehint specified.$/'
+        - '/has parameter \$table with no typehint specified.$/'

@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Domain;
 
 final class Gazettes implements \IteratorAggregate
 {
+    /** @var Gazette[] */
     private $gazettes;
 
     private function __construct(Gazette ...$gazettes)

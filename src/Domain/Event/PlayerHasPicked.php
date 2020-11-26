@@ -10,9 +10,13 @@ use GBProd\Montmartre\Domain\Player;
 
 final class PlayerHasPicked implements Event
 {
+    /** @var Player */
     private $player;
+    /** @var Muse[] */
     private $muses;
+    /** @var Deck */
     private $deck;
+    /** @var int */
     private $deckNumber;
 
     public function __construct(
