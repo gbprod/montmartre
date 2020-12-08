@@ -35,7 +35,11 @@ $machinestates = [
         'type' => 'activeplayer',
 
         'possibleactions' => ['sellAction', 'paintAction'],
-        'transitions' => ['sellOffState' => 3, 'mustSellOffState' => 4]
+        'transitions' => [
+            'sellOffState' => 3,
+            'mustSellOffState' => 4,
+            'nextPlayer' => 5,
+        ]
     ],
 
     3 => [

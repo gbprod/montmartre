@@ -206,7 +206,6 @@ final class Board
         }
 
         $deck = $this->decks()->byNumber($deckNumber);
-
         if ($deck->isEmpty()) {
             throw new EmptyDeck();
         }
@@ -252,9 +251,9 @@ final class Board
         if (null === $collector) {
             throw new NoCollectorLeft($color);
         }
+
         $muse = $this->players()->current()
             ->sell($color);
-
 
         $this->players()->current()
             ->attract($collector);

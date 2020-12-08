@@ -27,8 +27,8 @@ final class ResolvePlayerMajorities
         $majorities = [];
         foreach ($counting as $color => $counts) {
             if (
-                $counts['values'] >= $maxCounting[$color]['values']
-                || $counts['count'] >= $maxCounting[$color]['count']
+                $counts['values'] >= ($maxCounting[$color]['values'] ?? 0)
+                || $counts['count'] >= ($maxCounting[$color]['count'] ?? 0)
             ) {
                 $majorities[] = Color::fromString($color);
             }

@@ -10,10 +10,14 @@ use GBProd\Montmartre\Application\NextPlayerAction;
 use GBProd\Montmartre\Application\NextPlayerHandler;
 use GBProd\Montmartre\Application\SellAction;
 use GBProd\Montmartre\Application\SellHandler;
+use GBProd\Montmartre\Domain\EmptyDeck;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Color;
+use GBProd\Montmartre\Domain\Exception\HandFull;
 use GBProd\Montmartre\Domain\Exception\MuseNotPainted;
+use GBProd\Montmartre\Domain\Exception\NoCollectorLeft;
+use GBProd\Montmartre\Domain\Exception\ShouldHaveMajority;
 use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Exception\MuseNotInHand;
@@ -81,7 +85,7 @@ class action_montmartre extends APP_GameAction
     private function createMuseCardFromId(int $id)
     {
         $value = $id % 9;
-
+        
         switch (floor($id / 9)) {
             case 0:
                 $color = 'green';
@@ -129,9 +133,16 @@ class action_montmartre extends APP_GameAction
 
         $deck = self::getArg('deck', AT_posint, true);
 
-        $this->game->getContainer()->get(PickHandler::class)(
-            PickAction::fromDeckId($deck)
-        );
+        try {
+            $this->game->getContainer()->get(PickHandler::class)(
+                PickAction::fromDeckId($deck)
+            );
+        } catch (HandFull $e) {
+            throw new BgaUserException(self::_('You\'re hand is already full, should not happens'));
+        } catch (EmptyDeck $e) {
+            throw new BgaUserException(self::_('This deck is empty, choose another one'));
+        }
+        // TODO Manage re-pick
 
         self::ajaxResponse();
     }
@@ -144,9 +155,15 @@ class action_montmartre extends APP_GameAction
 
         $color = self::getArg('color', AT_alphanum, true);
 
-        $this->game->getContainer()->get(SellHandler::class)(
-            SellAction::fromColor($color)
-        );
+        try {
+            $this->game->getContainer()->get(SellHandler::class)(
+                SellAction::fromColor($color)
+            );
+        } catch (NoCollectorLeft $e) {
+            throw new BgaUserException(self::_('No collector left, should not happens'));
+        } catch (ShouldHaveMajority $e) {
+            throw new BgaUserException(self::_('You don\'t have majority, should not happens'));
+        }
 
         self::ajaxResponse();
     }

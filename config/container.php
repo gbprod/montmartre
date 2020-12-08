@@ -10,16 +10,19 @@ use GBProd\Montmartre\Application\StartNewGameHandler;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
+use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 use GBProd\Montmartre\Infrastructure\EventDispatcher;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasChanged;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasPaint;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasPicked;
+use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasSold;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasSoldOff;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasChanged;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasPaint;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasPicked;
+use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasSold;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasSoldOff;
 
 $containerBuilder = new \DI\ContainerBuilder();
@@ -77,6 +80,10 @@ $containerBuilder->addDefinitions([
             DI\get(NotifyWhenPlayerHasPicked::class),
             DI\get(UpdateGameStateOnPlayerHasPicked::class),
         ],
+        PlayerHasSold::class => [
+            DI\get(NotifyWhenPlayerHasSold::class),
+            // DI\get(UpdateGameStateOnPlayerHasSold::class),
+        ],
     ]),
 
     /** Notifications **/
@@ -85,6 +92,10 @@ $containerBuilder->addDefinitions([
     ),
 
     NotifyWhenPlayerHasSoldOff::class => DI\create()->constructor(
+        DI\get('table')
+    ),
+
+    NotifyWhenPlayerHasSold::class => DI\create()->constructor(
         DI\get('table')
     ),
 
@@ -102,6 +113,10 @@ $containerBuilder->addDefinitions([
     ),
 
     UpdateGameStateOnPlayerHasSoldOff::class => DI\create()->constructor(
+        DI\get('table')
+    ),
+
+    UpdateGameStateOnPlayerHasSold::class => DI\create()->constructor(
         DI\get('table')
     ),
 

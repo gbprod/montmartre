@@ -48,7 +48,7 @@ define([
             this.setupDecks(gamedatas);
             this.setupPlayerHand(gamedatas);
             this.setupPlayersPaintings(gamedatas);
-            if (this.isCurrentPlayerActive()) {
+            if (this.isCurrentPlayerActive() && this.checkAction("paintAction")) {
                 this.setupSellButtons(gamedatas.current_player.majorities);
             }
 
