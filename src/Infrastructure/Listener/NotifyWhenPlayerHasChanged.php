@@ -20,7 +20,6 @@ final class NotifyWhenPlayerHasChanged
     public function __invoke(PlayerHasChanged $event): void
     {
         $this->table->notifyAllPlayers(
-            $event->players()->current()->id(),
             'PlayerHasChanged',
             clienttranslate('${player_name}\'s turn'),
             [

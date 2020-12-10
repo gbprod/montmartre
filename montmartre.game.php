@@ -89,7 +89,6 @@ class Montmartre extends Table
         $infraPlayers = self::loadPlayersBasicInfos(); 
         $data = ($this->getContainer()->get(GetPlayerSituationHandler::class))(GetPlayerSituationQuery::byId(self::getCurrentPlayerId()));
 
-
         $data['players'] = array_reduce(
             $data['players'], 
             function ($carry, $player) {
@@ -97,7 +96,7 @@ class Montmartre extends Table
                     $player, 
                     $carry[$player['id']]
                 );
-
+                $carry[$player['id']]['score'] = $player['wallet'];
                 return $carry;
             }, 
             $infraPlayers

@@ -20,7 +20,7 @@ final class NotifyWhenPlayerHasSold
     {
         $this->table->notifyAllPlayers(
             'PlayerHasSold',
-            clienttranslate('${player_name} has sold to ${collectorColor} collector: ${museAsString}'),
+            clienttranslate('${player_name} has sold to ${color} collector: ${museAsString}'),
             [
                 'player_id' => $event->player()->id(),
                 'player_name' => $event->player()->name(),

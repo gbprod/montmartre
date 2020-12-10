@@ -338,16 +338,24 @@ SQL;
             throw new \RuntimeException("Muse not found in hand, should not happens");
         }
 
-        // ($this->table)::dbQuery(
-        //     sprintf(self::DELETE_MUSE_FROM_PAINTINGS_QUERY, $museState['id'])
-        // );
+        ($this->table)::dbQuery(
+            sprintf(self::DELETE_MUSE_FROM_PAINTINGS_QUERY, $museState['id'])
+        );
 
-        // ($this->table)::dbQuery(
-            // sprintf(
-                // self::UPDATE_SCORE_QUERY,
-                // $event->player()->wallet()->amount(),
-                // $event->player()->id()
-            // )
-        // );
+        ($this->table)::dbQuery(
+            sprintf(
+                self::UPDATE_SCORE_QUERY,
+                $event->player()->wallet()->amount(),
+                $event->player()->id()
+            )
+        );
+
+        ($this->table)::dbQuery(
+            sprintf(
+                self::UPDATE_COLLECTOR_QUERY,
+                $event->muse()->color()->value(),
+                $event->newCollector()->willPay()
+            )
+        );
     }
 }

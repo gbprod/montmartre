@@ -82,7 +82,7 @@ $containerBuilder->addDefinitions([
         ],
         PlayerHasSold::class => [
             DI\get(NotifyWhenPlayerHasSold::class),
-            // DI\get(UpdateGameStateOnPlayerHasSold::class),
+            DI\get(UpdateGameStateOnPlayerHasSold::class),
         ],
     ]),
 
