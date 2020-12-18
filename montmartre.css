@@ -64,6 +64,14 @@
   display: none;
 }
 
+.ambroise {
+  position: absolute;
+  background-image: url("img/ambroise.png");
+  width: 80px;
+  height: 80px;
+  z-index: 10;
+}
+
 .muse {
   background-image: url("img/muses.png");
   top: 0px;

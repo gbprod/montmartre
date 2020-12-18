@@ -24,14 +24,21 @@ SQL;
             collector_blue,
             collector_yellow,
             collector_green,
-            collector_pink
+            collector_pink,
+            ambroise
         )
-        VALUES (1, %s, %s, %s, %s);
+        VALUES (1, %s, %s, %s, %s, %s);
 SQL;
 
     const UPDATE_COLLECTOR_QUERY = <<<SQL
         UPDATE board
         SET collector_%s = "%s"
+        WHERE id=1
+SQL;
+
+    const UPDATE_AMBROISE_QUERY = <<<SQL
+        UPDATE board
+        SET ambroise = "%s"
         WHERE id=1
 SQL;
 
@@ -189,10 +196,12 @@ SQL;
     {
         ($this->table)::dbQuery(sprintf(
             self::INSERT_QUERY,
-            null !== $board->collectors()->blue() ? $board->collectors()->blue()->willPay() : null,
-            null !== $board->collectors()->yellow() ? $board->collectors()->yellow()->willPay() : null,
-            null !== $board->collectors()->green() ? $board->collectors()->green()->willPay() : null,
-            null !== $board->collectors()->pink() ? $board->collectors()->pink()->willPay() : null
+            null !== $board->collectors()->blue() ? $board->collectors()->blue()->willPay() : 'null',
+            null !== $board->collectors()->yellow() ? $board->collectors()->yellow()->willPay() : "null",
+            null !== $board->collectors()->green() ? $board->collectors()->green()->willPay() : "null",
+            null !== $board->collectors()->pink() ? $board->collectors()->pink()->willPay() : "null",
+            null !== $board->ambroise()->color() ? $board->ambroise()->color()->value() : "null"
+
         ));
 
         foreach ($board->gazettes() as $gazette) {
@@ -352,9 +361,8 @@ SQL;
 
         ($this->table)::dbQuery(
             sprintf(
-                self::UPDATE_COLLECTOR_QUERY,
-                $event->muse()->color()->value(),
-                $event->newCollector()->willPay()
+                self::UPDATE_AMBROISE_QUERY,
+                $event->muse()->color()->value()
             )
         );
     }

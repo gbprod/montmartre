@@ -27,6 +27,7 @@ final class GetPlayerSituationHandler
         return [
             'collectors' => $board->collectors()->toArray(),
             'gazettes' => $board->gazettes()->toArray(),
+            'ambroise' => null !== $board->ambroise()->color() ? $board->ambroise()->color()->value() : null,
             'decks' => [
                 1 => [
                     'color' => null !== $board->decks()->firstDeck()->next() ? $board->decks()->firstDeck()->next()->color()->value() : null,

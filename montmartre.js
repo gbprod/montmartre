@@ -25,6 +25,7 @@ define([
       this.gazetteCardHeight = 109;
       this.deckCardWidth = 120;
       this.deckCardHeight = 220;
+      this.ambroise = null;
       window.game = this; // for debug
     },
 
@@ -94,6 +95,22 @@ define([
           }
         }
       }
+
+      if (!!gamedatas.ambroise) {
+        this.moveAmbroise(gamedatas.ambroise);
+      }
+    },
+
+    moveAmbroise: function (color) {
+      console.log("mosve to" + color);
+      if (this.ambroise == null) {
+        dojo.place(this.format_block("jstpl_ambroise", {}), "collectors");
+        this.placeOnObject("ambroise", "collectors-" + color);
+      } else {
+        this.slideToObject("ambroise", "collectors-" + color).play();
+      }
+
+      this.ambroise = color;
     },
 
     collectorCardId: function (color, value) {
@@ -273,6 +290,10 @@ define([
       var that = this;
 
       for (var color of majorities) {
+        // if (color != this.ambroise) {
+          // TODO tester
+        // }
+        console.log(color);
         dojo.place(
           this.format_block("jstpl_sell_button", {
             color: color,
@@ -303,9 +324,6 @@ define([
 
       switch (stateName) {
         case "playerTurn":
-          break;
-
-        case "paintState":
           this.playerHand.setSelectionMode(2);
           break;
 
@@ -599,6 +617,7 @@ define([
     },
 
     onPlayerHasPaint: function (event) {
+      console.log("Event onPlayerHasPaint");
       for (var index = 0; index < event.args.muses.length; ++index) {
         var id = this.museCardId(
           event.args.muses[index].color,
@@ -614,6 +633,7 @@ define([
     },
 
     onPlayerHasSoldOff: function (event) {
+      console.log("Event onPlayerHasSoldOff");
       for (var index = 0; index < event.args.muses.length; ++index) {
         var id = this.museCardId(
           event.args.muses[index].color,
@@ -628,6 +648,7 @@ define([
     },
 
     onPlayerHasPicked: function (event) {
+      console.log("Event onPlayerHasPicked");
       var that = this;
 
       for (var index = 0; index < event.args.muses.length; ++index) {
@@ -677,6 +698,7 @@ define([
     },
 
     onPlayerHasSold: function (event) {
+      console.log("Event onPlayerHasSold");
       var id = this.museCardId(event.args.muse.color, event.args.muse.value);
       this.paintingsStocks[event.args.player_id][
         event.args.color
@@ -684,14 +706,18 @@ define([
 
       this.collectors[event.args.color].removeFromStock(
         this.collectorCardId(event.args.color, event.args.attractedCollector),
-        'player_name_' + event.args.player_id
-      )
+        "player_name_" + event.args.player_id
+      );
 
       this.scoreCtrl[event.args.player_id].toValue(event.args.player_score);
     },
 
     onPlayerHasChanged: function (event) {
-      console.log(event);
+      console.log("Event onPlayerHasChanged");
+
+      if (this.isCurrentPlayerActive()) {
+        this.setupSellButtons(event.args.majorities);
+      }
     },
   });
 });

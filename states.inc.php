@@ -34,7 +34,11 @@ $machinestates = [
         'descriptionmyturn' => clienttranslate('${you} could paint or sell'),
         'type' => 'activeplayer',
 
-        'possibleactions' => ['sellAction', 'paintAction'],
+        'possibleactions' => [
+            'sellAction',
+            'paintAction',
+            'sellAction',
+        ],
         'transitions' => [
             'sellOffState' => 3,
             'mustSellOffState' => 4,
@@ -48,8 +52,14 @@ $machinestates = [
         'descriptionmyturn' => clienttranslate('${you} could sell off paintings, select cards to sell off'),
         'type' => 'activeplayer',
 
-        'possibleactions' => ['sellOffAction', 'pickAction'],
-        'transitions' => ['pickState' => 6, 'nextPlayer' => 5]
+        'possibleactions' => [
+            'sellOffAction',
+            'pickAction'
+        ],
+        'transitions' => [
+            'pickState' => 6,
+            'nextPlayer' => 5
+        ]
     ],
 
     4 => [
@@ -77,8 +87,12 @@ $machinestates = [
         'descriptionmyturn' => clienttranslate('${you} must pick, select a deck'),
         'type' => 'activeplayer',
 
-        'possibleactions' => ['pickAction'],
-        'transitions' => ['playerTurn' => 2]
+        'possibleactions' => [
+            'pickAction'
+        ],
+        'transitions' => [
+            'nextPlayer' => 5,
+        ]
     ],
 
    /*

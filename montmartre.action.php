@@ -15,6 +15,7 @@ use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Color;
 use GBProd\Montmartre\Domain\Exception\HandFull;
+use GBProd\Montmartre\Domain\Exception\IsBlockedByAmbroise;
 use GBProd\Montmartre\Domain\Exception\MuseNotPainted;
 use GBProd\Montmartre\Domain\Exception\NoCollectorLeft;
 use GBProd\Montmartre\Domain\Exception\ShouldHaveMajority;
@@ -161,6 +162,8 @@ class action_montmartre extends APP_GameAction
             );
         } catch (NoCollectorLeft $e) {
             throw new BgaUserException(self::_('No collector left, should not happens'));
+        } catch (IsBlockedByAmbroise $e) {
+            throw new BgaUserException(self::_('You couldn\'t sell to a collector blocked by Ambroise Croizat'));
         } catch (ShouldHaveMajority $e) {
             throw new BgaUserException(self::_('You don\'t have majority, should not happens'));
         }

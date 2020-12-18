@@ -14,6 +14,7 @@ use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
 use GBProd\Montmartre\Domain\Exception\HandFull;
+use GBProd\Montmartre\Domain\Exception\IsBlockedByAmbroise;
 use GBProd\Montmartre\Domain\Exception\NoCollectorLeft;
 use GBProd\Montmartre\Domain\Exception\ShouldHaveMajority;
 use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
@@ -32,17 +33,21 @@ final class Board
     private $decks;
     /** @var Players */
     private $players;
+    /** @var Ambroise */
+    private $ambroise;
 
     private function __construct(
         Collectors $collectors,
         Gazettes $gazettes,
         Decks $decks,
-        Players $players
+        Players $players,
+        Ambroise $ambroise
     ) {
         $this->collectors = $collectors;
         $this->gazettes = $gazettes;
         $this->decks = $decks;
         $this->players = $players;
+        $this->ambroise = $ambroise;
     }
 
     public static function setup(array $players): self
@@ -70,7 +75,8 @@ final class Board
             Collectors::distribute(),
             Gazettes::distribute(),
             Decks::distribute($initialDeck),
-            $players
+            $players,
+            Ambroise::idle()
         );
 
 
@@ -134,7 +140,8 @@ final class Board
                     },
                     [null, null, []]
                 )
-            )
+            ),
+            null !== $state['ambroise'] ? Ambroise::at(Color::{$state['ambroise']}()) : Ambroise::idle()
         );
     }
 
@@ -237,6 +244,10 @@ final class Board
 
     public function sell(Color $color): void
     {
+        if (null !== $this->ambroise()->color() && $this->ambroise()->color()->equals($color)) {
+            throw new IsBlockedByAmbroise();
+        }
+
         $majorities = ResolvePlayerMajorities::resolve(
             $this->players()
         );
@@ -245,18 +256,17 @@ final class Board
             throw new ShouldHaveMajority();
         }
 
-        $collector = $this->collectors()
-            ->pick($color);
+        $collector = $this->collectors()->pick($color);
 
         if (null === $collector) {
             throw new NoCollectorLeft($color);
         }
 
-        $muse = $this->players()->current()
-            ->sell($color);
+        $muse = $this->players()->current()->sell($color);
 
-        $this->players()->current()
-            ->attract($collector);
+        $this->players()->current()->attract($collector);
+
+        $this->ambroise = Ambroise::at($color);
 
         $this->recordThat(
             new PlayerHasSold(
@@ -266,5 +276,10 @@ final class Board
                 $this->collectors()->{$color->value()}()
             )
         );
+    }
+
+    public function ambroise(): Ambroise
+    {
+        return $this->ambroise;
     }
 }

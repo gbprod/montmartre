@@ -17,7 +17,7 @@
       <div class="gazette" id="gazette-3"></div>
       <div class="gazette" id="gazette-4"></div>
     </div>
-    <div class="collectors">
+    <div id="collectors" class="collectors">
       <div class="collector" id="collectors-green"></div>
       <div class="collector" id="collectors-yellow"></div>
       <div class="collector" id="collectors-blue"></div>
@@ -86,6 +86,7 @@
 <script type="text/javascript">
 var jstpl_muse_card='<div class="muse absolute ${color}-${value}" id="${id}"></div>';
 var jstpl_sell_button='<a href="#" data-color="${color}" class="action-button bgabutton bgabutton_blue sell-button" onclick="return false;">Sell</a>';
+var jstpl_ambroise='<div id="ambroise" class="ambroise"></div>';
 </script>
 
 {OVERALL_GAME_FOOTER}
