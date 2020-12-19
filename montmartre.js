@@ -290,23 +290,22 @@ define([
       var that = this;
 
       for (var color of majorities) {
-        // if (color != this.ambroise) {
-          // TODO tester
-        // }
-        console.log(color);
-        dojo.place(
-          this.format_block("jstpl_sell_button", {
-            color: color,
-          }),
-          "player-" + this.player_id + "-paintings-" + color,
-          "after"
-        );
-
-        dojo.query(".sell-button").onclick(function (event) {
-          that.onSell(event);
-          return false;
-        });
+        if (color != this.ambroise) {
+          dojo.place(
+            this.format_block("jstpl_sell_button", {
+              color: color,
+            }),
+            "player-" + this.player_id + "-paintings-" + color,
+            "after"
+          );
+        }
       }
+
+      dojo.query(".sell-button").onclick(function (event) {
+        dojo.stopEvent(event);
+        that.onSell(event);
+        return false;
+      });
     },
 
     /**
@@ -710,11 +709,12 @@ define([
       );
 
       this.scoreCtrl[event.args.player_id].toValue(event.args.player_score);
+
+      this.moveAmbroise(event.args.muse.color);
     },
 
     onPlayerHasChanged: function (event) {
       console.log("Event onPlayerHasChanged");
-
       if (this.isCurrentPlayerActive()) {
         this.setupSellButtons(event.args.majorities);
       }

@@ -84,15 +84,18 @@ final class Players implements \IteratorAggregate
         return new self(
             $this->next,
             $this->active,
-            current(
-                array_filter(
-                    $this->all(),
-                    function (Player $player) use ($nextPosition): bool {
-                        return $player->position() === $nextPosition;
-                    }
-                )
-            ),
-            $this->others
+            current(array_filter(
+                $this->all(),
+                function (Player $player) use ($nextPosition): bool { 
+                    return $player->position() === $nextPosition; 
+                }
+            )),
+            array_filter(
+                $this->all(),
+                function (Player $player): bool { 
+                    return $player->id() !== $this->next->id();
+                }
+            )
         );
     }
 

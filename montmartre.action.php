@@ -101,7 +101,7 @@ class action_montmartre extends APP_GameAction
                 $color = 'yellow';
                 break;
             default:
-                throw new BgaUserException(self::_("Error Processing Request"));
+                throw new BgaUserException(_("Error Processing Request"));
         }
 
         return Muse::painted(Color::$color(), $value);
@@ -120,7 +120,7 @@ class action_montmartre extends APP_GameAction
                 SellOffAction::fromMuses(...$cards)
             );
         } catch (MuseNotPainted $e) {
-            throw new BgaUserException(self::_('You don\'t have painted this muse'));
+            throw new BgaUserException(_('You don\'t have painted this muse'));
         }
 
         self::ajaxResponse();
@@ -139,9 +139,9 @@ class action_montmartre extends APP_GameAction
                 PickAction::fromDeckId($deck)
             );
         } catch (HandFull $e) {
-            throw new BgaUserException(self::_('You\'re hand is already full, should not happens'));
+            throw new BgaUserException(_('You\'re hand is already full, should not happens'));
         } catch (EmptyDeck $e) {
-            throw new BgaUserException(self::_('This deck is empty, choose another one'));
+            throw new BgaUserException(_('This deck is empty, choose another one'));
         }
         // TODO Manage re-pick
 
@@ -161,11 +161,11 @@ class action_montmartre extends APP_GameAction
                 SellAction::fromColor($color)
             );
         } catch (NoCollectorLeft $e) {
-            throw new BgaUserException(self::_('No collector left, should not happens'));
+            throw new BgaUserException(_('No collector left, should not happens'));
         } catch (IsBlockedByAmbroise $e) {
-            throw new BgaUserException(self::_('You couldn\'t sell to a collector blocked by Ambroise Croizat'));
+            throw new BgaUserException(_('You couldn\'t sell to a collector blocked by Ambroise Croizat'));
         } catch (ShouldHaveMajority $e) {
-            throw new BgaUserException(self::_('You don\'t have majority, should not happens'));
+            throw new BgaUserException(_('You don\'t have majority, should not happens'));
         }
 
         self::ajaxResponse();

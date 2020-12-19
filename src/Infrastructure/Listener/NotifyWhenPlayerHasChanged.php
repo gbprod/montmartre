@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Infrastructure\Listener;
 
+use GBProd\Montmartre\Domain\Color;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Services\ResolvePlayerMajorities;
+use function array_map;
 
 final class NotifyWhenPlayerHasChanged
 {
@@ -25,7 +27,9 @@ final class NotifyWhenPlayerHasChanged
             [
                 'player_id' => $event->players()->current()->id(),
                 'player_name' => $event->players()->current()->name(),
-                'majorities' => ResolvePlayerMajorities::resolve($event->players()),
+                'majorities' => array_map(function (Color $color): string {
+                    return $color->value();
+                }, ResolvePlayerMajorities::resolve($event->players())),
             ]
         );
     }

@@ -8,6 +8,7 @@ use GBProd\Montmartre\Domain\Color;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
 use GBProd\Montmartre\Domain\Players;
+use function var_dump;
 
 
 final class ResolvePlayerMajorities
@@ -27,8 +28,8 @@ final class ResolvePlayerMajorities
         $majorities = [];
         foreach ($counting as $color => $counts) {
             if (
-                $counts['values'] >= ($maxCounting[$color]['values'] ?? 0)
-                || $counts['count'] >= ($maxCounting[$color]['count'] ?? 0)
+                $counts['values'] > ($maxCounting[$color]['values'] ?? 0)
+                || $counts['count'] > ($maxCounting[$color]['count'] ?? 0)
             ) {
                 $majorities[] = Color::fromString($color);
             }
