@@ -20,6 +20,8 @@ use GBProd\Montmartre\Domain\Exception\MuseNotPainted;
 use GBProd\Montmartre\Domain\Exception\NoCollectorLeft;
 use GBProd\Montmartre\Domain\Exception\ShouldHaveMajority;
 use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
+use GBProd\Montmartre\Domain\Exception\ShouldSellOffAtLeastOneMuse;
+use GBProd\Montmartre\Domain\Exception\TooMuchPaintingsAfterSellOff;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Exception\MuseNotInHand;
 
@@ -121,6 +123,10 @@ class action_montmartre extends APP_GameAction
             );
         } catch (MuseNotPainted $e) {
             throw new BgaUserException(_('You don\'t have painted this muse'));
+        } catch (ShouldSellOffAtLeastOneMuse $e) {
+            throw new BgaUserException(_('You should sell off at least one painting'));
+        } catch (TooMuchPaintingsAfterSellOff $e) {
+            throw new BgaUserException(_('You must have a maximum of 6 paintings after sell off'));
         }
 
         self::ajaxResponse();

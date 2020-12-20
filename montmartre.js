@@ -468,20 +468,8 @@ define([
       );
     },
 
-    sellAction: function (event) {
-      console.log("sellAction");
-      dojo.stopEvent(event);
-
-      if (!this.checkAction("sellAction")) {
-        return;
-      }
-
-      // TODO
-    },
-
     sellOffAction: function (event) {
       console.log("sellOffAction");
-      dojo.stopEvent(event);
 
       if (!this.checkAction("sellOffAction")) {
         return;

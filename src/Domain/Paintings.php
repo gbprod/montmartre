@@ -8,7 +8,7 @@ use GBProd\Montmartre\Domain\Exception\MuseNotPainted;
 
 final class Paintings
 {
-    private const MAX_PAINTINGS = 6;
+    public const MAX_PAINTINGS = 6;
 
     /** @var Muse[] */
     private $muses;
@@ -78,5 +78,10 @@ final class Paintings
         }
 
         return Paintings::fromMuses(...$newMuses);
+    }
+
+    public function count(): int
+    {
+        return count($this->muses);
     }
 }

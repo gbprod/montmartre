@@ -19,6 +19,7 @@ use GBProd\Montmartre\Domain\Exception\NoCollectorLeft;
 use GBProd\Montmartre\Domain\Exception\ShouldHaveMajority;
 use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
 use GBProd\Montmartre\Domain\Exception\ShouldSellOffAtLeastOneMuse;
+use GBProd\Montmartre\Domain\Exception\TooMuchPaintingsAfterSellOff;
 use GBProd\Montmartre\Domain\Services\ResolvePlayerMajorities;
 
 final class Board
@@ -195,9 +196,11 @@ final class Board
             throw new ShouldSellOffAtLeastOneMuse();
         }
 
-        $this->players()
-            ->current()
-            ->sellOff(...$muses);
+        if ($this->players()->current()->paintings()->count() - count($muses) > Paintings::MAX_PAINTINGS) {
+            throw new TooMuchPaintingsAfterSellOff();
+        }
+
+        $this->players()->current()->sellOff(...$muses);
 
         $this->recordThat(new PlayerHasSoldOff(
             $this->players()->current(),
