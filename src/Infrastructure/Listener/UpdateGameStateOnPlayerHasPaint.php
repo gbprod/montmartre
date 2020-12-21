@@ -25,6 +25,6 @@ final class UpdateGameStateOnPlayerHasPaint
             return;
         }
 
-        $this->table->gamestate->nextState('sellOffState');
+        $this->table->gamestate->nextState('pickOrSellOffState');
     }
 }
