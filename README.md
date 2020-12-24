@@ -7,6 +7,6 @@ TODO:
  - Traduction
  - Déplacer le bouton paint dans le bloc playerHand
  - Aligner les stock dans la main 
- - Gestion de Ambroise
  - Gestion des decks vide
  - Supprimer la gestion immutable de certaines entités
+ - Utiliser les iterator plutôt que des arrays pour les muses

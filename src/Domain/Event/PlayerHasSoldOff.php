@@ -14,10 +14,8 @@ final class PlayerHasSoldOff implements Event
     /** @var Muse[] */
     private $muses;
 
-    public function __construct(
-        Player $player,
-        Muse ...$muses
-    ) {
+    public function __construct(Player $player, Muse ...$muses)
+    {
         $this->player = $player;
         $this->muses = $muses;
     }

@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Domain;
 
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
+use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
@@ -36,19 +37,23 @@ final class Board
     private $players;
     /** @var Ambroise */
     private $ambroise;
+    /** @var DiscardPile */
+    private $discardPile;
 
     private function __construct(
         Collectors $collectors,
         Gazettes $gazettes,
         Decks $decks,
         Players $players,
-        Ambroise $ambroise
+        Ambroise $ambroise,
+        DiscardPile $discardPile
     ) {
         $this->collectors = $collectors;
         $this->gazettes = $gazettes;
         $this->decks = $decks;
         $this->players = $players;
         $this->ambroise = $ambroise;
+        $this->discardPile = $discardPile;
     }
 
     public static function setup(array $players): self
@@ -77,7 +82,8 @@ final class Board
             Gazettes::distribute(),
             Decks::distribute($initialDeck),
             $players,
-            Ambroise::idle()
+            Ambroise::idle(),
+            DiscardPile::empty()
         );
 
 
@@ -142,7 +148,15 @@ final class Board
                     [null, null, []]
                 )
             ),
-            null !== $state['ambroise'] ? Ambroise::at(Color::{$state['ambroise']}()) : Ambroise::idle()
+            null !== $state['ambroise']
+                ? Ambroise::at(Color::{$state['ambroise']}())
+                : Ambroise::idle(),
+            DiscardPile::from(...array_map(function ($item): Muse {
+                return Muse::painted(
+                    Color::fromString($item['muse_color']),
+                    (int) $item['muse_value']
+                );
+            }, $state['discard_pile']))
         );
     }
 
@@ -206,6 +220,8 @@ final class Board
             $this->players()->current(),
             ...$muses
         ));
+
+        $this->recordThat(new MusesHasBeenDiscarded(...$muses));
     }
 
     public function pick(int $deckNumber): void
@@ -279,6 +295,8 @@ final class Board
                 $this->collectors()->{$color->value()}()
             )
         );
+
+        $this->recordThat(new MusesHasBeenDiscarded($muse));
     }
 
     public function ambroise(): Ambroise

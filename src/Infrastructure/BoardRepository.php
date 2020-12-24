@@ -6,11 +6,13 @@ namespace GBProd\Montmartre\Infrastructure;
 
 use GBProd\Montmartre\Domain\Board;
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
+use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
 use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
+use GBProd\Montmartre\Domain\Muse;
 
 final class BoardRepository
 {
@@ -40,6 +42,16 @@ SQL;
         UPDATE board
         SET ambroise = "%s"
         WHERE id=1
+SQL;
+
+    const SELECT_DISCARD_PILE_QUERY = <<<SQL
+        SELECT id, muse_value, muse_color
+        FROM `discard_pile`;
+SQL;
+
+    const INSERT_DISCARD_PILE_QUERY = <<<SQL
+        INSERT INTO `discard_pile` (`muse_value`, `muse_color`)
+        VALUES (%s, "%s");
 SQL;
 
     const SELECT_PLAYERS_QUERY = <<<SQL
@@ -171,6 +183,10 @@ SQL;
             array_keys($players)
         );
 
+        $state['discard_pile'] = $this->table->collectionFromDB(
+            self::SELECT_DISCARD_PILE_QUERY
+        );
+
         return Board::fromState($state);
     }
 
@@ -201,7 +217,6 @@ SQL;
             null !== $board->collectors()->green() ? $board->collectors()->green()->willPay() : "null",
             null !== $board->collectors()->pink() ? $board->collectors()->pink()->willPay() : "null",
             null !== $board->ambroise()->color() ? $board->ambroise()->color()->value() : "null"
-
         ));
 
         foreach ($board->gazettes() as $gazette) {
@@ -365,5 +380,19 @@ SQL;
                 $event->muse()->color()->value()
             )
         );
+    }
+
+    private function applyMusesHasBeenDiscarded(MusesHasBeenDiscarded $event, Board $board): void
+    {
+        /** @var Muse $muse */
+        foreach ($event->muses() as $muse) {
+            ($this->table)::dbQuery(
+                sprintf(
+                    self::INSERT_DISCARD_PILE_QUERY,
+                    $muse->value(),
+                    $muse->color()->value()
+                )
+            );
+        }
     }
 }
