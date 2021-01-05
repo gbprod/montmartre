@@ -116,7 +116,7 @@ final class Player
     public function paint(Muse ...$muses): void
     {
         foreach ($muses as $muse) {
-            $this->hand = $this->hand()->withPicked($muse);
+            $this->hand = $this->hand()->withDrawed($muse);
             $this->paintings = $this->paintings->withAppended($muse);
         }
     }
@@ -124,7 +124,7 @@ final class Player
     public function sellOff(Muse ...$muses): void
     {
         foreach ($muses as $muse) {
-            $this->paintings = $this->paintings->withPicked($muse);
+            $this->paintings = $this->paintings->withDrawed($muse);
         }
 
         $this->wallet = $this->wallet->withAdded(count($muses));
@@ -139,7 +139,7 @@ final class Player
             throw new \InvalidArgumentException();
         }
 
-        $this->paintings = $this->paintings->withPicked($muse);
+        $this->paintings = $this->paintings->withDrawed($muse);
 
         return $muse;
     }

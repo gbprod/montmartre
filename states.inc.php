@@ -39,25 +39,25 @@ $machinestates = [
             'paintAction',
         ],
         'transitions' => [
-            'pickOrSellOffState' => 3,
+            'drawOrSellOffState' => 3,
             'mustSellOffState' => 4,
-            'nextPlayer' => 5,
+            'nextPlayer' => 10,
         ]
     ],
 
     3 => [
-        'name' => 'pickOrSellOffState',
-        'description' => clienttranslate('${actplayer} could sell off paintings or pick'),
+        'name' => 'drawOrSellOffState',
+        'description' => clienttranslate('${actplayer} could sell off paintings or draw'),
         'descriptionmyturn' => clienttranslate('${you} could sell off paintings, select cards to sell off'),
         'type' => 'activeplayer',
 
         'possibleactions' => [
             'sellOffAction',
-            'pickAction'
+            'drawAction',
         ],
         'transitions' => [
-            'pickState' => 6,
-            'nextPlayer' => 5
+            'nextPlayer' => 10,
+            'drawState' => 5,
         ]
     ],
 
@@ -68,10 +68,24 @@ $machinestates = [
         'type' => 'activeplayer',
 
         'possibleactions' => ['sellOffAction'],
-        'transitions' => ['pickState' => 6]
+        'transitions' => ['drawState' => 5]
     ],
 
     5 => [
+        'name' => 'drawState',
+        'description' => clienttranslate('${actplayer} must draw'),
+        'descriptionmyturn' => clienttranslate('${you} must draw, select a deck'),
+        'type' => 'activeplayer',
+
+        'possibleactions' => [
+            'drawAction'
+        ],
+        'transitions' => [
+            'nextPlayer' => 10,
+        ]
+    ],
+
+    10 => [
         'name' => 'nextPlayer',
         'description' => '',
         'type' => 'game',
@@ -79,43 +93,6 @@ $machinestates = [
         'updateGameProgression' => true,
         'transitions' => ['playerTurn' => 2],
     ],
-
-    6 => [
-        'name' => 'pickState',
-        'description' => clienttranslate('${actplayer} must pick'),
-        'descriptionmyturn' => clienttranslate('${you} must pick, select a deck'),
-        'type' => 'activeplayer',
-
-        'possibleactions' => [
-            'pickAction'
-        ],
-        'transitions' => [
-            'nextPlayer' => 5,
-        ]
-    ],
-
-   /*
-        Examples:
-
-        2 => array(
-            'name' => 'nextPlayer',
-            'description' => '',
-            'type' => 'game',
-            'action' => 'stNextPlayer',
-            'updateGameProgression' => true,
-            'transitions' => array( 'endGame' => 99, 'nextPlayer' => 10 )
-        ),
-
-        10 => array(
-            'name' => 'playerTurn',
-            'description' => clienttranslate('${actplayer} must play a card or pass'),
-            'descriptionmyturn' => clienttranslate('${you} must play a card or pass'),
-            'type' => 'activeplayer',
-            'possibleactions' => array( 'playCard', 'pass' ),
-            'transitions' => array( 'playCard' => 2, 'pass' => 2 )
-        ),
-
-    */
 
     // Final state.
     // Please do not modify (and do not overload action/args methods).

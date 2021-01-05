@@ -89,21 +89,21 @@ final class Deck implements \Countable
         return $sliceDeck;
     }
 
-    public function pick(int $quantity = 1): array
+    public function draw(int $quantity = 1): array
     {
         if ($quantity < 1) {
-            throw new \InvalidArgumentException('Should pick at least one card');
+            throw new \InvalidArgumentException('Should draw at least one card');
         }
 
         if (empty($this->muses)) {
             throw new EmptyDeck();
         }
 
-        $picked = array_slice($this->muses, 0, $quantity);
+        $drawed = array_slice($this->muses, 0, $quantity);
 
         $this->muses = array_slice($this->muses, $quantity);
 
-        return $picked;
+        return $drawed;
     }
 
     public function isEmpty(): bool

@@ -2,14 +2,13 @@
 
 /**
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * Montmartre implementation : © <gbprod> <contact@gb-prod.fr>
+ * Montmartre implementation : © <gbprod> <contact@gb-prod.fr>.
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  */
-
-include(__DIR__ . '/vendor/autoload.php');
+include __DIR__.'/vendor/autoload.php';
 
 use GBProd\Montmartre\Application\GetPlayerSituationHandler;
 use GBProd\Montmartre\Application\GetPlayerSituationQuery;
@@ -17,7 +16,7 @@ use GBProd\Montmartre\Application\NextPlayerHandler;
 use GBProd\Montmartre\Application\StartNewGameHandler;
 use Psr\Container\ContainerInterface;
 
-require_once(APP_GAMEMODULE_PATH . 'module/table/table.game.php');
+require_once APP_GAMEMODULE_PATH.'module/table/table.game.php';
 
 class Montmartre extends Table
 {
@@ -36,7 +35,7 @@ class Montmartre extends Table
             return $this->container;
         }
 
-        $this->container = require(__DIR__ . '/config/container.php');
+        $this->container = require __DIR__.'/config/container.php';
         $this->container->set('table', $this);
 
         return $this->container;
@@ -62,6 +61,11 @@ class Montmartre extends Table
         return $this->getObjectFromDB($sql);
     }
 
+    public function log($value): void
+    {
+        self::trace($value);
+    }
+
     protected function getGameName()
     {
         return 'montmartre';
@@ -82,23 +86,24 @@ class Montmartre extends Table
      *   Gather all informations about current game situation (visible by the current player).
      *   The method is called each time the game interface is displayed to a player, ie:
      *   _ when the game starts
-     *   _ when a player refreshes the game page (F5)
+     *   _ when a player refreshes the game page (F5).
      */
     protected function getAllDatas()
     {
-        $infraPlayers = self::loadPlayersBasicInfos(); 
+        $infraPlayers = self::loadPlayersBasicInfos();
         $data = ($this->getContainer()->get(GetPlayerSituationHandler::class))(GetPlayerSituationQuery::byId(self::getCurrentPlayerId()));
 
         $data['players'] = array_reduce(
-            $data['players'], 
+            $data['players'],
             function ($carry, $player) {
                 $carry[$player['id']] = array_merge(
-                    $player, 
+                    $player,
                     $carry[$player['id']]
                 );
                 $carry[$player['id']]['score'] = $player['wallet'];
+
                 return $carry;
-            }, 
+            },
             $infraPlayers
         );
 
@@ -115,13 +120,12 @@ class Montmartre extends Table
         This method is called each time we are in a game state with the "updateGameProgression" property set to true
         (see states.inc.php)
     */
-    function getGameProgression()
+    public function getGameProgression()
     {
         // TODO: compute and return the game progression
 
         return 0;
     }
-
 
     //////////////////////////////////////////////////////////////////////////////
     //////////// Utility functions
@@ -232,28 +236,28 @@ class Montmartre extends Table
         you must _never_ use getCurrentPlayerId() or getCurrentPlayerName(), otherwise it will fail with a "Not logged" error message.
     */
 
-    function zombieTurn($state, $active_player)
+    public function zombieTurn($state, $active_player)
     {
         $statename = $state['name'];
 
-        if ($state['type'] === "activeplayer") {
+        if ('activeplayer' === $state['type']) {
             switch ($statename) {
                 default:
-                    $this->gamestate->nextState("zombiePass");
+                    $this->gamestate->nextState('zombiePass');
                     break;
             }
 
             return;
         }
 
-        if ($state['type'] === "multipleactiveplayer") {
+        if ('multipleactiveplayer' === $state['type']) {
             // Make sure player is in a non blocking status for role turn
             $this->gamestate->setPlayerNonMultiactive($active_player, '');
 
             return;
         }
 
-        throw new feException("Zombie mode not supported at this game state: " . $statename);
+        throw new feException('Zombie mode not supported at this game state: '.$statename);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////:
@@ -271,7 +275,7 @@ class Montmartre extends Table
 
     */
 
-    function upgradeTableDb($from_version)
+    public function upgradeTableDb($from_version)
     {
         // $from_version is the current version of this game database, in numerical form.
         // For example, if the game was running with a release of your game named "140430-1345",
@@ -295,7 +299,6 @@ class Montmartre extends Table
         //        // Please add your future database scheme changes here
         //
         //
-
     }
 
     protected function setupPlayers($players)
@@ -303,11 +306,11 @@ class Montmartre extends Table
         $gameinfos = self::getGameinfos();
         $default_colors = $gameinfos['player_colors'];
 
-        $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ";
+        $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ';
         $values = [];
         foreach ($players as $player_id => $player) {
             $color = array_shift($default_colors);
-            $values[] = "('" . $player_id . "','$color','" . $player['player_canal'] . "','" . addslashes($player['player_name']) . "','" . addslashes($player['player_avatar']) . "')";
+            $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes($player['player_name'])."','".addslashes($player['player_avatar'])."')";
         }
         $sql .= implode($values, ',');
 

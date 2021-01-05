@@ -7,7 +7,7 @@ namespace GBProd\Montmartre\Application;
 use GBProd\Montmartre\Domain\Board;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 
-final class PickHandler
+final class DrawHandler
 {
     /** @var BoardRepository */
     private $repository;
@@ -17,11 +17,11 @@ final class PickHandler
         $this->repository = $repository;
     }
 
-    public function __invoke(PickAction $action): void
+    public function __invoke(DrawAction $action): void
     {
         $board = $this->repository->get();
 
-        $board->pick($action->deck);
+        $board->draw($action->deck);
 
         $this->repository->save($board);
     }

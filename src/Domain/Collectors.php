@@ -71,7 +71,7 @@ final class Collectors
         return $this->pink;
     }
 
-    public function pick(Color $color): ?Collector
+    public function draw(Color $color): ?Collector
     {
         $collector = $this->{$color->value()}();
 

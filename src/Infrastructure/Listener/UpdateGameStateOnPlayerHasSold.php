@@ -17,6 +17,7 @@ final class UpdateGameStateOnPlayerHasSold
 
     public function __invoke(PlayerHasSold $event): void
     {
+        $this->table->log(__CLASS__);
         $this->table->gamestate->nextState('nextPlayer');
     }
 }

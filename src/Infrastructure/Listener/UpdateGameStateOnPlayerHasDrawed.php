@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Infrastructure\Listener;
 
-use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
+use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
 
-final class UpdateGameStateOnPlayerHasPicked
+final class UpdateGameStateOnPlayerHasDrawed
 {
     private $table;
 
@@ -15,8 +15,9 @@ final class UpdateGameStateOnPlayerHasPicked
         $this->table = $table;
     }
 
-    public function __invoke(PlayerHasPicked $event): void
+    public function __invoke(PlayerHasDrawed $event): void
     {
+        $this->table->log(__CLASS__);
         $this->table->gamestate->nextState('nextPlayer');
     }
 }

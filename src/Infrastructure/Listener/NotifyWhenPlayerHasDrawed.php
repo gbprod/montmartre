@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace GBProd\Montmartre\Infrastructure\Listener;
 
-use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
+use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
 use GBProd\Montmartre\Domain\Muse;
 
-final class NotifyWhenPlayerHasPicked
+final class NotifyWhenPlayerHasDrawed
 {
     private $table;
 
@@ -16,11 +16,11 @@ final class NotifyWhenPlayerHasPicked
         $this->table = $table;
     }
 
-    public function __invoke(PlayerHasPicked $event): void
+    public function __invoke(PlayerHasDrawed $event): void
     {
         $this->table->notifyAllPlayers(
-            'PlayerHasPicked',
-            clienttranslate('${player_name} has picked : ${musesAsString} from deck ${deck_number}'),
+            'PlayerHasDrawed',
+            clienttranslate('${player_name} has drawed : ${musesAsString} from deck ${deck_number}'),
             [
                 'player_id' => $event->player()->id(),
                 'player_name' => $event->player()->name(),

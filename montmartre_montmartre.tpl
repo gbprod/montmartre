@@ -29,19 +29,19 @@
       <div id="deck-1">
         <div id="muse-deck-1"></div>
       </div>
-      <a href="#" id="button-deck-1" data-index='1' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
+      <a href="#" id="button-deck-1" data-index='1' class="action-button bgabutton bgabutton_blue draw-button" onclick="return false;">Draw</a>
     </div>
     <div class="deck">
       <div id="deck-2">
         <div id="muse-deck-2"></div>
       </div>
-      <a href="#" id="button-deck-2" data-index='2' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
+      <a href="#" id="button-deck-2" data-index='2' class="action-button bgabutton bgabutton_blue draw-button" onclick="return false;">Draw</a>
     </div>
     <div class="deck">
       <div id="deck-3">
         <div id="muse-deck-3"></div>
       </div>
-      <a href="#" id="button-deck-3" data-index='3' class="action-button bgabutton bgabutton_blue pick-button" onclick="return false;">Pick</a>
+      <a href="#" id="button-deck-3" data-index='3' class="action-button bgabutton bgabutton_blue draw-button" onclick="return false;">Draw</a>
     </div>
   </div>
   <div class="whiteblock">

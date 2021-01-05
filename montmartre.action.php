@@ -2,8 +2,8 @@
 
 use GBProd\Montmartre\Application\PaintAction;
 use GBProd\Montmartre\Application\PaintHandler;
-use GBProd\Montmartre\Application\PickAction;
-use GBProd\Montmartre\Application\PickHandler;
+use GBProd\Montmartre\Application\DrawAction;
+use GBProd\Montmartre\Application\DrawHandler;
 use GBProd\Montmartre\Application\SellOffAction;
 use GBProd\Montmartre\Application\SellOffHandler;
 use GBProd\Montmartre\Application\NextPlayerAction;
@@ -132,24 +132,24 @@ class action_montmartre extends APP_GameAction
         self::ajaxResponse();
     }
 
-    public function pick()
+    public function draw()
     {
         self::setAjaxMode();
 
-        $this->game->checkAction('pickAction');
+        $this->game->checkAction('drawAction');
 
         $deck = self::getArg('deck', AT_posint, true);
 
         try {
-            $this->game->getContainer()->get(PickHandler::class)(
-                PickAction::fromDeckId($deck)
+            $this->game->getContainer()->get(DrawHandler::class)(
+                DrawAction::fromDeckId($deck)
             );
         } catch (HandFull $e) {
             throw new BgaUserException(_('You\'re hand is already full, should not happens'));
         } catch (EmptyDeck $e) {
             throw new BgaUserException(_('This deck is empty, choose another one'));
         }
-        // TODO Manage re-pick
+        // TODO Manage re-draw
 
         self::ajaxResponse();
     }

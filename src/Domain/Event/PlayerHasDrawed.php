@@ -8,7 +8,7 @@ use GBProd\Montmartre\Domain\Deck;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
 
-final class PlayerHasPicked implements Event
+final class PlayerHasDrawed implements Event
 {
     /** @var Player */
     private $player;

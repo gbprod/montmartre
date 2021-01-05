@@ -9,7 +9,7 @@ use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
-use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
+use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
 use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Muse;
@@ -203,9 +203,9 @@ SQL;
                 );
             }
             $this->$method($event, $board);
-
-            $this->eventDispatcher->dispatch($events);
         }
+
+        $this->eventDispatcher->dispatch($events);
     }
 
     private function applyBoardHasBeenSetUp(BoardHasBeenSetUp $event, Board $board): void
@@ -321,7 +321,7 @@ SQL;
     {
     }
 
-    private function applyPlayerHasPicked(PlayerHasPicked $event, Board $board): void
+    private function applyPlayerHasDrawed(PlayerHasDrawed $event, Board $board): void
     {
         foreach ($event->muses() as $muse) {
             ($this->table)::dbQuery(

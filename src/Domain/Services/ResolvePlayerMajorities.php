@@ -8,7 +8,6 @@ use GBProd\Montmartre\Domain\Color;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
 use GBProd\Montmartre\Domain\Players;
-use function var_dump;
 
 
 final class ResolvePlayerMajorities

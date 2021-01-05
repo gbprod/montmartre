@@ -6,7 +6,6 @@ namespace GBProd\Montmartre\Infrastructure\Listener;
 
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Paintings;
-use function var_dump;
 
 final class UpdateGameStateOnPlayerHasPaint
 {
@@ -19,12 +18,13 @@ final class UpdateGameStateOnPlayerHasPaint
 
     public function __invoke(PlayerHasPaint $event): void
     {
+        $this->table->log(__CLASS__);
         if ($event->player()->paintings()->count() > Paintings::MAX_PAINTINGS) {
             $this->table->gamestate->nextState('mustSellOffState');
 
             return;
         }
 
-        $this->table->gamestate->nextState('pickOrSellOffState');
+        $this->table->gamestate->nextState('drawOrSellOffState');
     }
 }

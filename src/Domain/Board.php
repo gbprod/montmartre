@@ -9,7 +9,7 @@ use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
 use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
-use GBProd\Montmartre\Domain\Event\PlayerHasPicked;
+use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
 use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
@@ -67,7 +67,7 @@ final class Board
                         $playerId,
                         $playerState['player_name'],
                         ((int) $playerState['player_table_order']) - 1,
-                        Hand::containing(...$initialDeck->pick(5)),
+                        Hand::containing(...$initialDeck->draw(5)),
                         Paintings::empty(),
                         Wallet::empty()
                     );
@@ -224,7 +224,7 @@ final class Board
         $this->recordThat(new MusesHasBeenDiscarded(...$muses));
     }
 
-    public function pick(int $deckNumber): void
+    public function draw(int $deckNumber): void
     {
         $player = $this->players()->current();
         if ($player->hand()->isFull()) {
@@ -236,18 +236,18 @@ final class Board
             throw new EmptyDeck();
         }
 
-        $picked = $deck->pick(
+        $drawed = $deck->draw(
             Hand::MAX_LENGTH - $player->hand()->count()
         );
 
-        $player->hand()->withAppended(...$picked);
+        $player->hand()->withAppended(...$drawed);
 
         $this->recordThat(
-            new PlayerHasPicked(
+            new PlayerHasDrawed(
                 $this->players()->current(),
                 $deck,
                 $deckNumber,
-                ...$picked
+                ...$drawed
             )
         );
     }
@@ -275,7 +275,7 @@ final class Board
             throw new ShouldHaveMajority();
         }
 
-        $collector = $this->collectors()->pick($color);
+        $collector = $this->collectors()->draw($color);
 
         if (null === $collector) {
             throw new NoCollectorLeft($color);

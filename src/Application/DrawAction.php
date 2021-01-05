@@ -6,7 +6,7 @@ namespace GBProd\Montmartre\Application;
 
 use GBProd\Montmartre\Domain\Muse;
 
-final class PickAction
+final class DrawAction
 {
     /** @var int */
     public $deck;

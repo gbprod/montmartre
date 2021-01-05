@@ -171,7 +171,7 @@ define([
         this.setMuseInDeck(index, gamedatas.decks[index]);
 
         dojo.query("#button-deck-" + index).onclick(function (event) {
-          that.onPick(event);
+          that.onDraw(event);
           return false;
         });
       }
@@ -326,7 +326,7 @@ define([
           this.playerHand.setSelectionMode(2);
           break;
 
-        case "pickOrSellOffState":
+        case "drawOrSellOffState":
           for (var color of ["green", "yellow", "blue", "pink"]) {
             this.paintingsStocks[this.getCurrentPlayerId()][
               color
@@ -342,8 +342,8 @@ define([
           }
           break;
 
-        case "pickState":
-          dojo.query(".pick-button").style("display", "inline-block");
+        case "drawState":
+          dojo.query(".draw-button").style("display", "inline-block");
           break;
       }
     },
@@ -364,13 +364,13 @@ define([
           dojo.query(".sell-button").forEach(dojo.destroy);
           break;
 
-        case "pickOrSellOffState":
+        case "drawOrSellOffState":
           for (var color of ["green", "yellow", "blue", "pink"]) {
             this.paintingsStocks[this.getCurrentPlayerId()][
               color
             ].setSelectionMode(0);
           }
-          dojo.query(".pick-button").style("display", "none");
+          dojo.query(".draw-button").style("display", "none");
           break;
 
         case "mustSellOffState":
@@ -381,8 +381,8 @@ define([
           }
           break;
 
-        case "pickState":
-          dojo.query(".pick-button").style("display", "none");
+        case "drawState":
+          dojo.query(".draw-button").style("display", "none");
           break;
       }
     },
@@ -403,7 +403,7 @@ define([
             );
             break;
 
-          case "pickOrSellOffState":
+          case "drawOrSellOffState":
             this.addActionButton(
               "selloff_action_button",
               _("Sell off"),
@@ -523,23 +523,23 @@ define([
       console.log("skipSellOffAction");
       dojo.stopEvent(event);
 
-      if (!this.checkAction("pickAction")) {
+      if (!this.checkAction("drawAction")) {
         return;
       }
 
       this.gamedatas.gamestate.descriptionmyturn = _(
-        "You must pick, select a deck"
+        "You must draw, select a deck"
       );
       this.updatePageTitle();
       this.removeActionButtons();
-      dojo.query(".pick-button").style("display", "inline-block");
+      dojo.query(".draw-button").style("display", "inline-block");
     },
 
-    pickAction: function (event) {
-      console.log("pickAction");
+    drawAction: function (event) {
+      console.log("drawAction");
       dojo.stopEvent(event);
 
-      if (!this.checkAction("pickAction")) {
+      if (!this.checkAction("drawAction")) {
         return;
       }
     },
@@ -548,12 +548,12 @@ define([
      * UI Events
      */
 
-    onPick: function (event) {
+    onDraw: function (event) {
       dojo.stopEvent(event);
       var index = event.target.getAttribute("data-index");
 
       this.ajaxcall(
-        "/montmartre/montmartre/pick.html",
+        "/montmartre/montmartre/draw.html",
         {
           deck: index,
           lock: true,
@@ -593,8 +593,8 @@ define([
       dojo.subscribe("PlayerHasSoldOff", this, "onPlayerHasSoldOff");
       this.notifqueue.setSynchronous("PlayerHasSoldOff", 3000);
 
-      dojo.subscribe("PlayerHasPicked", this, "onPlayerHasPicked");
-      this.notifqueue.setSynchronous("PlayerHasPicked", 3000);
+      dojo.subscribe("PlayerHasDrawed", this, "onPlayerHasDrawed");
+      this.notifqueue.setSynchronous("PlayerHasDrawed", 3000);
 
       dojo.subscribe("PlayerHasChanged", this, "onPlayerHasChanged");
       this.notifqueue.setSynchronous("PlayerHasChanged", 3000);
@@ -634,8 +634,8 @@ define([
       this.scoreCtrl[event.args.player_id].toValue(event.args.player_score);
     },
 
-    onPlayerHasPicked: function (event) {
-      console.log("Event onPlayerHasPicked");
+    onPlayerHasDrawed: function (event) {
+      console.log("Event onPlayerHasDrawed");
       var that = this;
 
       for (var index = 0; index < event.args.muses.length; ++index) {
@@ -651,7 +651,7 @@ define([
             function (index, event, that) {
               dojo.place(
                 that.format_block("jstpl_muse_card", {
-                  id: "picked-" + index,
+                  id: "drawed-" + index,
                   value: event.args.muses[index].value,
                   color: event.args.muses[index].color,
                 }),
@@ -659,7 +659,7 @@ define([
               );
 
               that.slideToObjectAndDestroy(
-                "picked-" + index,
+                "drawed-" + index,
                 "player_board_" + event.args.player_id
               );
 
