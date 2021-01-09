@@ -99,10 +99,16 @@ define([
       if (!!gamedatas.ambroise) {
         this.moveAmbroise(gamedatas.ambroise);
       }
+
+      var that = this;
+      window.onresize = function() {
+        if (!!gamedatas.ambroise) {
+          that.moveAmbroise(gamedatas.ambroise);
+        }
+      }
     },
 
     moveAmbroise: function (color) {
-      console.log("mosve to" + color);
       if (this.ambroise == null) {
         dojo.place(this.format_block("jstpl_ambroise", {}), "collectors");
         this.placeOnObject("ambroise", "collectors-" + color);
