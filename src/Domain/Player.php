@@ -22,6 +22,8 @@ final class Player
     private $wallet;
     /** @var int */
     private $position;
+    /** @var AttractedCollectors */
+    private $attractedCollectors;
 
     private function __construct(
         int $id,
@@ -29,7 +31,8 @@ final class Player
         int $position,
         Hand $hand,
         Paintings $paintings,
-        Wallet $wallet
+        Wallet $wallet,
+        AttractedCollectors $attractedCollectors
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -37,23 +40,23 @@ final class Player
         $this->paintings = $paintings;
         $this->wallet = $wallet;
         $this->position = $position;
+        $this->attractedCollectors = $attractedCollectors;
     }
 
     public static function named(
         int $id,
         string $name,
         int $position,
-        Hand $hand,
-        Paintings $paintings,
-        Wallet $wallet
+        Hand $hand
     ): self {
         return new self(
             $id,
             $name,
             $position,
             $hand,
-            $paintings,
-            $wallet
+            Paintings::empty(),
+            Wallet::empty(),
+            AttractedCollectors::empty()
         );
     }
 
@@ -89,7 +92,15 @@ final class Player
                     $state['paintings']
                 )
             ),
-            Wallet::containing((int) $state['wallet'])
+            Wallet::containing((int) $state['wallet']),
+            AttractedCollectors::from(...array_map(
+                function ($collector) {
+                    return AttractedCollector::{$collector['color']}(
+                        (int) $collector['value']
+                    );
+                },
+                $state['attracted_collectors']
+            ))
         );
     }
 

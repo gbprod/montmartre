@@ -67,9 +67,7 @@ final class Board
                         $playerId,
                         $playerState['player_name'],
                         ((int) $playerState['player_table_order']) - 1,
-                        Hand::containing(...$initialDeck->draw(5)),
-                        Paintings::empty(),
-                        Wallet::empty()
+                        Hand::containing(...$initialDeck->draw(5))
                     );
                 },
                 $players,

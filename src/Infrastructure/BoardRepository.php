@@ -8,8 +8,8 @@ use GBProd\Montmartre\Domain\Board;
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
-use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
+use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Muse;
@@ -137,6 +137,16 @@ SQL;
         WHERE player_id = %s;
 SQL;
 
+    const INSERT_ATTRACTED_COLLECTOR = <<<SQL
+        INSERT INTO `attracted_collector` (player_id, value, color)
+        VALUES (%s, %s, '%s');
+SQL;
+
+    const SELECT_PLAYER_ATTRACTED_COLLECTORS_QUERY = <<<SQL
+        SELECT * FROM `attracted_collector`
+        WHERE player_id = %s;
+SQL;
+
     private $table;
     /** @var EventDispatcher */
     private $eventDispatcher;
@@ -173,6 +183,10 @@ SQL;
 
                 $player['paintings'] = $this->table->collectionFromDB(
                     sprintf(self::SELECT_PLAYER_PAINTINGS_QUERY, $playerId)
+                );
+
+                $player['attracted_collectors'] = $this->table->collectionFromDB(
+                    sprintf(self::SELECT_PLAYER_ATTRACTED_COLLECTORS_QUERY, $playerId)
                 );
 
                 $player['wallet'] = $player['player_score'];
@@ -213,10 +227,10 @@ SQL;
         ($this->table)::dbQuery(sprintf(
             self::INSERT_QUERY,
             null !== $board->collectors()->blue() ? $board->collectors()->blue()->willPay() : 'null',
-            null !== $board->collectors()->yellow() ? $board->collectors()->yellow()->willPay() : "null",
-            null !== $board->collectors()->green() ? $board->collectors()->green()->willPay() : "null",
-            null !== $board->collectors()->pink() ? $board->collectors()->pink()->willPay() : "null",
-            null !== $board->ambroise()->color() ? $board->ambroise()->color()->value() : "null"
+            null !== $board->collectors()->yellow() ? $board->collectors()->yellow()->willPay() : 'null',
+            null !== $board->collectors()->green() ? $board->collectors()->green()->willPay() : 'null',
+            null !== $board->collectors()->pink() ? $board->collectors()->pink()->willPay() : 'null',
+            null !== $board->ambroise()->color() ? $board->ambroise()->color()->value() : 'null'
         ));
 
         foreach ($board->gazettes() as $gazette) {
@@ -245,7 +259,7 @@ SQL;
 
     private function storeMuses(int $deckNumber, array $muses): void
     {
-        for ($position = 0; $position < count($muses); $position++) {
+        for ($position = 0; $position < count($muses); ++$position) {
             ($this->table)::dbQuery(sprintf(
                 self::INSERT_DECK_MUSE_QUERY,
                 $deckNumber,
@@ -269,7 +283,7 @@ SQL;
             );
 
             if (null === $museState) {
-                throw new \RuntimeException("Muse not found in hand, should not happens");
+                throw new \RuntimeException('Muse not found in hand, should not happens');
             }
 
             ($this->table)::dbQuery(
@@ -300,7 +314,7 @@ SQL;
             );
 
             if (null === $museState) {
-                throw new \RuntimeException("Muse not found in hand, should not happens");
+                throw new \RuntimeException('Muse not found in hand, should not happens');
             }
 
             ($this->table)::dbQuery(
@@ -359,7 +373,7 @@ SQL;
         );
 
         if (null === $museState) {
-            throw new \RuntimeException("Muse not found in hand, should not happens");
+            throw new \RuntimeException('Muse not found in hand, should not happens');
         }
 
         ($this->table)::dbQuery(
@@ -371,6 +385,15 @@ SQL;
                 self::UPDATE_SCORE_QUERY,
                 $event->player()->wallet()->amount(),
                 $event->player()->id()
+            )
+        );
+
+        ($this->table)::dbQuery(
+            sprintf(
+                self::INSERT_ATTRACTED_COLLECTOR,
+                $event->player()->id(),
+                $event->attractedCollector()->willPay(),
+                $event->muse()->color()->value()
             )
         );
 
