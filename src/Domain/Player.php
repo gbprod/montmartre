@@ -95,7 +95,7 @@ final class Player
             Wallet::containing((int) $state['wallet']),
             AttractedCollectors::from(...array_map(
                 function ($collector) {
-                    return AttractedCollector::{$collector['color']}(
+                    return Collector::{$collector['color']}(
                         (int) $collector['value']
                     );
                 },

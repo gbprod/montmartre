@@ -31,7 +31,7 @@ final class NotifyWhenPlayerHasSold
                     clienttranslate($event->muse()->color()->value())
                 ),
                 'muse' => $event->muse()->toArray(),
-                'color' => $event->muse()->color()->value(),
+                'color' => $event->attractedCollector()->color()->value(),
                 'attractedCollector' => $event->attractedCollector()->willPay(),
                 'newCollector' => null !== $event->newCollector() ? $event->newCollector()->willPay() : null,
             ]

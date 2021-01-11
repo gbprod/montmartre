@@ -10,10 +10,10 @@ use Traversable;
 
 final class AttractedCollectors implements IteratorAggregate
 {
-    /** @var AttractedCollector[] */
+    /** @var Collector[] */
     private $collectors;
 
-    private function __construct(AttractedCollector ...$collectors)
+    private function __construct(Collector ...$collectors)
     {
         $this->collectors = $collectors;
     }
@@ -23,7 +23,7 @@ final class AttractedCollectors implements IteratorAggregate
        return new self();
     }
 
-    public static function from(AttractedCollector ...$collectors): self
+    public static function from(Collector ...$collectors): self
     {
         return new self(...$collectors);
     }

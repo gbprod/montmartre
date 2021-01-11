@@ -30,10 +30,10 @@ final class Collectors
     public static function distribute(): Collectors
     {
         return new self(
-            Collector::paying(2),
-            Collector::paying(2),
-            Collector::paying(2),
-            Collector::paying(2)
+            Collector::blue(2),
+            Collector::yellow(2),
+            Collector::green(2),
+            Collector::pink(2)
         );
     }
 
@@ -44,10 +44,10 @@ final class Collectors
         int $pinkPay
     ): Collectors {
         return new self(
-            Collector::paying($bluePay),
-            Collector::paying($yellowPay),
-            Collector::paying($greenPay),
-            Collector::paying($pinkPay)
+            Collector::blue($bluePay),
+            Collector::yellow($yellowPay),
+            Collector::green($greenPay),
+            Collector::pink($pinkPay)
         );
     }
 
@@ -80,7 +80,7 @@ final class Collectors
         }
 
         $this->{$color->value()} = $collector->willPay() <= 10
-            ? Collector::paying($collector->willPay() + 2)
+            ? Collector::{$color->value()}($collector->willPay() + 2)
             : null;
 
         return $collector;

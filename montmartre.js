@@ -698,7 +698,10 @@ define([
       ].removeFromStock(id, "collectors-" + event.args.muse.color);
 
       this.collectors[event.args.color].removeFromStock(
-        this.collectorCardId(event.args.color, event.args.attractedCollector),
+        this.collectorCardId(
+          event.args.attractedCollector.color,
+          event.args.attractedCollector.value
+        ),
         "player_name_" + event.args.player_id
       );
 
