@@ -175,7 +175,6 @@ define([
       var that = this;
 
       for (var index = 1; index < [1, 2, 3].length + 1; index++) {
-        console.log( gamedatas.decks[index]); gamedatas.decks[index]
         this.setMuseInDeck(index, gamedatas.decks[index]);
 
         dojo.query("#button-deck-" + index).onclick(function (event) {
@@ -618,6 +617,9 @@ define([
 
       dojo.subscribe("PlayerHasSold", this, "onPlayerHasSold");
       this.notifqueue.setSynchronous("PlayerHasSold", 3000);
+
+      dojo.subscribe("DecksWasRedistributed", this, "onDecksWasRedistributed");
+      this.notifqueue.setSynchronous("DecksWasRedistributed", 3000);
     },
 
     onPlayerHasPaint: function (event) {
@@ -653,7 +655,6 @@ define([
 
     onPlayerHasDrawed: function (event) {
       console.log("Event onPlayerHasDrawed");
-      console.log(event);
       var that = this;
 
       for (var index = 0; index < event.args.muses.length; ++index) {
@@ -726,6 +727,13 @@ define([
       console.log("Event onPlayerHasChanged");
       if (this.isCurrentPlayerActive()) {
         this.setupSellButtons(event.args.majorities);
+      }
+    },
+
+    onDecksWasRedistributed: function (event) {
+      console.log("Event onDecksWasRedistributed");
+      for (var index = 1; index < [1, 2, 3].length + 1; index++) {
+        this.setMuseInDeck(index, event.args.decks[index]);
       }
     },
   });

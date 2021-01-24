@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GBProd\Montmartre\Domain;
 
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
+use GBProd\Montmartre\Domain\Event\DecksWasRedistributed;
 use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
 use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
@@ -239,14 +240,27 @@ final class Board
 
         $player->draw(...$drawed);
 
-        $this->recordThat(
-            new PlayerHasDrawed(
-                $this->players()->current(),
-                $deck,
-                $deckNumber,
-                ...$drawed
-            )
-        );
+        $this->recordThat(new PlayerHasDrawed(
+            $this->players()->current(),
+            $deck,
+            $deckNumber,
+            ...$drawed
+        ));
+
+        if ($this->decks()->mustBeRedistibuted()) {
+            $this->decks = Decks::distribute(
+                Deck::fromRemaining(...array_merge(
+                    $this->decks()->remainingMuses(),
+                    iterator_to_array($this->discardPile)
+                ))
+            );
+
+            $this->discardPile = DiscardPile::empty();
+
+            $this->recordThat(new DecksWasRedistributed(
+                $this->decks()
+            ));
+        }
     }
 
     public function nextPlayer(): void

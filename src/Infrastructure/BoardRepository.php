@@ -6,6 +6,7 @@ namespace GBProd\Montmartre\Infrastructure;
 
 use GBProd\Montmartre\Domain\Board;
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
+use GBProd\Montmartre\Domain\Event\DecksWasRedistributed;
 use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
@@ -52,6 +53,10 @@ SQL;
     const INSERT_DISCARD_PILE_QUERY = <<<SQL
         INSERT INTO `discard_pile` (`muse_value`, `muse_color`)
         VALUES (%s, "%s");
+SQL;
+
+    const TRUNCATE_DISCARD_PILE_QUERY = <<<SQL
+        DELETE * FROM `discard_pile`;
 SQL;
 
     const SELECT_PLAYERS_QUERY = <<<SQL
@@ -417,5 +422,14 @@ SQL;
                 )
             );
         }
+    }
+
+    private function applyDecksWasRedistributed(DecksWasRedistributed $event, Board $board): void
+    {
+        $this->storeMuses(1, $board->decks()->firstDeck()->muses());
+        $this->storeMuses(2, $board->decks()->secondDeck()->muses());
+        $this->storeMuses(3, $board->decks()->thirdDeck()->muses());
+
+        ($this->table)::dbQuery(self::TRUNCATE_DISCARD_PILE_QUERY);
     }
 }

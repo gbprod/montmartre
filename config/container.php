@@ -7,6 +7,7 @@ use GBProd\Montmartre\Application\DrawHandler;
 use GBProd\Montmartre\Application\SellHandler;
 use GBProd\Montmartre\Application\SellOffHandler;
 use GBProd\Montmartre\Application\StartNewGameHandler;
+use GBProd\Montmartre\Domain\Event\DecksWasRedistributed;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
@@ -14,6 +15,7 @@ use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 use GBProd\Montmartre\Infrastructure\EventDispatcher;
+use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenDecksWasRedistributed;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasChanged;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasPaint;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasDrawed;
@@ -90,6 +92,9 @@ $containerBuilder->addDefinitions([
             DI\get(UpdateGameStateOnPlayerHasSold::class),
             DI\get(SaveEvent::class),
         ],
+        DecksWasRedistributed::class => [
+            DI\get(NotifyWhenDecksWasRedistributed::class),
+        ]
     ]),
 
     /** Notifications **/
@@ -110,6 +115,10 @@ $containerBuilder->addDefinitions([
     ),
 
     NotifyWhenPlayerHasChanged::class => DI\create()->constructor(
+        DI\get('table')
+    ),
+
+    NotifyWhenDecksWasRedistributed::class => DI\create()->constructor(
         DI\get('table')
     ),
 

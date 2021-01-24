@@ -74,4 +74,22 @@ final class Decks
 
         throw new \InvalidArgumentException('Invalid deck number');
     }
+
+    public function mustBeRedistibuted(): bool
+    {
+        return array_sum([
+            $this->firstDeck()->isEmpty(),
+            $this->secondDeck()->isEmpty(),
+            $this->thirdDeck()->isEmpty()
+        ]) >= 2;
+    }
+
+    public function remainingMuses(): array
+    {
+        return array_merge(
+            $this->firstDeck()->muses(),
+            $this->secondDeck()->muses(),
+            $this->thirdDeck()->muses()
+        );
+    }
 }
