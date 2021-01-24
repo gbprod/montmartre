@@ -8,8 +8,8 @@ use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
 use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
-use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
+use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
@@ -83,7 +83,6 @@ final class Board
             Ambroise::idle(),
             DiscardPile::empty()
         );
-
 
         $self->recordThat(new BoardHasBeenSetUp());
 
@@ -188,7 +187,7 @@ final class Board
             throw new CantPaintMoreThan2Muses();
         }
 
-        if (count($muses) === 2 && ($muses[0]->value() + $muses[1]->value()) > 5) {
+        if (2 === count($muses) && ($muses[0]->value() + $muses[1]->value()) > 5) {
             throw new CantPaint2MusesIfSumMoreThan5();
         }
 
@@ -238,7 +237,7 @@ final class Board
             Hand::MAX_LENGTH - $player->hand()->count()
         );
 
-        $player->hand()->withAppended(...$drawed);
+        $player->draw(...$drawed);
 
         $this->recordThat(
             new PlayerHasDrawed(

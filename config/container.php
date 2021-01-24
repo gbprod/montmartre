@@ -19,6 +19,7 @@ use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasPaint;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasDrawed;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasSold;
 use GBProd\Montmartre\Infrastructure\Listener\NotifyWhenPlayerHasSoldOff;
+use GBProd\Montmartre\Infrastructure\Listener\SaveEvent;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasChanged;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasPaint;
 use GBProd\Montmartre\Infrastructure\Listener\UpdateGameStateOnPlayerHasDrawed;
@@ -67,22 +68,27 @@ $containerBuilder->addDefinitions([
         PlayerHasPaint::class => [
             DI\get(NotifyWhenPlayerHasPaint::class),
             DI\get(UpdateGameStateOnPlayerHasPaint::class),
+            DI\get(SaveEvent::class),
         ],
         PlayerHasSoldOff::class => [
             DI\get(NotifyWhenPlayerHasSoldOff::class),
             DI\get(UpdateGameStateOnPlayerHasSoldOff::class),
+            DI\get(SaveEvent::class),
         ],
         PlayerHasChanged::class => [
             DI\get(UpdateGameStateOnPlayerHasChanged::class),
             DI\get(NotifyWhenPlayerHasChanged::class),
+            DI\get(SaveEvent::class),
         ],
         PlayerHasDrawed::class => [
             DI\get(NotifyWhenPlayerHasDrawed::class),
             DI\get(UpdateGameStateOnPlayerHasDrawed::class),
+            DI\get(SaveEvent::class),
         ],
         PlayerHasSold::class => [
             DI\get(NotifyWhenPlayerHasSold::class),
             DI\get(UpdateGameStateOnPlayerHasSold::class),
+            DI\get(SaveEvent::class),
         ],
     ]),
 
@@ -125,6 +131,10 @@ $containerBuilder->addDefinitions([
     ),
 
     UpdateGameStateOnPlayerHasDrawed::class => DI\create()->constructor(
+        DI\get('table')
+    ),
+
+    SaveEvent::class => DI\create()->constructor(
         DI\get('table')
     ),
 ]);

@@ -18,7 +18,6 @@ final class UpdateGameStateOnPlayerHasPaint
 
     public function __invoke(PlayerHasPaint $event): void
     {
-        $this->table->log(__CLASS__);
         if ($event->player()->paintings()->count() > Paintings::MAX_PAINTINGS) {
             $this->table->gamestate->nextState('mustSellOffState');
 

@@ -82,6 +82,7 @@ $machinestates = [
         ],
         'transitions' => [
             'nextPlayer' => 10,
+            'drawState' => 5,
         ]
     ],
 

@@ -17,7 +17,8 @@ final class UpdateGameStateOnPlayerHasDrawed
 
     public function __invoke(PlayerHasDrawed $event): void
     {
-        $this->table->log(__CLASS__);
-        $this->table->gamestate->nextState('nextPlayer');
+        $this->table->gamestate->nextState(
+            $event->player()->hand()->isFull() ? 'nextPlayer' : 'drawState'
+        );
     }
 }

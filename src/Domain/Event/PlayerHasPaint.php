@@ -34,4 +34,14 @@ final class PlayerHasPaint implements Event
     {
         return $this->player;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'player_id' => $this->player()->id(),
+            'muses' => \array_map(function (Muse $muse): array {
+                return $muse->toArray();
+            }, $this->muses()),
+        ];
+    }
 }

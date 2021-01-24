@@ -11,6 +11,4 @@ TODO:
 - Gestion des decks vide
 - Supprimer la gestion immutable de certaines entités
 - Utiliser les iterator plutôt que des arrays pour les muses
-- les collectors devraient porter leur couleur (et fusionner avec
-  "AttractedCollector" ?)
 

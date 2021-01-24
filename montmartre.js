@@ -26,6 +26,7 @@ define([
       this.deckCardWidth = 120;
       this.deckCardHeight = 220;
       this.ambroise = null;
+      this.museInDecks = Array(3);
       window.game = this; // for debug
     },
 
@@ -101,11 +102,11 @@ define([
       }
 
       var that = this;
-      window.onresize = function() {
+      window.onresize = function () {
         if (!!gamedatas.ambroise) {
           that.moveAmbroise(gamedatas.ambroise);
         }
-      }
+      };
     },
 
     moveAmbroise: function (color) {
@@ -174,6 +175,7 @@ define([
       var that = this;
 
       for (var index = 1; index < [1, 2, 3].length + 1; index++) {
+        console.log( gamedatas.decks[index]); gamedatas.decks[index]
         this.setMuseInDeck(index, gamedatas.decks[index]);
 
         dojo.query("#button-deck-" + index).onclick(function (event) {
@@ -288,8 +290,13 @@ define([
     },
 
     setMuseInDeck: function (deck, muse) {
-      document.querySelector("#muse-deck-" + deck).classList =
-        "muse " + muse.color + "-" + muse.value;
+      this.museInDecks[deck] = muse;
+      if (muse !== null) {
+        document.querySelector("#muse-deck-" + deck).classList =
+          "muse " + muse.color + "-" + muse.value;
+      } else {
+        document.querySelector("#muse-deck-" + deck).classList = "muse empty";
+      }
     },
 
     setupSellButtons: function (majorities) {
@@ -349,7 +356,11 @@ define([
           break;
 
         case "drawState":
-          dojo.query(".draw-button").style("display", "inline-block");
+          for (var deck of [1, 2, 3]) {
+            if (this.museInDecks[deck] !== null) {
+              dojo.query("#button-deck-" + deck).style("display", "inline-block");
+            }
+          }
           break;
       }
     },
@@ -642,6 +653,7 @@ define([
 
     onPlayerHasDrawed: function (event) {
       console.log("Event onPlayerHasDrawed");
+      console.log(event);
       var that = this;
 
       for (var index = 0; index < event.args.muses.length; ++index) {

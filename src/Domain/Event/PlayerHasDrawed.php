@@ -53,4 +53,15 @@ final class PlayerHasDrawed implements Event
     {
         return $this->deck;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'player_id' => $this->player()->id(),
+            'muses' => \array_map(function (Muse $muse): array {
+                return $muse->toArray();
+            }, $this->muses()),
+            'deck' => $this->deckNumber(),
+        ];
+    }
 }

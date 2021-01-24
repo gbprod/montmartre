@@ -198,3 +198,6 @@
 .muse.yellow-8 {
   background-position: -800% -300%;
 }
+.muse.empty {
+  background: transparent;
+}

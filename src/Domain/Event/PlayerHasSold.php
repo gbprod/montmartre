@@ -50,4 +50,16 @@ final class PlayerHasSold implements Event
     {
         return $this->newCollector;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'player_id' => $this->player()->id(),
+            'muse' => $this->muse()->toArray(),
+            'attractedCollector' => $this->attractedCollector()->toArray(),
+            'newCollector' => $this->newCollector() !== null
+                ? $this->newCollector()->toArray()
+                : null,
+        ];
+    }
 }

@@ -46,4 +46,12 @@ final class Collector
     {
         return $this->color;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'color' => $this->color()->value(),
+            'willPay' => $this->willPay(),
+        ];
+    }
 }

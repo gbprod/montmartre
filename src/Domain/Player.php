@@ -171,6 +171,11 @@ final class Player
         return $this->position;
     }
 
+    public function draw(Muse ...$muses): void
+    {
+        $this->hand = $this->hand->withAppended(...$muses);
+    }
+
     public function toArray(): array
     {
         return [

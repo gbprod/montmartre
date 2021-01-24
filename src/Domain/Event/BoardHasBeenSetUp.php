@@ -6,4 +6,8 @@ namespace GBProd\Montmartre\Domain\Event;
 
 final class BoardHasBeenSetUp implements Event
 {
+    public function toArray(): array
+    {
+        return [];
+    }
 }

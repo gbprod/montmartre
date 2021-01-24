@@ -47,3 +47,9 @@ CREATE TABLE IF NOT EXISTS `attracted_collector` (
   `value` int(2) unsigned NOT NULL,
   `color` VARCHAR(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `events` (
+  `id` int(2) PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `payload` TEXT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

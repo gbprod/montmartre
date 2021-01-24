@@ -29,21 +29,18 @@ final class GetPlayerSituationHandler
             'gazettes' => $board->gazettes()->toArray(),
             'ambroise' => null !== $board->ambroise()->color() ? $board->ambroise()->color()->value() : null,
             'decks' => [
-                1 => [
-                    'color' => null !== $board->decks()->firstDeck()->next() ? $board->decks()->firstDeck()->next()->color()->value() : null,
-                    'value' => null !== $board->decks()->firstDeck()->next() ? $board->decks()->firstDeck()->next()->value() : null,
-                    'count' => $board->decks()->firstDeck()->count(),
-                ],
-                2 => [
-                    'color' => null !== $board->decks()->secondDeck()->next() ? $board->decks()->secondDeck()->next()->color()->value() : null,
-                    'value' => null !== $board->decks()->secondDeck()->next() ? $board->decks()->secondDeck()->next()->value() : null,
-                    'count' => $board->decks()->secondDeck()->count(),
-                ],
-                3 => [
-                    'color' => null !== $board->decks()->thirdDeck()->next() ? $board->decks()->thirdDeck()->next()->color()->value() : null,
-                    'value' => null !== $board->decks()->thirdDeck()->next() ? $board->decks()->thirdDeck()->next()->value() : null,
-                    'count' => $board->decks()->secondDeck()->count(),
-                ],
+                1 => null !== $board->decks()->firstDeck()->next() ? [
+                    'color' => $board->decks()->firstDeck()->next()->color()->value(),
+                    'value' => $board->decks()->firstDeck()->next()->value(),
+                ] : null,
+                2 => null !== $board->decks()->secondDeck()->next() ? [
+                    'color' => $board->decks()->secondDeck()->next()->color()->value(),
+                    'value' => $board->decks()->secondDeck()->next()->value(),
+                ] : null,
+                3 => null !== $board->decks()->thirdDeck()->next() ? [
+                    'color' => $board->decks()->thirdDeck()->next()->color()->value(),
+                    'value' => $board->decks()->thirdDeck()->next()->value(),
+                ] : null,
             ],
             'current_player' => [
                 'id' => $board->players()->current()->id(),

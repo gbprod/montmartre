@@ -20,4 +20,11 @@ final class MusesHasBeenDiscarded implements Event
     {
         return $this->muses;
     }
+
+    public function toArray(): array
+    {
+        return \array_map(function(Muse $muse): array {
+            return $muse->toArray();
+        }, $this->muses());
+    }
 }
