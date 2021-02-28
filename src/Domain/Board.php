@@ -22,6 +22,7 @@ use GBProd\Montmartre\Domain\Exception\ShouldHaveMajority;
 use GBProd\Montmartre\Domain\Exception\ShouldPaintAtLeastOneMuse;
 use GBProd\Montmartre\Domain\Exception\ShouldSellOffAtLeastOneMuse;
 use GBProd\Montmartre\Domain\Exception\TooMuchPaintingsAfterSellOff;
+use GBProd\Montmartre\Domain\Services\ResolveAvailableGazette;
 use GBProd\Montmartre\Domain\Services\ResolvePlayerMajorities;
 
 final class Board
@@ -265,6 +266,8 @@ final class Board
 
     public function nextPlayer(): void
     {
+        $this->players()->current()->finishTurn();
+
         $this->players = $this->players->toNext();
 
         $this->recordThat(
@@ -293,7 +296,6 @@ final class Board
         }
 
         $muse = $this->players()->current()->sell($color);
-
         $this->players()->current()->attract($collector);
 
         $this->ambroise = Ambroise::at($color);
@@ -303,11 +305,17 @@ final class Board
                 $this->players->current(),
                 $muse,
                 $collector,
-                $this->collectors()->{$color->value()}()
+                $this->collectors()->{$color->value()}(),
+                ResolveAvailableGazette::resolve(
+                    $this->gazettes(),
+                    $this->players()->current()
+                )
             )
         );
 
-        $this->recordThat(new MusesHasBeenDiscarded($muse));
+        $this->recordThat(
+            new MusesHasBeenDiscarded($muse)
+        );
     }
 
     public function ambroise(): Ambroise

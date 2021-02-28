@@ -17,6 +17,12 @@ final class UpdateGameStateOnPlayerHasSold
 
     public function __invoke(PlayerHasSold $event): void
     {
+        if (count($event->availableGazettes()) > 0) {
+            $this->table->gamestate->nextState('canBuyGazetteState');
+
+            return;
+        }
+
         $this->table->gamestate->nextState('nextPlayer');
     }
 }

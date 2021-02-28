@@ -20,7 +20,7 @@ final class AttractedCollectors implements IteratorAggregate
 
     public static function empty(): self
     {
-       return new self();
+        return new self();
     }
 
     public static function from(Collector ...$collectors): self
@@ -31,5 +31,15 @@ final class AttractedCollectors implements IteratorAggregate
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->collectors);
+    }
+
+    public function countDisctinctColors(): int
+    {
+        return count(array_unique(array_map(
+            static function (Collector $collector) {
+                return $collector->color()->value();
+            },
+            $this->collectors
+        )));
     }
 }

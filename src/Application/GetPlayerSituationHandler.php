@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace GBProd\Montmartre\Application;
 
 use GBProd\Montmartre\Domain\Color;
+use GBProd\Montmartre\Domain\Gazette;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
+use GBProd\Montmartre\Domain\Services\ResolveAvailableGazette;
 use GBProd\Montmartre\Domain\Services\ResolvePlayerMajorities;
 use GBProd\Montmartre\Infrastructure\BoardRepository;
 
@@ -50,6 +52,15 @@ final class GetPlayerSituationHandler
                 'majorities' => array_map(static function (Color $color): string {
                     return $color->value();
                 }, ResolvePlayerMajorities::resolve($board->players())),
+                'allowedToBuyGazette' => $board->players()->current()->allowedToBuyGazette(),
+                'availableGazettes' => array_map(
+                    function (Gazette $gazette): array {
+                        return $gazette->toArray();
+                    }, ResolveAvailableGazette::resolve(
+                        $board->gazettes(),
+                        $board->players()->current()
+                    )
+                ),
             ],
             'players' => array_map(
                 function (Player $player) {

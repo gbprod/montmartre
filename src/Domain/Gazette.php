@@ -31,4 +31,12 @@ final class Gazette
     {
         return $this->value;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'nbDiff' => $this->nbDiff,
+            'value' => $this->value,
+        ];
+    }
 }

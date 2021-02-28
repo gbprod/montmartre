@@ -87,6 +87,7 @@
 var jstpl_muse_card='<div class="muse absolute ${color}-${value}" id="${id}"></div>';
 var jstpl_sell_button='<a href="#" id="sell-${color}" data-color="${color}" class="action-button bgabutton bgabutton_blue sell-button" onclick="return false;">Sell</a>';
 var jstpl_ambroise='<div id="ambroise" class="ambroise"></div>';
+var jstpl_gazette_button='<a href="#" id="gazette-${nbDiff}-button" data-nbdiff="${nbDiff}" class="action-button bgabutton bgabutton_blue gazette-button" onclick="return false;">Buy</a>';
 </script>
 
 {OVERALL_GAME_FOOTER}

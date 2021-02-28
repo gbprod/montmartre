@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GBProd\Montmartre\Domain\Event;
 
 use GBProd\Montmartre\Domain\Collector;
+use GBProd\Montmartre\Domain\Gazette;
 use GBProd\Montmartre\Domain\Muse;
 use GBProd\Montmartre\Domain\Player;
 
@@ -18,17 +19,21 @@ final class PlayerHasSold implements Event
     private $attractedCollector;
     /** @var Collector|null */
     private $newCollector;
+    /** @var Gazette[] */
+    private $availableGazettes;
 
     public function __construct(
         Player $player,
         Muse $muse,
         Collector $attractedCollector,
-        ?Collector $newCollector
+        ?Collector $newCollector,
+        array $availableGazettes
     ) {
         $this->player = $player;
         $this->muse = $muse;
         $this->attractedCollector = $attractedCollector;
         $this->newCollector = $newCollector;
+        $this->availableGazettes = $availableGazettes;
     }
 
     public function muse(): Muse
@@ -61,5 +66,10 @@ final class PlayerHasSold implements Event
                 ? $this->newCollector()->toArray()
                 : null,
         ];
+    }
+
+    public function availableGazettes(): array
+    {
+        return $this->availableGazettes;
     }
 }

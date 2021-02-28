@@ -24,6 +24,8 @@ final class Player
     private $position;
     /** @var AttractedCollectors */
     private $attractedCollectors;
+    /** @var bool */
+    private $allowedToBuyGazette = false;
 
     private function __construct(
         int $id,
@@ -32,7 +34,8 @@ final class Player
         Hand $hand,
         Paintings $paintings,
         Wallet $wallet,
-        AttractedCollectors $attractedCollectors
+        AttractedCollectors $attractedCollectors,
+        bool $allowedToBuyGazette
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -41,6 +44,7 @@ final class Player
         $this->wallet = $wallet;
         $this->position = $position;
         $this->attractedCollectors = $attractedCollectors;
+        $this->allowedToBuyGazette = $allowedToBuyGazette;
     }
 
     public static function named(
@@ -56,7 +60,8 @@ final class Player
             $hand,
             Paintings::empty(),
             Wallet::empty(),
-            AttractedCollectors::empty()
+            AttractedCollectors::empty(),
+            false
         );
     }
 
@@ -100,7 +105,8 @@ final class Player
                     );
                 },
                 $state['attracted_collectors']
-            ))
+            )),
+            (bool) $state['can_buy_gazette']
         );
     }
 
@@ -157,8 +163,16 @@ final class Player
 
     public function attract(Collector $collector): void
     {
-        $this->wallet = $this->wallet()
-            ->withAdded($collector->willPay());
+        $previousCount = $this->attractedCollectors->countDisctinctColors();
+
+        $this->attractedCollectors = AttractedCollectors::from(
+            $collector,
+            ...iterator_to_array($this->attractedCollectors)
+        );
+
+        if ($this->attractedCollectors->countDisctinctColors() > $previousCount) {
+            $this->allowedToBuyGazette = true;
+        }
     }
 
     public function wallet(): Wallet
@@ -189,5 +203,20 @@ final class Player
             }, $this->paintings->muses()),
             'wallet' => $this->wallet->amount(),
         ];
+    }
+
+    public function attractedCollectors(): AttractedCollectors
+    {
+        return $this->attractedCollectors;
+    }
+
+    public function allowedToBuyGazette(): bool
+    {
+        return $this->allowedToBuyGazette;
+    }
+
+    public function finishTurn(): void
+    {
+        $this->allowedToBuyGazette = false;
     }
 }

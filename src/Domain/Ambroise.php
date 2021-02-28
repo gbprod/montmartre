@@ -13,7 +13,7 @@ final class Ambroise
     {
         return new self(null);
     }
-    
+
     public static function at(Color $color): self
     {
         return new self($color);
@@ -21,7 +21,7 @@ final class Ambroise
 
     private function __construct(?Color $color)
     {
-       $this->color = $color; 
+       $this->color = $color;
     }
 
     public function color(): ?Color

@@ -3,7 +3,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * Montmartre implementation : © <gbprod> <contact@gb-prod.fr>
+ * Montmartre implementation : © <gbprod> <contact@gb-prod.fr>.
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -12,18 +12,15 @@
  * states.inc.php
  *
  * Montmartre game states description
- *
  */
-
 $machinestates = [
-
     // The initial state. Please do not modify.
     1 => [
         'name' => 'gameSetup',
         'description' => '',
         'type' => 'manager',
         'action' => 'stGameSetup',
-        'transitions' => ['' => 2]
+        'transitions' => ['' => 2],
     ],
 
     // Note: ID=2 => your first state
@@ -41,8 +38,9 @@ $machinestates = [
         'transitions' => [
             'drawOrSellOffState' => 3,
             'mustSellOffState' => 4,
+            'canBuyGazetteState' => 6,
             'nextPlayer' => 10,
-        ]
+        ],
     ],
 
     3 => [
@@ -58,7 +56,7 @@ $machinestates = [
         'transitions' => [
             'nextPlayer' => 10,
             'drawState' => 5,
-        ]
+        ],
     ],
 
     4 => [
@@ -68,7 +66,7 @@ $machinestates = [
         'type' => 'activeplayer',
 
         'possibleactions' => ['sellOffAction'],
-        'transitions' => ['drawState' => 5]
+        'transitions' => ['drawState' => 5],
     ],
 
     5 => [
@@ -78,12 +76,26 @@ $machinestates = [
         'type' => 'activeplayer',
 
         'possibleactions' => [
-            'drawAction'
+            'drawAction',
         ],
         'transitions' => [
             'nextPlayer' => 10,
             'drawState' => 5,
-        ]
+        ],
+    ],
+
+    6 => [
+        'name' => 'canBuyGazetteState',
+        'description' => clienttranslate('${actplayer} can buy a newsletter'),
+        'descriptionmyturn' => clienttranslate('${you} can buy a newsletter'),
+        'type' => 'activeplayer',
+
+        'possibleactions' => [
+            'buyGazetteAction',
+        ],
+        'transitions' => [
+            'nextPlayer' => 10,
+        ],
     ],
 
     10 => [
@@ -102,7 +114,6 @@ $machinestates = [
         'description' => clienttranslate('End of game'),
         'type' => 'manager',
         'action' => 'stGameEnd',
-        'args' => 'argGameEnd'
-    ]
-
+        'args' => 'argGameEnd',
+    ],
 ];

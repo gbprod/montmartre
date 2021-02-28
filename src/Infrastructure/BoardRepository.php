@@ -14,6 +14,7 @@ use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
 use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Muse;
+use GBProd\Montmartre\Domain\Services\ResolveAvailableGazette;
 
 final class BoardRepository
 {
@@ -45,6 +46,17 @@ SQL;
         WHERE id=1
 SQL;
 
+    const UPDATE_CAN_BUY_GAZETTE = <<<SQL
+        UPDATE `player`
+        SET `can_buy_gazette` = %s
+        WHERE player_id = %s
+SQL;
+
+    const RESET_ALL_CAN_BUY_GAZETTE = <<<SQL
+        UPDATE `player`
+        SET `can_buy_gazette` = false
+SQL;
+
     const SELECT_DISCARD_PILE_QUERY = <<<SQL
         SELECT id, muse_value, muse_color
         FROM `discard_pile`;
@@ -60,8 +72,7 @@ SQL;
 SQL;
 
     const SELECT_PLAYERS_QUERY = <<<SQL
-        SELECT player_id, player_name, player_no, player_score
-        FROM player;
+        SELECT * FROM player;
 SQL;
 
     const INSERT_GAZETTES_QUERY = <<<SQL
@@ -338,6 +349,7 @@ SQL;
 
     private function applyPlayerHasChanged(PlayerHasChanged $event, Board $board): void
     {
+        ($this->table)::dbQuery(self::RESET_ALL_CAN_BUY_GAZETTE);
     }
 
     private function applyPlayerHasDrawed(PlayerHasDrawed $event, Board $board): void
@@ -406,6 +418,14 @@ SQL;
             sprintf(
                 self::UPDATE_AMBROISE_QUERY,
                 $event->muse()->color()->value()
+            )
+        );
+
+        ($this->table)::dbQuery(
+            sprintf(
+                self::UPDATE_CAN_BUY_GAZETTE,
+                count(ResolveAvailableGazette::resolve($board->gazettes(), $event->player())) > 0,
+                $event->player()->id()
             )
         );
     }

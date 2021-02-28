@@ -50,10 +50,6 @@ define([
       this.setupDecks(gamedatas);
       this.setupPlayerHand(gamedatas);
       this.setupPlayers(gamedatas);
-      if (this.isCurrentPlayerActive() && this.checkAction("paintAction")) {
-        this.setupSellButtons(gamedatas.current_player.majorities);
-      }
-
       this.setupNotifications();
 
       console.log("Ending game setup");
@@ -320,6 +316,25 @@ define([
       });
     },
 
+    setupBuyGazetteButtons: function (availableGazettes) {
+      for (var gazette of availableGazettes) {
+        dojo.place(
+          this.format_block("jstpl_gazette_button", {
+            nbDiff: gazette.nbDiff,
+          }),
+          "gazette-" + gazette.nbDiff,
+          "after"
+        );
+      }
+
+      // var that = this;
+      // dojo.query(".sell-button").onclick(function (event) {
+      //   dojo.stopEvent(event);
+      //   that.onSell(event);
+      //   return false;
+      // });
+    },
+
     /**
      * Game & client states
      */
@@ -336,6 +351,7 @@ define([
       switch (stateName) {
         case "playerTurn":
           this.playerHand.setSelectionMode(2);
+          this.setupSellButtons(gamedatas.current_player.majorities);
           break;
 
         case "drawOrSellOffState":
@@ -357,9 +373,17 @@ define([
         case "drawState":
           for (var deck of [1, 2, 3]) {
             if (this.museInDecks[deck] !== null) {
-              dojo.query("#button-deck-" + deck).style("display", "inline-block");
+              dojo
+                .query("#button-deck-" + deck)
+                .style("display", "inline-block");
             }
           }
+          break;
+
+        case "canBuyGazetteState":
+          this.setupBuyGazetteButtons(
+            gamedatas.current_player.availableGazettes
+          );
           break;
       }
     },
@@ -560,6 +584,15 @@ define([
       }
     },
 
+    buyGazetteAction: function (event) {
+      console.log("buyGazetteAction");
+      dojo.stopEvent(event);
+
+      if (!this.checkAction("buyGazetteAction")) {
+        return;
+      }
+    },
+
     /**
      * UI Events
      */
@@ -718,9 +751,14 @@ define([
         "player_name_" + event.args.player_id
       );
 
-      this.scoreCtrl[event.args.player_id].toValue(event.args.player_score);
-
       this.moveAmbroise(event.args.muse.color);
+
+      if (this.isCurrentPlayerActive()) {
+        // if can buy gazette
+        if (event.args.availableGazettes.length > 0) {
+          this.setupBuyGazetteButtons(event.args.availableGazettes);
+        }
+      }
     },
 
     onPlayerHasChanged: function (event) {

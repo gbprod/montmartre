@@ -1,3 +1,6 @@
+ALTER TABLE `player`
+  ADD `can_buy_gazette` BOOLEAN NOT NULL DEFAULT FALSE;
+
 CREATE TABLE IF NOT EXISTS `board` (
   `id` int(2) PRIMARY KEY AUTO_INCREMENT,
   `collector_blue` int(2) unsigned NULL,

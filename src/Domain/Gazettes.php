@@ -35,6 +35,15 @@ final class Gazettes implements \IteratorAggregate
         return new \ArrayIterator($this->gazettes);
     }
 
+    public function nextFor(int $nbDiff): ?Gazette
+    {
+        return array_reduce($this->gazettes, static function(?Gazette $selected, Gazette $gazette) use ($nbDiff): ?Gazette {
+            return ($gazette->nbDiff() === $nbDiff && ($selected === null || $gazette->value() > $selected->value()))
+                ? $gazette
+                : $selected;
+        }, null);
+    }
+
     public function toArray(): array
     {
         return array_map(function (Gazette $gazette): array {

@@ -88,7 +88,7 @@ class action_montmartre extends APP_GameAction
     private function createMuseCardFromId(int $id)
     {
         $value = $id % 9;
-        
+
         switch (floor($id / 9)) {
             case 0:
                 $color = 'green';
@@ -149,7 +149,6 @@ class action_montmartre extends APP_GameAction
         } catch (EmptyDeck $e) {
             throw new BgaUserException(_('This deck is empty, choose another one'));
         }
-        // TODO Manage re-draw
 
         self::ajaxResponse();
     }
@@ -173,6 +172,15 @@ class action_montmartre extends APP_GameAction
         } catch (ShouldHaveMajority $e) {
             throw new BgaUserException(_('You don\'t have majority, should not happens'));
         }
+
+        self::ajaxResponse();
+    }
+
+    public function buyGazette()
+    {
+        self::setAjaxMode();
+
+        $this->game->checkAction('buyGazetteAction');
 
         self::ajaxResponse();
     }
