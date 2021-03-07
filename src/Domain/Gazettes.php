@@ -53,4 +53,19 @@ final class Gazettes implements \IteratorAggregate
             ];
         }, $this->gazettes);
     }
+
+    public function count(): int
+    {
+        return count($this->gazettes);
+    }
+
+    public function buy(Gazette $gazette): void
+    {
+        $this->gazettes = array_filter(
+            $this->gazettes,
+            static function (Gazette $availableGazette) use ($gazette): bool {
+                return !$gazette->equals($availableGazette);
+            }
+        );
+    }
 }

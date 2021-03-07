@@ -424,7 +424,7 @@ SQL;
         ($this->table)::dbQuery(
             sprintf(
                 self::UPDATE_CAN_BUY_GAZETTE,
-                count(ResolveAvailableGazette::resolve($board->gazettes(), $event->player())) > 0,
+                ResolveAvailableGazette::resolve($board->gazettes(), $event->player())->count() > 0,
                 $event->player()->id()
             )
         );

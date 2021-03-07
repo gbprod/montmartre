@@ -1,5 +1,7 @@
 ALTER TABLE `player`
-  ADD `can_buy_gazette` BOOLEAN NOT NULL DEFAULT FALSE;
+  ADD `can_buy_gazette` BOOLEAN NOT NULL DEFAULT FALSE,
+  ADD `gazette_value` int(2) unsigned NOT NULL,
+  ADD `gazette_nb_diff` int(2) unsigned NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `board` (
   `id` int(2) PRIMARY KEY AUTO_INCREMENT,

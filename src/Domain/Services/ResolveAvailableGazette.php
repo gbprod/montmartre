@@ -10,12 +10,9 @@ use GBProd\Montmartre\Domain\Player;
 
 final class ResolveAvailableGazette
 {
-    /**
-     * @return Gazette[]
-     */
-    public static function resolve(Gazettes $gazettes, Player $player): array
+    public static function resolve(Gazettes $gazettes, Player $player): Gazettes
     {
-        return [$gazettes->nextFor(2)];
+        return Gazettes::fromRemaining($gazettes->nextFor(2));
         if (!$player->allowedToBuyGazette()) {
             return [];
         }
@@ -25,8 +22,10 @@ final class ResolveAvailableGazette
             return [];
         }
 
-        return array_filter(array_map(static function (int $value) use ($gazettes): ?Gazette {
-            return $gazettes->nextFor($value);
-        }, range(2, $distinct)));
+        return Gazettes::fromRemaining(
+            ...array_filter(array_map(static function (int $value) use ($gazettes): ?Gazette {
+                return $gazettes->nextFor($value);
+            }, range(2, $distinct)))
+        );
     }
 }

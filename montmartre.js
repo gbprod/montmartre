@@ -8,17 +8,13 @@
  * -----
  */
 
-define([
-  "dojo",
-  "dojo/_base/declare",
-  "ebg/core/gamegui",
-  "ebg/counter",
-  "ebg/stock",
-  "ebg/zone",
-], function (dojo, declare) {
-  return declare("bgagame.montmartre", ebg.core.gamegui, {
+define(['dojo', 'dojo/_base/declare', 'ebg/core/gamegui', 'ebg/counter', 'ebg/stock', 'ebg/zone'], function (
+  dojo,
+  declare
+) {
+  return declare('bgagame.montmartre', ebg.core.gamegui, {
     constructor: function () {
-      console.log("montmartre constructor");
+      console.log('montmartre constructor');
       this.collectorCardWidth = 120;
       this.collectorCardHeight = 221;
       this.gazetteCardWidth = 200;
@@ -40,7 +36,7 @@ define([
      *  "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
      */
     setup: function (gamedatas) {
-      console.log("Starting game setup");
+      console.log('Starting game setup');
 
       window.gamedatas = gamedatas; // for debug
       this.paintingsStocks = Array();
@@ -52,7 +48,7 @@ define([
       this.setupPlayers(gamedatas);
       this.setupNotifications();
 
-      console.log("Ending game setup");
+      console.log('Ending game setup');
     },
 
     setupCollectors: function (gamedatas) {
@@ -63,10 +59,10 @@ define([
         pink: new ebg.stock(),
       };
 
-      for (var color of ["green", "yellow", "blue", "pink"]) {
+      for (var color of ['green', 'yellow', 'blue', 'pink']) {
         this.collectors[color].create(
           this,
-          $("collectors-" + color),
+          $('collectors-' + color),
           this.collectorCardWidth,
           this.collectorCardHeight
         );
@@ -77,16 +73,11 @@ define([
         this.collectors[color].setOverlap(1.5, 0);
       }
 
-      for (var color of ["green", "yellow", "blue", "pink"]) {
+      for (var color of ['green', 'yellow', 'blue', 'pink']) {
         for (var value of [2, 4, 6, 8, 10]) {
           if (gamedatas.collectors[color] <= value) {
             var cardId = this.collectorCardId(color, value);
-            this.collectors[color].addItemType(
-              cardId,
-              10 - value,
-              g_gamethemeurl + "img/collectors.png",
-              cardId
-            );
+            this.collectors[color].addItemType(cardId, 10 - value, g_gamethemeurl + 'img/collectors.png', cardId);
 
             this.collectors[color].addToStock(cardId);
           }
@@ -107,10 +98,10 @@ define([
 
     moveAmbroise: function (color) {
       if (this.ambroise == null) {
-        dojo.place(this.format_block("jstpl_ambroise", {}), "collectors");
-        this.placeOnObject("ambroise", "collectors-" + color);
+        dojo.place(this.format_block('jstpl_ambroise', {}), 'collectors');
+        this.placeOnObject('ambroise', 'collectors-' + color);
       } else {
-        this.slideToObject("ambroise", "collectors-" + color).play();
+        this.slideToObject('ambroise', 'collectors-' + color).play();
       }
 
       this.ambroise = color;
@@ -118,13 +109,13 @@ define([
 
     collectorCardId: function (color, value) {
       switch (color) {
-        case "green":
+        case 'green':
           return value / 2 - 1;
-        case "yellow":
+        case 'yellow':
           return 5 + value / 2 - 1;
-        case "blue":
+        case 'blue':
           return 10 + value / 2 - 1;
-        case "pink":
+        case 'pink':
           return 15 + value / 2 - 1;
       }
     },
@@ -134,12 +125,7 @@ define([
 
       for (var index = 2; index < [2, 3, 4].length + 2; index++) {
         this.gazettes[index] = new ebg.stock();
-        this.gazettes[index].create(
-          this,
-          $("gazette-" + index),
-          this.gazetteCardWidth,
-          this.gazetteCardHeight
-        );
+        this.gazettes[index].create(this, $('gazette-' + index), this.gazetteCardWidth, this.gazetteCardHeight);
 
         this.gazettes[index].image_items_per_row = 2;
         this.gazettes[index].item_margin = 0;
@@ -151,12 +137,7 @@ define([
       for (var index = 0; index < gamedatas.gazettes.length; index++) {
         var gazette = gamedatas.gazettes[index];
         var cardId = this.gazetteCardId(gazette.nbDiff, gazette.value);
-        this.gazettes[gazette.nbDiff].addItemType(
-          cardId,
-          -gazette.value,
-          g_gamethemeurl + "img/gazettes.png",
-          cardId
-        );
+        this.gazettes[gazette.nbDiff].addItemType(cardId, -gazette.value, g_gamethemeurl + 'img/gazettes.png', cardId);
 
         this.gazettes[gazette.nbDiff].addToStock(cardId);
       }
@@ -173,7 +154,7 @@ define([
       for (var index = 1; index < [1, 2, 3].length + 1; index++) {
         this.setMuseInDeck(index, gamedatas.decks[index]);
 
-        dojo.query("#button-deck-" + index).onclick(function (event) {
+        dojo.query('#button-deck-' + index).onclick(function (event) {
           that.onDraw(event);
           return false;
         });
@@ -182,13 +163,13 @@ define([
 
     museCardId: function (color, value) {
       switch (color) {
-        case "green":
+        case 'green':
           return value;
-        case "blue":
+        case 'blue':
           return 9 + value;
-        case "pink":
+        case 'pink':
           return 2 * 9 + value;
-        case "yellow":
+        case 'yellow':
           return 3 * 9 + value;
       }
     },
@@ -199,29 +180,25 @@ define([
 
       switch (colorId) {
         case 0:
-          return { value: value, color: "green" };
+          return { value: value, color: 'green' };
 
         case 1:
-          return { value: value, color: "blue" };
+          return { value: value, color: 'blue' };
 
         case 2:
-          return { value: value, color: "pink" };
+          return { value: value, color: 'pink' };
 
         case 3:
-          return { value: value, color: "yellow" };
+          return { value: value, color: 'yellow' };
       }
 
       return undefined;
     },
 
     setupPlayerHand: function (gamedatas) {
-      this.playerHand = this.createMusesStock("player-hand");
-      this.playerHand.setSelectionAppearance("class");
-      for (
-        var index = 0;
-        index < gamedatas.current_player.hand.length;
-        index++
-      ) {
+      this.playerHand = this.createMusesStock('player-hand');
+      this.playerHand.setSelectionAppearance('class');
+      for (var index = 0; index < gamedatas.current_player.hand.length; index++) {
         var cardId = this.museCardId(
           gamedatas.current_player.hand[index].color,
           gamedatas.current_player.hand[index].value
@@ -236,20 +213,15 @@ define([
 
       stock.image_items_per_row = 9;
 
-      for (var color of ["green", "blue", "pink", "yellow"]) {
+      for (var color of ['green', 'blue', 'pink', 'yellow']) {
         for (var value of [0, 1, 2, 3, 4, 5, 6, 7, 8]) {
           var cardId = this.museCardId(color, value);
 
-          stock.addItemType(
-            cardId,
-            1,
-            g_gamethemeurl + "img/muses.png",
-            cardId
-          );
+          stock.addItemType(cardId, 1, g_gamethemeurl + 'img/muses.png', cardId);
         }
       }
 
-      stock.addItemType("back", 0, g_gamethemeurl + "img/back.png", 0);
+      stock.addItemType('back', 0, g_gamethemeurl + 'img/back.png', 0);
 
       return stock;
     },
@@ -263,34 +235,31 @@ define([
     setupPlayerPaintings: function (player) {
       this.paintingsStocks[player.id] = Array();
 
-      for (var color of ["green", "yellow", "blue", "pink"]) {
-        this.paintingsStocks[player["id"]][color] = this.createMusesStock(
-          "player-" + player.id + "-paintings-" + color
+      for (var color of ['green', 'yellow', 'blue', 'pink']) {
+        this.paintingsStocks[player['id']][color] = this.createMusesStock(
+          'player-' + player.id + '-paintings-' + color
         );
 
         this.paintingsStocks[player.id][color].item_margin = 0;
         this.paintingsStocks[player.id][color].autowidth = true;
         this.paintingsStocks[player.id][color].setOverlap(40, 0);
         this.paintingsStocks[player.id][color].setSelectionMode(0);
-        this.paintingsStocks[player.id][color].setSelectionAppearance("class");
+        this.paintingsStocks[player.id][color].setSelectionAppearance('class');
       }
 
       for (var index = 0; index < player.paintings.length; index++) {
         var painting = player.paintings[index];
 
-        this.paintingsStocks[player.id][painting.color].addToStock(
-          this.museCardId(painting.color, painting.value)
-        );
+        this.paintingsStocks[player.id][painting.color].addToStock(this.museCardId(painting.color, painting.value));
       }
     },
 
     setMuseInDeck: function (deck, muse) {
       this.museInDecks[deck] = muse;
       if (muse !== null) {
-        document.querySelector("#muse-deck-" + deck).classList =
-          "muse " + muse.color + "-" + muse.value;
+        document.querySelector('#muse-deck-' + deck).classList = 'muse ' + muse.color + '-' + muse.value;
       } else {
-        document.querySelector("#muse-deck-" + deck).classList = "muse empty";
+        document.querySelector('#muse-deck-' + deck).classList = 'muse empty';
       }
     },
 
@@ -300,16 +269,16 @@ define([
       for (var color of majorities) {
         if (color != this.ambroise) {
           dojo.place(
-            this.format_block("jstpl_sell_button", {
+            this.format_block('jstpl_sell_button', {
               color: color,
             }),
-            "player-" + this.player_id + "-paintings-" + color,
-            "after"
+            'player-' + this.player_id + '-paintings-' + color,
+            'after'
           );
         }
       }
 
-      dojo.query(".sell-button").onclick(function (event) {
+      dojo.query('.sell-button').onclick(function (event) {
         dojo.stopEvent(event);
         that.onSell(event);
         return false;
@@ -319,20 +288,20 @@ define([
     setupBuyGazetteButtons: function (availableGazettes) {
       for (var gazette of availableGazettes) {
         dojo.place(
-          this.format_block("jstpl_gazette_button", {
+          this.format_block('jstpl_gazette_button', {
             nbDiff: gazette.nbDiff,
           }),
-          "gazette-" + gazette.nbDiff,
-          "after"
+          'gazette-' + gazette.nbDiff,
+          'after'
         );
       }
 
-      // var that = this;
-      // dojo.query(".sell-button").onclick(function (event) {
-      //   dojo.stopEvent(event);
-      //   that.onSell(event);
-      //   return false;
-      // });
+      var that = this;
+      dojo.query('.gazette-button').onclick(function (event) {
+        dojo.stopEvent(event);
+        that.onBuyGazette(event);
+        return false;
+      });
     },
 
     /**
@@ -343,47 +312,39 @@ define([
     //                  You can use this method to perform some user interface changes at this moment.
     //
     onEnteringState: function (stateName, args) {
-      console.log("Entering state: " + stateName);
+      console.log('Entering state: ' + stateName);
       if (!this.isCurrentPlayerActive()) {
         return;
       }
 
       switch (stateName) {
-        case "playerTurn":
+        case 'playerTurn':
           this.playerHand.setSelectionMode(2);
           this.setupSellButtons(gamedatas.current_player.majorities);
           break;
 
-        case "drawOrSellOffState":
-          for (var color of ["green", "yellow", "blue", "pink"]) {
-            this.paintingsStocks[this.getCurrentPlayerId()][
-              color
-            ].setSelectionMode(2);
+        case 'drawOrSellOffState':
+          for (var color of ['green', 'yellow', 'blue', 'pink']) {
+            this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(2);
           }
           break;
 
-        case "mustSellOffState":
-          for (var color of ["green", "yellow", "blue", "pink"]) {
-            this.paintingsStocks[this.getCurrentPlayerId()][
-              color
-            ].setSelectionMode(2);
+        case 'mustSellOffState':
+          for (var color of ['green', 'yellow', 'blue', 'pink']) {
+            this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(2);
           }
           break;
 
-        case "drawState":
+        case 'drawState':
           for (var deck of [1, 2, 3]) {
             if (this.museInDecks[deck] !== null) {
-              dojo
-                .query("#button-deck-" + deck)
-                .style("display", "inline-block");
+              dojo.query('#button-deck-' + deck).style('display', 'inline-block');
             }
           }
           break;
 
-        case "canBuyGazetteState":
-          this.setupBuyGazetteButtons(
-            gamedatas.current_player.availableGazettes
-          );
+        case 'canBuyGazetteState':
+          this.setupBuyGazetteButtons(gamedatas.current_player.availableGazettes);
           break;
       }
     },
@@ -392,37 +353,37 @@ define([
     //                 You can use this method to perform some user interface changes at this moment.
     //
     onLeavingState: function (stateName) {
-      console.log("Leaving state: " + stateName);
+      console.log('Leaving state: ' + stateName);
 
       if (!this.isCurrentPlayerActive()) {
         return;
       }
 
       switch (stateName) {
-        case "playerTurn":
+        case 'playerTurn':
           this.playerHand.setSelectionMode(0);
-          dojo.query(".sell-button").forEach(dojo.destroy);
+          dojo.query('.sell-button').forEach(dojo.destroy);
           break;
 
-        case "drawOrSellOffState":
-          for (var color of ["green", "yellow", "blue", "pink"]) {
-            this.paintingsStocks[this.getCurrentPlayerId()][
-              color
-            ].setSelectionMode(0);
+        case 'drawOrSellOffState':
+          for (var color of ['green', 'yellow', 'blue', 'pink']) {
+            this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(0);
           }
-          dojo.query(".draw-button").style("display", "none");
+          dojo.query('.draw-button').style('display', 'none');
           break;
 
-        case "mustSellOffState":
-          for (var color of ["green", "yellow", "blue", "pink"]) {
-            this.paintingsStocks[this.getCurrentPlayerId()][
-              color
-            ].setSelectionMode(0);
+        case 'mustSellOffState':
+          for (var color of ['green', 'yellow', 'blue', 'pink']) {
+            this.paintingsStocks[this.getCurrentPlayerId()][color].setSelectionMode(0);
           }
           break;
 
-        case "drawState":
-          dojo.query(".draw-button").style("display", "none");
+        case 'drawState':
+          dojo.query('.draw-button').style('display', 'none');
+          break;
+
+        case 'canBuyGazetteState':
+          dojo.query('.gazette-button').forEach(dojo.destroy);
           break;
       }
     },
@@ -431,40 +392,28 @@ define([
     //                        action status bar (ie: the HTML links in the status bar).
     //
     onUpdateActionButtons: function (stateName, args) {
-      console.log("onUpdateActionButtons: " + stateName);
+      console.log('onUpdateActionButtons: ' + stateName);
 
       if (this.isCurrentPlayerActive()) {
         switch (stateName) {
-          case "playerTurn":
-            this.addActionButton(
-              "paint_action_button",
-              _("Paint"),
-              "paintAction"
-            );
+          case 'playerTurn':
+            this.addActionButton('paint_action_button', _('Paint'), 'paintAction');
             break;
 
-          case "drawOrSellOffState":
+          case 'drawOrSellOffState':
+            this.addActionButton('selloff_action_button', _('Sell off'), 'sellOffAction');
             this.addActionButton(
-              "selloff_action_button",
-              _("Sell off"),
-              "sellOffAction"
-            );
-            this.addActionButton(
-              "skip_selloff_action_button",
-              _("No, thanks"),
-              "skipSellOffAction",
+              'skip_selloff_action_button',
+              _('No, thanks'),
+              'skipSellOffAction',
               null,
               false,
-              "gray"
+              'gray'
             );
             break;
 
-          case "mustSellOffState":
-            this.addActionButton(
-              "selloff_action_button",
-              _("Sell off"),
-              "sellOffAction"
-            );
+          case 'mustSellOffState':
+            this.addActionButton('selloff_action_button', _('Sell off'), 'sellOffAction');
             break;
         }
       }
@@ -476,18 +425,15 @@ define([
 
     paintAction: function (event) {
       dojo.stopEvent(event);
-      console.log("paintAction");
+      console.log('paintAction');
 
-      if (!this.checkAction("paintAction")) {
+      if (!this.checkAction('paintAction')) {
         return;
       }
 
       var items = this.playerHand.getSelectedItems();
       if (items.length <= 0) {
-        this.showMessage(
-          _("You should select at least one Muse from your hand"),
-          "info"
-        );
+        this.showMessage(_('You should select at least one Muse from your hand'), 'info');
 
         return;
       }
@@ -497,9 +443,9 @@ define([
       });
 
       this.ajaxcall(
-        "/montmartre/montmartre/paint.html",
+        '/montmartre/montmartre/paint.html',
         {
-          cards: cards.join(","),
+          cards: cards.join(','),
           lock: true,
         },
         this,
@@ -509,22 +455,17 @@ define([
     },
 
     sellOffAction: function (event) {
-      console.log("sellOffAction");
+      console.log('sellOffAction');
 
-      if (!this.checkAction("sellOffAction")) {
+      if (!this.checkAction('sellOffAction')) {
         return;
       }
 
       var selected = undefined;
-      for (var color of ["green", "yellow", "blue", "pink"]) {
-        var s = this.paintingsStocks[this.getCurrentPlayerId()][
-          color
-        ].getSelectedItems();
+      for (var color of ['green', 'yellow', 'blue', 'pink']) {
+        var s = this.paintingsStocks[this.getCurrentPlayerId()][color].getSelectedItems();
         if (s.length > 0 && selected !== undefined) {
-          this.showMessage(
-            _("You should select only same color muses"),
-            "info"
-          );
+          this.showMessage(_('You should select only same color muses'), 'info');
 
           return;
         }
@@ -535,10 +476,7 @@ define([
       }
 
       if (selected === undefined) {
-        this.showMessage(
-          _("You should select at least one Muse to sell off"),
-          "info"
-        );
+        this.showMessage(_('You should select at least one Muse to sell off'), 'info');
 
         return;
       }
@@ -548,9 +486,9 @@ define([
       });
 
       this.ajaxcall(
-        "/montmartre/montmartre/selloff.html",
+        '/montmartre/montmartre/selloff.html',
         {
-          cards: cards.join(","),
+          cards: cards.join(','),
           lock: true,
         },
         this,
@@ -560,35 +498,33 @@ define([
     },
 
     skipSellOffAction: function (event) {
-      console.log("skipSellOffAction");
+      console.log('skipSellOffAction');
       dojo.stopEvent(event);
 
-      if (!this.checkAction("drawAction")) {
+      if (!this.checkAction('drawAction')) {
         return;
       }
 
-      this.gamedatas.gamestate.descriptionmyturn = _(
-        "You must draw, select a deck"
-      );
+      this.gamedatas.gamestate.descriptionmyturn = _('You must draw, select a deck');
       this.updatePageTitle();
       this.removeActionButtons();
-      dojo.query(".draw-button").style("display", "inline-block");
+      dojo.query('.draw-button').style('display', 'inline-block');
     },
 
     drawAction: function (event) {
-      console.log("drawAction");
+      console.log('drawAction');
       dojo.stopEvent(event);
 
-      if (!this.checkAction("drawAction")) {
+      if (!this.checkAction('drawAction')) {
         return;
       }
     },
 
     buyGazetteAction: function (event) {
-      console.log("buyGazetteAction");
+      console.log('buyGazetteAction');
       dojo.stopEvent(event);
 
-      if (!this.checkAction("buyGazetteAction")) {
+      if (!this.checkAction('buyGazetteAction')) {
         return;
       }
     },
@@ -599,10 +535,10 @@ define([
 
     onDraw: function (event) {
       dojo.stopEvent(event);
-      var index = event.target.getAttribute("data-index");
+      var index = event.target.getAttribute('data-index');
 
       this.ajaxcall(
-        "/montmartre/montmartre/draw.html",
+        '/montmartre/montmartre/draw.html',
         {
           deck: index,
           lock: true,
@@ -615,12 +551,27 @@ define([
 
     onSell: function (event) {
       dojo.stopEvent(event);
-      var color = event.target.getAttribute("data-color");
+      var color = event.target.getAttribute('data-color');
 
       this.ajaxcall(
-        "/montmartre/montmartre/sell.html",
+        '/montmartre/montmartre/sell.html',
         {
           color: color,
+          lock: true,
+        },
+        this,
+        function (result) {},
+        function (isError) {}
+      );
+    },
+
+    onBuyGazette: function (event) {
+      dojo.stopEvent(event);
+      var nbdiff = event.target.getAttribute('data-nbdiff');
+
+      this.ajaxcall(
+        '/montmartre/montmartre/buyGazette.html', {
+          nbdiff: nbdiff,
           lock: true,
         },
         this,
@@ -634,37 +585,32 @@ define([
      */
 
     setupNotifications: function () {
-      console.log("notifications subscriptions setup");
+      console.log('notifications subscriptions setup');
 
-      dojo.subscribe("PlayerHasPaint", this, "onPlayerHasPaint");
-      this.notifqueue.setSynchronous("PlayerHasPaint", 3000);
+      dojo.subscribe('PlayerHasPaint', this, 'onPlayerHasPaint');
+      this.notifqueue.setSynchronous('PlayerHasPaint', 3000);
 
-      dojo.subscribe("PlayerHasSoldOff", this, "onPlayerHasSoldOff");
-      this.notifqueue.setSynchronous("PlayerHasSoldOff", 3000);
+      dojo.subscribe('PlayerHasSoldOff', this, 'onPlayerHasSoldOff');
+      this.notifqueue.setSynchronous('PlayerHasSoldOff', 3000);
 
-      dojo.subscribe("PlayerHasDrawed", this, "onPlayerHasDrawed");
-      this.notifqueue.setSynchronous("PlayerHasDrawed", 3000);
+      dojo.subscribe('PlayerHasDrawed', this, 'onPlayerHasDrawed');
+      this.notifqueue.setSynchronous('PlayerHasDrawed', 3000);
 
-      dojo.subscribe("PlayerHasChanged", this, "onPlayerHasChanged");
-      this.notifqueue.setSynchronous("PlayerHasChanged", 3000);
+      dojo.subscribe('PlayerHasChanged', this, 'onPlayerHasChanged');
+      this.notifqueue.setSynchronous('PlayerHasChanged', 3000);
 
-      dojo.subscribe("PlayerHasSold", this, "onPlayerHasSold");
-      this.notifqueue.setSynchronous("PlayerHasSold", 3000);
+      dojo.subscribe('PlayerHasSold', this, 'onPlayerHasSold');
+      this.notifqueue.setSynchronous('PlayerHasSold', 3000);
 
-      dojo.subscribe("DecksWasRedistributed", this, "onDecksWasRedistributed");
-      this.notifqueue.setSynchronous("DecksWasRedistributed", 3000);
+      dojo.subscribe('DecksWasRedistributed', this, 'onDecksWasRedistributed');
+      this.notifqueue.setSynchronous('DecksWasRedistributed', 3000);
     },
 
     onPlayerHasPaint: function (event) {
-      console.log("Event onPlayerHasPaint");
+      console.log('Event onPlayerHasPaint');
       for (var index = 0; index < event.args.muses.length; ++index) {
-        var id = this.museCardId(
-          event.args.muses[index].color,
-          event.args.muses[index].value
-        );
-        this.paintingsStocks[event.args.player_id][
-          event.args.muses[index].color
-        ].addToStock(id);
+        var id = this.museCardId(event.args.muses[index].color, event.args.muses[index].value);
+        this.paintingsStocks[event.args.player_id][event.args.muses[index].color].addToStock(id);
         if (event.args.player_id == this.getCurrentPlayerId()) {
           this.playerHand.removeFromStock(id);
         }
@@ -672,59 +618,42 @@ define([
     },
 
     onPlayerHasSoldOff: function (event) {
-      console.log("Event onPlayerHasSoldOff");
+      console.log('Event onPlayerHasSoldOff');
       for (var index = 0; index < event.args.muses.length; ++index) {
-        var id = this.museCardId(
-          event.args.muses[index].color,
-          event.args.muses[index].value
-        );
-        this.paintingsStocks[event.args.player_id][
-          event.args.muses[index].color
-        ].removeFromStock(id);
+        var id = this.museCardId(event.args.muses[index].color, event.args.muses[index].value);
+        this.paintingsStocks[event.args.player_id][event.args.muses[index].color].removeFromStock(id);
       }
 
       this.scoreCtrl[event.args.player_id].toValue(event.args.player_score);
     },
 
     onPlayerHasDrawed: function (event) {
-      console.log("Event onPlayerHasDrawed");
+      console.log('Event onPlayerHasDrawed');
       var that = this;
 
       for (var index = 0; index < event.args.muses.length; ++index) {
         if (this.isCurrentPlayerActive()) {
-          var id = this.museCardId(
-            event.args.muses[index].color,
-            event.args.muses[index].value
-          );
-          this.playerHand.addToStock(id, "deck-" + event.args.deck_number);
+          var id = this.museCardId(event.args.muses[index].color, event.args.muses[index].value);
+          this.playerHand.addToStock(id, 'deck-' + event.args.deck_number);
           this.setMuseInDeck(event.args.deck_number, event.args.next_muse);
         } else {
           setTimeout(
             function (index, event, that) {
               dojo.place(
-                that.format_block("jstpl_muse_card", {
-                  id: "drawed-" + index,
+                that.format_block('jstpl_muse_card', {
+                  id: 'drawed-' + index,
                   value: event.args.muses[index].value,
                   color: event.args.muses[index].color,
                 }),
-                "deck-" + event.args.deck_number
+                'deck-' + event.args.deck_number
               );
 
-              that.slideToObjectAndDestroy(
-                "drawed-" + index,
-                "player_board_" + event.args.player_id
-              );
+              that.slideToObjectAndDestroy('drawed-' + index, 'player_board_' + event.args.player_id);
 
               if (index + 1 === event.args.muses.length) {
-                that.setMuseInDeck(
-                  event.args.deck_number,
-                  event.args.next_muse
-                );
+                that.setMuseInDeck(event.args.deck_number, event.args.next_muse);
               } else {
-                that.setMuseInDeck(
-                  event.args.deck_number,
-                  event.args.muses[index + 1]
-                );
+                that.setMuseInDeck(event.args.deck_number, event.args.muses[index + 1]);
               }
             },
             index === 0 ? 0 : 1000,
@@ -737,18 +666,16 @@ define([
     },
 
     onPlayerHasSold: function (event) {
-      console.log("Event onPlayerHasSold");
+      console.log('Event onPlayerHasSold');
       var id = this.museCardId(event.args.muse.color, event.args.muse.value);
-      this.paintingsStocks[event.args.player_id][
-        event.args.color
-      ].removeFromStock(id, "collectors-" + event.args.muse.color);
+      this.paintingsStocks[event.args.player_id][event.args.color].removeFromStock(
+        id,
+        'collectors-' + event.args.muse.color
+      );
 
       this.collectors[event.args.color].removeFromStock(
-        this.collectorCardId(
-          event.args.attractedCollector.color,
-          event.args.attractedCollector.value
-        ),
-        "player_name_" + event.args.player_id
+        this.collectorCardId(event.args.attractedCollector.color, event.args.attractedCollector.value),
+        'player_name_' + event.args.player_id
       );
 
       this.moveAmbroise(event.args.muse.color);
@@ -762,14 +689,14 @@ define([
     },
 
     onPlayerHasChanged: function (event) {
-      console.log("Event onPlayerHasChanged");
+      console.log('Event onPlayerHasChanged');
       if (this.isCurrentPlayerActive()) {
         this.setupSellButtons(event.args.majorities);
       }
     },
 
     onDecksWasRedistributed: function (event) {
-      console.log("Event onDecksWasRedistributed");
+      console.log('Event onDecksWasRedistributed');
       for (var index = 1; index < [1, 2, 3].length + 1; index++) {
         this.setMuseInDeck(index, event.args.decks[index]);
       }

@@ -8,6 +8,7 @@ use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\DecksWasRedistributed;
 use GBProd\Montmartre\Domain\Event\EventRecordingCapabilities;
 use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
+use GBProd\Montmartre\Domain\Event\PlayerHasBoughtGazette;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
@@ -15,6 +16,7 @@ use GBProd\Montmartre\Domain\Event\PlayerHasSold;
 use GBProd\Montmartre\Domain\Event\PlayerHasSoldOff;
 use GBProd\Montmartre\Domain\Exception\CantPaint2MusesIfSumMoreThan5;
 use GBProd\Montmartre\Domain\Exception\CantPaintMoreThan2Muses;
+use GBProd\Montmartre\Domain\Exception\GazetteNotAvailable;
 use GBProd\Montmartre\Domain\Exception\HandFull;
 use GBProd\Montmartre\Domain\Exception\IsBlockedByAmbroise;
 use GBProd\Montmartre\Domain\Exception\NoCollectorLeft;
@@ -321,5 +323,25 @@ final class Board
     public function ambroise(): Ambroise
     {
         return $this->ambroise;
+    }
+
+    public function buyGazette(int $nbDiff): void
+    {
+        $availableGazettes = ResolveAvailableGazette::resolve(
+            $this->gazettes(),
+            $this->players()->current()
+        );
+
+        if (null === $gazette = $availableGazettes->nextFor($nbDiff)) {
+            throw new GazetteNotAvailable();
+        }
+
+        $this->gazettes()->buy($gazette);
+        $this->players()->current()->buyGazette($gazette);
+
+        $this->recordThat(new PlayerHasBoughtGazette(
+            $gazette,
+            $this->players()->current()
+        ));
     }
 }

@@ -34,9 +34,7 @@ final class NotifyWhenPlayerHasSold
                 'color' => $event->attractedCollector()->color()->value(),
                 'attractedCollector' => $event->attractedCollector()->willPay(),
                 'newCollector' => null !== $event->newCollector() ? $event->newCollector()->willPay() : null,
-                'availableGazettes' => array_map(function (Gazette $gazette): array {
-                    return $gazette->toArray();
-                }, $event->availableGazettes()),
+                'availableGazettes' => $event->availableGazettes()->toArray(),
             ]
         );
     }

@@ -39,4 +39,10 @@ final class Gazette
             'value' => $this->value,
         ];
     }
+
+    public function equals(Gazette $gazette): bool
+    {
+        return $this->value === $gazette->value
+            && $this->nbDiff === $gazette->nbDiff;
+    }
 }

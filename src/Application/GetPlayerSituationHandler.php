@@ -52,14 +52,15 @@ final class GetPlayerSituationHandler
                 'majorities' => array_map(static function (Color $color): string {
                     return $color->value();
                 }, ResolvePlayerMajorities::resolve($board->players())),
+                'gazette' => null !== $board->players()->current()->gazette() ? $board->players()->current()->gazette()->toArray() : null,
                 'allowedToBuyGazette' => $board->players()->current()->allowedToBuyGazette(),
                 'availableGazettes' => array_map(
                     function (Gazette $gazette): array {
                         return $gazette->toArray();
-                    }, ResolveAvailableGazette::resolve(
+                    }, iterator_to_array(ResolveAvailableGazette::resolve(
                         $board->gazettes(),
                         $board->players()->current()
-                    )
+                    ))
                 ),
             ],
             'players' => array_map(

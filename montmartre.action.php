@@ -168,7 +168,7 @@ class action_montmartre extends APP_GameAction
         } catch (NoCollectorLeft $e) {
             throw new BgaUserException(_('No collector left, should not happens'));
         } catch (IsBlockedByAmbroise $e) {
-            throw new BgaUserException(_('You couldn\'t sell to a collector blocked by Ambroise Croizat'));
+            throw new BgaUserException(_('You couldn\'t sell to a collector blocked by Ambroise'));
         } catch (ShouldHaveMajority $e) {
             throw new BgaUserException(_('You don\'t have majority, should not happens'));
         }
@@ -181,6 +181,20 @@ class action_montmartre extends APP_GameAction
         self::setAjaxMode();
 
         $this->game->checkAction('buyGazetteAction');
+
+        $color = self::getArg('nbdiff', AT_alphanum, true);
+
+        // try {
+            // $this->game->getContainer()->get(SellHandler::class)(
+            //     SellAction::fromColor($color)
+            // );
+        // } catch (NoCollectorLeft $e) {
+        //     throw new BgaUserException(_('No collector left, should not happens'));
+        // } catch (IsBlockedByAmbroise $e) {
+        //     throw new BgaUserException(_('You couldn\'t sell to a collector blocked by Ambroise'));
+        // } catch (ShouldHaveMajority $e) {
+        //     throw new BgaUserException(_('You don\'t have majority, should not happens'));
+        // }
 
         self::ajaxResponse();
     }

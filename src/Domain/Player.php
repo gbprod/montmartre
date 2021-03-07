@@ -26,6 +26,8 @@ final class Player
     private $attractedCollectors;
     /** @var bool */
     private $allowedToBuyGazette = false;
+    /** @var ?Gazette */
+    private $gazette;
 
     private function __construct(
         int $id,
@@ -35,7 +37,8 @@ final class Player
         Paintings $paintings,
         Wallet $wallet,
         AttractedCollectors $attractedCollectors,
-        bool $allowedToBuyGazette
+        bool $allowedToBuyGazette,
+        ?Gazette $gazette
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -45,6 +48,7 @@ final class Player
         $this->position = $position;
         $this->attractedCollectors = $attractedCollectors;
         $this->allowedToBuyGazette = $allowedToBuyGazette;
+        $this->gazette = $gazette;
     }
 
     public static function named(
@@ -61,7 +65,8 @@ final class Player
             Paintings::empty(),
             Wallet::empty(),
             AttractedCollectors::empty(),
-            false
+            false,
+            null
         );
     }
 
@@ -106,7 +111,11 @@ final class Player
                 },
                 $state['attracted_collectors']
             )),
-            (bool) $state['can_buy_gazette']
+            (bool) $state['can_buy_gazette'],
+            Gazette::forPublishing(
+                (int) $state['gazette_nb_diff'],
+                (int) $state['gazette_value']
+            )
         );
     }
 
@@ -212,11 +221,21 @@ final class Player
 
     public function allowedToBuyGazette(): bool
     {
-        return $this->allowedToBuyGazette;
+        return null === $this->gazette && $this->allowedToBuyGazette;
     }
 
     public function finishTurn(): void
     {
         $this->allowedToBuyGazette = false;
+    }
+
+    public function buyGazette(Gazette $gazette): void
+    {
+        $this->gazette = $gazette;
+    }
+
+    public function gazette(): ?Gazette
+    {
+        return $this->gazette;
     }
 }
