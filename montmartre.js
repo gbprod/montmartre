@@ -604,6 +604,9 @@ define(['dojo', 'dojo/_base/declare', 'ebg/core/gamegui', 'ebg/counter', 'ebg/st
 
       dojo.subscribe('DecksWasRedistributed', this, 'onDecksWasRedistributed');
       this.notifqueue.setSynchronous('DecksWasRedistributed', 3000);
+
+      dojo.subscribe('PlayerHasBoughtGazette', this, 'onPlayerHasBoughtGazette');
+      this.notifqueue.setSynchronous('PlayerHasBoughtGazette', 3000);
     },
 
     onPlayerHasPaint: function (event) {
@@ -700,6 +703,12 @@ define(['dojo', 'dojo/_base/declare', 'ebg/core/gamegui', 'ebg/counter', 'ebg/st
       for (var index = 1; index < [1, 2, 3].length + 1; index++) {
         this.setMuseInDeck(index, event.args.decks[index]);
       }
+    },
+
+    onPlayerHasBoughtGazette: function (event) {
+      console.log('Event onPlayerHasBoughtGazette');
+      var cardId = this.gazetteCardId(event.args.gazette.nbDiff, event.args.gazette.value);
+      this.gazettes[event.args.gazette.nbDiff].removeFromStock(cardId);
     },
   });
 });

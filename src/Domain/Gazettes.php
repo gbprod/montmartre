@@ -30,6 +30,11 @@ final class Gazettes implements \IteratorAggregate
         return new self(...$gazettes);
     }
 
+    public static function empty(): self
+    {
+        return new self();
+    }
+
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->gazettes);
@@ -37,8 +42,8 @@ final class Gazettes implements \IteratorAggregate
 
     public function nextFor(int $nbDiff): ?Gazette
     {
-        return array_reduce($this->gazettes, static function(?Gazette $selected, Gazette $gazette) use ($nbDiff): ?Gazette {
-            return ($gazette->nbDiff() === $nbDiff && ($selected === null || $gazette->value() > $selected->value()))
+        return array_reduce($this->gazettes, static function (?Gazette $selected, Gazette $gazette) use ($nbDiff): ?Gazette {
+            return ($gazette->nbDiff() === $nbDiff && (null === $selected || $gazette->value() > $selected->value()))
                 ? $gazette
                 : $selected;
         }, null);

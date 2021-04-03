@@ -12,14 +12,14 @@ final class ResolveAvailableGazette
 {
     public static function resolve(Gazettes $gazettes, Player $player): Gazettes
     {
-        return Gazettes::fromRemaining($gazettes->nextFor(2));
+        // return Gazettes::fromRemaining($gazettes->nextFor(2));
         if (!$player->allowedToBuyGazette()) {
-            return [];
+            return Gazettes::empty();
         }
 
         $distinct = $player->attractedCollectors()->countDisctinctColors();
         if ($distinct < 2) {
-            return [];
+            return Gazettes::empty();
         }
 
         return Gazettes::fromRemaining(

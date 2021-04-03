@@ -8,6 +8,7 @@ use GBProd\Montmartre\Domain\Board;
 use GBProd\Montmartre\Domain\Event\BoardHasBeenSetUp;
 use GBProd\Montmartre\Domain\Event\DecksWasRedistributed;
 use GBProd\Montmartre\Domain\Event\MusesHasBeenDiscarded;
+use GBProd\Montmartre\Domain\Event\PlayerHasBoughtGazette;
 use GBProd\Montmartre\Domain\Event\PlayerHasChanged;
 use GBProd\Montmartre\Domain\Event\PlayerHasDrawed;
 use GBProd\Montmartre\Domain\Event\PlayerHasPaint;
@@ -52,6 +53,13 @@ SQL;
         WHERE player_id = %s
 SQL;
 
+    const UPDATE_BUY_GAZETTE = <<<SQL
+        UPDATE `player`
+        SET `gazette_value` = %s, `gazette_nb_diff` = %s
+        WHERE player_id = %s
+SQL;
+
+
     const RESET_ALL_CAN_BUY_GAZETTE = <<<SQL
         UPDATE `player`
         SET `can_buy_gazette` = false
@@ -72,12 +80,19 @@ SQL;
 SQL;
 
     const SELECT_PLAYERS_QUERY = <<<SQL
-        SELECT * FROM player;
+        SELECT player_id, player_name, player_no, player_score,
+            can_buy_gazette, gazette_value, gazette_nb_diff
+        FROM player;
 SQL;
 
     const INSERT_GAZETTES_QUERY = <<<SQL
         INSERT INTO gazettes (`value`, nb_diff)
         VALUES (%s, %s);
+SQL;
+
+    const DELETE_GAZETTES_QUERY = <<<SQL
+        DELETE FROM gazettes
+        WHERE `value`=%s AND `nb_diff`=%s;
 SQL;
 
     const SELECT_GAZETTES_QUERY = <<<SQL
@@ -424,7 +439,7 @@ SQL;
         ($this->table)::dbQuery(
             sprintf(
                 self::UPDATE_CAN_BUY_GAZETTE,
-                ResolveAvailableGazette::resolve($board->gazettes(), $event->player())->count() > 0,
+                ResolveAvailableGazette::resolve($board->gazettes(), $event->player())->count() > 0 ? 'true' : 'false',
                 $event->player()->id()
             )
         );
@@ -451,5 +466,25 @@ SQL;
         $this->storeMuses(3, $board->decks()->thirdDeck()->muses());
 
         ($this->table)::dbQuery(self::TRUNCATE_DISCARD_PILE_QUERY);
+    }
+
+    private function applyPlayerHasBoughtGazette(PlayerHasBoughtGazette $event, Board $board): void
+    {
+        ($this->table)::dbQuery(
+            sprintf(
+                self::UPDATE_BUY_GAZETTE,
+                $event->gazette()->value(),
+                $event->gazette()->nbDiff(),
+                $event->player()->id()
+            )
+        );
+
+        ($this->table)::dbQuery(
+            sprintf(
+                self::DELETE_GAZETTES_QUERY,
+                $event->gazette()->value(),
+                $event->gazette()->nbDiff()
+            )
+        );
     }
 }

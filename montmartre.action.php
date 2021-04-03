@@ -1,5 +1,7 @@
 <?php
 
+use GBProd\Montmartre\Application\BuyGazetteAction;
+use GBProd\Montmartre\Application\BuyGazetteHandler;
 use GBProd\Montmartre\Application\PaintAction;
 use GBProd\Montmartre\Application\PaintHandler;
 use GBProd\Montmartre\Application\DrawAction;
@@ -182,12 +184,12 @@ class action_montmartre extends APP_GameAction
 
         $this->game->checkAction('buyGazetteAction');
 
-        $color = self::getArg('nbdiff', AT_alphanum, true);
+        $nbDiff = self::getArg('nbdiff', AT_alphanum, true);
 
         // try {
-            // $this->game->getContainer()->get(SellHandler::class)(
-            //     SellAction::fromColor($color)
-            // );
+            $this->game->getContainer()->get(BuyGazetteHandler::class)(
+                BuyGazetteAction::fromNbDiff($nbDiff)
+            );
         // } catch (NoCollectorLeft $e) {
         //     throw new BgaUserException(_('No collector left, should not happens'));
         // } catch (IsBlockedByAmbroise $e) {
