@@ -59,7 +59,6 @@ SQL;
         WHERE player_id = %s
 SQL;
 
-
     const RESET_ALL_CAN_BUY_GAZETTE = <<<SQL
         UPDATE `player`
         SET `can_buy_gazette` = false
@@ -441,6 +440,14 @@ SQL;
                 self::UPDATE_CAN_BUY_GAZETTE,
                 ResolveAvailableGazette::resolve($board->gazettes(), $event->player())->count() > 0 ? 'true' : 'false',
                 $event->player()->id()
+            )
+        );
+
+        ($this->table)::dbQuery(
+            sprintf(
+                self::UPDATE_COLLECTOR_QUERY,
+                $event->attractedCollector()->color()->value(),
+                (null !== $event->newCollector()) ? $event->newCollector()->willPay() : null
             )
         );
     }

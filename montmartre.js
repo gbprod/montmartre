@@ -265,17 +265,14 @@ define(['dojo', 'dojo/_base/declare', 'ebg/core/gamegui', 'ebg/counter', 'ebg/st
 
     setupSellButtons: function (majorities) {
       var that = this;
-
       for (var color of majorities) {
-        if (color != this.ambroise) {
-          dojo.place(
-            this.format_block('jstpl_sell_button', {
-              color: color,
-            }),
-            'player-' + this.player_id + '-paintings-' + color,
-            'after'
-          );
-        }
+        dojo.place(
+          this.format_block('jstpl_sell_button', {
+            color: color,
+          }),
+          'player-' + this.player_id + '-paintings-' + color,
+          'after'
+        );
       }
 
       dojo.query('.sell-button').onclick(function (event) {
@@ -570,7 +567,8 @@ define(['dojo', 'dojo/_base/declare', 'ebg/core/gamegui', 'ebg/counter', 'ebg/st
       var nbdiff = event.target.getAttribute('data-nbdiff');
 
       this.ajaxcall(
-        '/montmartre/montmartre/buyGazette.html', {
+        '/montmartre/montmartre/buyGazette.html',
+        {
           nbdiff: nbdiff,
           lock: true,
         },
@@ -677,7 +675,7 @@ define(['dojo', 'dojo/_base/declare', 'ebg/core/gamegui', 'ebg/counter', 'ebg/st
       );
 
       this.collectors[event.args.color].removeFromStock(
-        this.collectorCardId(event.args.attractedCollector.color, event.args.attractedCollector.value),
+        this.collectorCardId(event.args.color, event.args.attractedCollector),
         'player_name_' + event.args.player_id
       );
 
